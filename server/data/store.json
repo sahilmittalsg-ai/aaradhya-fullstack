@@ -1,0 +1,3984 @@
+{
+  "products": [
+    {
+      "_id": "local-product-1",
+      "title": "Gold Plated Modern Rudraksha Bracelet",
+      "slug": "gold-plated-modern-rudraksha-bracelet",
+      "subtitle": "Polished 5 mukhi daily-wear bracelet",
+      "description": "A refined rudraksha bracelet with gold-tone separators for everyday spiritual styling.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha",
+      "price": 599,
+      "compareAtPrice": 999,
+      "stock": 40,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "bracelet",
+        "5 mukhi"
+      ],
+      "purpose": [
+        "Peace",
+        "Protection",
+        "Balance"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Daily grounding",
+        "Gift-ready"
+      ],
+      "materials": [
+        "Rudraksha-style beads",
+        "Gold-tone alloy"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 12
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 20
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 10
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 6,
+        "expressMinDays": 2,
+        "expressMaxDays": 3
+      },
+      "careInstructions": "Keep dry and wipe gently with a soft cloth.",
+      "sku": "AB-RUD-BR-001",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:35:13.022Z"
+    },
+    {
+      "_id": "local-product-2",
+      "title": "Brown Rudraksha Mala - 108+1 Beads",
+      "slug": "brown-rudraksha-mala-108-1-beads",
+      "subtitle": "Traditional japa mala for mantra practice",
+      "description": "A full-length 108+1 bead mala crafted for mantra counting, meditation, and calm routines.",
+      "category": "Rudraksha",
+      "collection": "Meditation",
+      "price": 599,
+      "compareAtPrice": 999,
+      "stock": 28,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/meditation-mala.png"
+      ],
+      "tags": [
+        "mala",
+        "japa",
+        "meditation",
+        "rudraksha"
+      ],
+      "purpose": [
+        "Peace",
+        "Health",
+        "Balance"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Meditation practice",
+        "Mantra counting"
+      ],
+      "materials": [
+        "Rudraksha-style beads",
+        "Cotton cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "108+1 Beads - Standard",
+          "value": "108-standard",
+          "stock": 28
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 4,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Store in the pouch after use.",
+      "sku": "AB-MAL-108-001",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:35:13.023Z"
+    },
+    {
+      "_id": "local-product-3",
+      "title": "Pyrite Money Magnet Bracelet",
+      "slug": "pyrite-money-magnet-bracelet",
+      "subtitle": "Crystal energy bracelet",
+      "description": "A polished pyrite and tiger eye style bracelet for confident everyday wear.",
+      "category": "Pyrite",
+      "collection": "Energy Stones",
+      "price": 999,
+      "compareAtPrice": 1599,
+      "stock": 18,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/pyrite-tiger-eye.png"
+      ],
+      "tags": [
+        "pyrite",
+        "tiger-eye",
+        "bracelet"
+      ],
+      "purpose": [
+        "Wealth",
+        "Balance",
+        "Courage"
+      ],
+      "bead": "Pyrite",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Confidence styling",
+        "Premium gifting"
+      ],
+      "materials": [
+        "Pyrite-style beads",
+        "Tiger eye-style beads"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 18
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water and clean with a dry cloth.",
+      "sku": "AB-PYR-BR-001",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:35:13.023Z"
+    },
+    {
+      "_id": "local-product-seed-silver-plated-modern-rudraksha-bracelet",
+      "title": "Silver Plated Modern Rudraksha Bracelet",
+      "slug": "silver-plated-modern-rudraksha-bracelet",
+      "subtitle": "Rudraksha wearable for peace intention",
+      "description": "Silver Plated Modern Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha Bracelets",
+      "price": 599,
+      "compareAtPrice": 999,
+      "stock": 35,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "rudraksha-bracelets",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Silver",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Silver-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 11
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 11
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 12
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0002",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-gold-plated-duotone-rudraksha-bracelet",
+      "title": "Gold Plated DuoTone Rudraksha Bracelet",
+      "slug": "gold-plated-duotone-rudraksha-bracelet",
+      "subtitle": "Rudraksha wearable for courage intention",
+      "description": "Gold Plated DuoTone Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha Bracelets",
+      "price": 899,
+      "compareAtPrice": 1499,
+      "stock": 24,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "rudraksha-bracelets",
+        "bracelet",
+        "courage"
+      ],
+      "purpose": [
+        "Courage",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "DuoTone",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports courage intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "DuoTone-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 8
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 8
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 8
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0003",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-brown-rudraksha-mala-1081-beads",
+      "title": "Brown Rudraksha Mala - 108+1 Beads",
+      "slug": "brown-rudraksha-mala-1081-beads",
+      "subtitle": "Rudraksha mala for peace intention",
+      "description": "Brown Rudraksha Mala - 108+1 Beads crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha Malas",
+      "price": 599,
+      "compareAtPrice": 999,
+      "stock": 28,
+      "rating": 4.6,
+      "images": [
+        "/assets/products/meditation-mala.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "rudraksha-malas",
+        "mala",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 28
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0004",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-black-rudraksha-mala-1081-beads",
+      "title": "Black Rudraksha Mala - 108+1 Beads",
+      "slug": "black-rudraksha-mala-1081-beads",
+      "subtitle": "Rudraksha mala for protection intention",
+      "description": "Black Rudraksha Mala - 108+1 Beads crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha Malas",
+      "price": 499,
+      "compareAtPrice": 799,
+      "stock": 18,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/meditation-mala.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "rudraksha-malas",
+        "mala",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 18
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0005",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-5-mukhi-nepali-rudraksha-paanch-mukhi",
+      "title": "5 Mukhi Nepali Rudraksha - Paanch Mukhi",
+      "slug": "5-mukhi-nepali-rudraksha-paanch-mukhi",
+      "subtitle": "Rudraksha wearable for health intention",
+      "description": "5 Mukhi Nepali Rudraksha - Paanch Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 499,
+      "compareAtPrice": 1099,
+      "stock": 60,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "health"
+      ],
+      "purpose": [
+        "Health",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 Mukhi",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports health intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 20
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 20
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 20
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0006",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-6-mukhi-nepali-rudraksha-chhah-mukhi",
+      "title": "6 Mukhi Nepali Rudraksha - Chhah Mukhi",
+      "slug": "6-mukhi-nepali-rudraksha-chhah-mukhi",
+      "subtitle": "Rudraksha wearable for balance intention",
+      "description": "6 Mukhi Nepali Rudraksha - Chhah Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 499,
+      "compareAtPrice": 899,
+      "stock": 34,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "balance"
+      ],
+      "purpose": [
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "6 Mukhi",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports balance intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 11
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 11
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 12
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0007",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-7-mukhi-nepali-rudraksha-saat-mukhi",
+      "title": "7 Mukhi Nepali Rudraksha - Saat Mukhi",
+      "slug": "7-mukhi-nepali-rudraksha-saat-mukhi",
+      "subtitle": "Rudraksha wearable for wealth intention",
+      "description": "7 Mukhi Nepali Rudraksha - Saat Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 499,
+      "compareAtPrice": 799,
+      "stock": 22,
+      "rating": 4.6,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "wealth"
+      ],
+      "purpose": [
+        "Wealth",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "7 Mukhi",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports wealth intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 7
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 7
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 8
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0008",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-8-mukhi-nepali-rudraksha-aath-mukhi",
+      "title": "8 Mukhi Nepali Rudraksha - Aath Mukhi",
+      "slug": "8-mukhi-nepali-rudraksha-aath-mukhi",
+      "subtitle": "Rudraksha wearable for luck intention",
+      "description": "8 Mukhi Nepali Rudraksha - Aath Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 699,
+      "compareAtPrice": 1199,
+      "stock": 20,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "luck"
+      ],
+      "purpose": [
+        "Luck",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "8 Mukhi",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports luck intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 6
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 6
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 7
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0009",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-9-mukhi-nepali-rudraksha-nau-mukhi",
+      "title": "9 Mukhi Nepali Rudraksha - Nau Mukhi",
+      "slug": "9-mukhi-nepali-rudraksha-nau-mukhi",
+      "subtitle": "Rudraksha wearable for protection intention",
+      "description": "9 Mukhi Nepali Rudraksha - Nau Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 899,
+      "compareAtPrice": 1499,
+      "stock": 16,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "9 Mukhi",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0010",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-10-mukhi-nepali-rudraksha-dus-mukhi",
+      "title": "10 Mukhi Nepali Rudraksha - Dus Mukhi",
+      "slug": "10-mukhi-nepali-rudraksha-dus-mukhi",
+      "subtitle": "Rudraksha wearable for peace intention",
+      "description": "10 Mukhi Nepali Rudraksha - Dus Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 999,
+      "compareAtPrice": 1599,
+      "stock": 14,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "10 Mukhi",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 4
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 4
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0011",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-11-mukhi-nepali-rudraksha-gyarah-mukhi",
+      "title": "11 Mukhi Nepali Rudraksha - Gyarah Mukhi",
+      "slug": "11-mukhi-nepali-rudraksha-gyarah-mukhi",
+      "subtitle": "Rudraksha wearable for courage intention",
+      "description": "11 Mukhi Nepali Rudraksha - Gyarah Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 1299,
+      "compareAtPrice": 1999,
+      "stock": 12,
+      "rating": 4.6,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "courage"
+      ],
+      "purpose": [
+        "Courage",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "11 Mukhi",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports courage intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 4
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 4
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 4
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0012",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-12-mukhi-nepali-rudraksha-barah-mukhi",
+      "title": "12 Mukhi Nepali Rudraksha - Barah Mukhi",
+      "slug": "12-mukhi-nepali-rudraksha-barah-mukhi",
+      "subtitle": "Rudraksha wearable for health intention",
+      "description": "12 Mukhi Nepali Rudraksha - Barah Mukhi crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Nepali/Indian Rudraksha",
+      "price": 1499,
+      "compareAtPrice": 2499,
+      "stock": 10,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "nepaliindian-rudraksha",
+        "bracelet",
+        "health"
+      ],
+      "purpose": [
+        "Health",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "12 Mukhi",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports health intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 3
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 3
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 4
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0013",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-sphatik-and-rudraksha-mala-1081-beads",
+      "title": "Sphatik and Rudraksha Mala - 108+1 Beads",
+      "slug": "sphatik-and-rudraksha-mala-1081-beads",
+      "subtitle": "Sphatik mala for peace intention",
+      "description": "Sphatik and Rudraksha Mala - 108+1 Beads crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Sphatik",
+      "collection": "Rudraksha Malas",
+      "price": 799,
+      "compareAtPrice": 1299,
+      "stock": 14,
+      "rating": 4.8,
+      "images": [
+        "/assets/home/sphatik.png"
+      ],
+      "tags": [
+        "sphatik",
+        "rudraksha-malas",
+        "mala",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Sphatik",
+      "mukhi": "5 - Paanch",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Sphatik style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 14
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0014",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-karungali-protection-bracelet",
+      "title": "Karungali Protection Bracelet",
+      "slug": "karungali-protection-bracelet",
+      "subtitle": "Karungali wearable for protection intention",
+      "description": "Karungali Protection Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Karungali",
+      "collection": "Karungali Wearables",
+      "price": 699,
+      "compareAtPrice": 999,
+      "stock": 26,
+      "rating": 4.9,
+      "images": [
+        "/assets/home/karungali.png"
+      ],
+      "tags": [
+        "karungali",
+        "karungali-wearables",
+        "bracelet",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Karungali",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Karungali style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 8
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 8
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 9
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0015",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-karungali-mala-108-beads",
+      "title": "Karungali Mala - 108 Beads",
+      "slug": "karungali-mala-108-beads",
+      "subtitle": "Karungali mala for protection intention",
+      "description": "Karungali Mala - 108 Beads crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Karungali",
+      "collection": "Karungali Wearables",
+      "price": 899,
+      "compareAtPrice": 1399,
+      "stock": 18,
+      "rating": 4.6,
+      "images": [
+        "/assets/home/karungali.png"
+      ],
+      "tags": [
+        "karungali",
+        "karungali-wearables",
+        "mala",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Karungali",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Karungali style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 18
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0016",
+      "featured": true,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-karungali-gold-spacer-bracelet",
+      "title": "Karungali Gold Spacer Bracelet",
+      "slug": "karungali-gold-spacer-bracelet",
+      "subtitle": "Karungali wearable for courage intention",
+      "description": "Karungali Gold Spacer Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Karungali",
+      "collection": "Karungali Wearables",
+      "price": 799,
+      "compareAtPrice": 1199,
+      "stock": 22,
+      "rating": 4.7,
+      "images": [
+        "/assets/home/karungali.png"
+      ],
+      "tags": [
+        "karungali",
+        "karungali-wearables",
+        "bracelet",
+        "courage"
+      ],
+      "purpose": [
+        "Courage",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Karungali",
+      "mukhi": "Special",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports courage intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Karungali style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 7
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 7
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 8
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0017",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-karungali-couple-bracelet-set",
+      "title": "Karungali Couple Bracelet Set",
+      "slug": "karungali-couple-bracelet-set",
+      "subtitle": "Karungali wearable for love intention",
+      "description": "Karungali Couple Bracelet Set crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Karungali",
+      "collection": "Karungali Wearables",
+      "price": 1199,
+      "compareAtPrice": 1799,
+      "stock": 15,
+      "rating": 4.8,
+      "images": [
+        "/assets/home/karungali.png"
+      ],
+      "tags": [
+        "karungali",
+        "karungali-wearables",
+        "bracelet",
+        "love"
+      ],
+      "purpose": [
+        "Love",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Karungali",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports love intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Karungali style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0018",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-pyrite-prosperity-bracelet",
+      "title": "Pyrite Prosperity Bracelet",
+      "slug": "pyrite-prosperity-bracelet",
+      "subtitle": "Pyrite wearable for wealth intention",
+      "description": "Pyrite Prosperity Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Pyrite",
+      "collection": "Energy Stones",
+      "price": 799,
+      "compareAtPrice": 1199,
+      "stock": 30,
+      "rating": 4.6,
+      "images": [
+        "/assets/home/pyrite.png"
+      ],
+      "tags": [
+        "pyrite",
+        "energy-stones",
+        "bracelet",
+        "wealth"
+      ],
+      "purpose": [
+        "Wealth",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Pyrite",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports wealth intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Pyrite style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 10
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 10
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 10
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0020",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-pyrite-tiger-eye-wealth-bracelet",
+      "title": "Pyrite Tiger Eye Wealth Bracelet",
+      "slug": "pyrite-tiger-eye-wealth-bracelet",
+      "subtitle": "Pyrite wearable for wealth intention",
+      "description": "Pyrite Tiger Eye Wealth Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Pyrite",
+      "collection": "Energy Stones",
+      "price": 1099,
+      "compareAtPrice": 1699,
+      "stock": 16,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/pyrite-tiger-eye.png"
+      ],
+      "tags": [
+        "pyrite",
+        "energy-stones",
+        "bracelet",
+        "wealth"
+      ],
+      "purpose": [
+        "Wealth",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Pyrite",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports wealth intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Pyrite style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0021",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-pyrite-citrine-bracelet",
+      "title": "Pyrite Citrine Bracelet",
+      "slug": "pyrite-citrine-bracelet",
+      "subtitle": "Pyrite wearable for luck intention",
+      "description": "Pyrite Citrine Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Pyrite",
+      "collection": "Energy Stones",
+      "price": 1199,
+      "compareAtPrice": 1899,
+      "stock": 14,
+      "rating": 4.8,
+      "images": [
+        "/assets/home/pyrite.png"
+      ],
+      "tags": [
+        "pyrite",
+        "energy-stones",
+        "bracelet",
+        "luck"
+      ],
+      "purpose": [
+        "Luck",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Pyrite",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports luck intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Pyrite style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 4
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 4
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0022",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-sandalwood-meditation-mala",
+      "title": "Sandalwood Meditation Mala",
+      "slug": "sandalwood-meditation-mala",
+      "subtitle": "Sandalwood mala for peace intention",
+      "description": "Sandalwood Meditation Mala crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Sandalwood",
+      "collection": "Rudraksha Malas",
+      "price": 749,
+      "compareAtPrice": 1199,
+      "stock": 27,
+      "rating": 4.9,
+      "images": [
+        "/assets/home/sandalwood.png"
+      ],
+      "tags": [
+        "sandalwood",
+        "rudraksha-malas",
+        "mala",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Sandalwood",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Sandalwood style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 27
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0023",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-red-sandalwood-bracelet",
+      "title": "Red Sandalwood Bracelet",
+      "slug": "red-sandalwood-bracelet",
+      "subtitle": "Sandalwood wearable for peace intention",
+      "description": "Red Sandalwood Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Sandalwood",
+      "collection": "Spiritual Jewellery",
+      "price": 649,
+      "compareAtPrice": 999,
+      "stock": 25,
+      "rating": 4.6,
+      "images": [
+        "/assets/home/sandalwood.png"
+      ],
+      "tags": [
+        "sandalwood",
+        "spiritual-jewellery",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Sandalwood",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Sandalwood style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 8
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 8
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 9
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0024",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-white-sandalwood-japa-mala",
+      "title": "White Sandalwood Japa Mala",
+      "slug": "white-sandalwood-japa-mala",
+      "subtitle": "Sandalwood mala for health intention",
+      "description": "White Sandalwood Japa Mala crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Sandalwood",
+      "collection": "Rudraksha Malas",
+      "price": 899,
+      "compareAtPrice": 1399,
+      "stock": 19,
+      "rating": 4.7,
+      "images": [
+        "/assets/home/sandalwood.png"
+      ],
+      "tags": [
+        "sandalwood",
+        "rudraksha-malas",
+        "mala",
+        "health"
+      ],
+      "purpose": [
+        "Health",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Sandalwood",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports health intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Sandalwood style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 19
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0025",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-sphatik-health-mala",
+      "title": "Sphatik Health Mala",
+      "slug": "sphatik-health-mala",
+      "subtitle": "Sphatik mala for health intention",
+      "description": "Sphatik Health Mala crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Sphatik",
+      "collection": "Rudraksha Malas",
+      "price": 999,
+      "compareAtPrice": 1499,
+      "stock": 12,
+      "rating": 4.8,
+      "images": [
+        "/assets/home/sphatik.png"
+      ],
+      "tags": [
+        "sphatik",
+        "rudraksha-malas",
+        "mala",
+        "health"
+      ],
+      "purpose": [
+        "Health",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Sphatik",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports health intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Sphatik style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 12
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0026",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.449Z"
+    },
+    {
+      "_id": "local-product-seed-sphatik-cooling-bracelet",
+      "title": "Sphatik Cooling Bracelet",
+      "slug": "sphatik-cooling-bracelet",
+      "subtitle": "Sphatik wearable for peace intention",
+      "description": "Sphatik Cooling Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Sphatik",
+      "collection": "Spiritual Jewellery",
+      "price": 699,
+      "compareAtPrice": 1099,
+      "stock": 24,
+      "rating": 4.9,
+      "images": [
+        "/assets/home/sphatik.png"
+      ],
+      "tags": [
+        "sphatik",
+        "spiritual-jewellery",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Sphatik",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Sphatik style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 8
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 8
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 8
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0027",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-sphatik-and-rose-quartz-bracelet",
+      "title": "Sphatik and Rose Quartz Bracelet",
+      "slug": "sphatik-and-rose-quartz-bracelet",
+      "subtitle": "Sphatik wearable for love intention",
+      "description": "Sphatik and Rose Quartz Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Sphatik",
+      "collection": "Energy Stones",
+      "price": 899,
+      "compareAtPrice": 1399,
+      "stock": 17,
+      "rating": 4.6,
+      "images": [
+        "/assets/home/sphatik.png"
+      ],
+      "tags": [
+        "sphatik",
+        "energy-stones",
+        "bracelet",
+        "love"
+      ],
+      "purpose": [
+        "Love",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Sphatik",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports love intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Sphatik style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0028",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-tiger-eye-courage-bracelet",
+      "title": "Tiger Eye Courage Bracelet",
+      "slug": "tiger-eye-courage-bracelet",
+      "subtitle": "Tiger Eye wearable for courage intention",
+      "description": "Tiger Eye Courage Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Tiger Eye",
+      "collection": "Energy Stones",
+      "price": 849,
+      "compareAtPrice": 1299,
+      "stock": 20,
+      "rating": 4.7,
+      "images": [
+        "/assets/home/tiger-eye.png"
+      ],
+      "tags": [
+        "tiger-eye",
+        "energy-stones",
+        "bracelet",
+        "courage"
+      ],
+      "purpose": [
+        "Courage",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Tiger Eye",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports courage intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Tiger Eye style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 6
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 6
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 7
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0029",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-tiger-eye-wealth-bracelet",
+      "title": "Tiger Eye Wealth Bracelet",
+      "slug": "tiger-eye-wealth-bracelet",
+      "subtitle": "Tiger Eye wearable for wealth intention",
+      "description": "Tiger Eye Wealth Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Tiger Eye",
+      "collection": "Energy Stones",
+      "price": 799,
+      "compareAtPrice": 1199,
+      "stock": 21,
+      "rating": 4.8,
+      "images": [
+        "/assets/home/tiger-eye.png"
+      ],
+      "tags": [
+        "tiger-eye",
+        "energy-stones",
+        "bracelet",
+        "wealth"
+      ],
+      "purpose": [
+        "Wealth",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Tiger Eye",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports wealth intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Tiger Eye style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 7
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 7
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 7
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0030",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-tiger-eye-rudraksha-bracelet",
+      "title": "Tiger Eye Rudraksha Bracelet",
+      "slug": "tiger-eye-rudraksha-bracelet",
+      "subtitle": "Tiger Eye wearable for balance intention",
+      "description": "Tiger Eye Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Tiger Eye",
+      "collection": "Rudraksha Bracelets",
+      "price": 899,
+      "compareAtPrice": 1399,
+      "stock": 18,
+      "rating": 4.9,
+      "images": [
+        "/assets/home/tiger-eye.png"
+      ],
+      "tags": [
+        "tiger-eye",
+        "rudraksha-bracelets",
+        "bracelet",
+        "balance"
+      ],
+      "purpose": [
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Tiger Eye",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports balance intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Tiger Eye style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 6
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 6
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0031",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-rose-quartz-love-band",
+      "title": "Rose Quartz Love Band",
+      "slug": "rose-quartz-love-band",
+      "subtitle": "Rose Quartz wearable for love intention",
+      "description": "Rose Quartz Love Band crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rose Quartz",
+      "collection": "Energy Stones",
+      "price": 749,
+      "compareAtPrice": 1099,
+      "stock": 26,
+      "rating": 4.6,
+      "images": [
+        "/assets/home/rose-quartz.png"
+      ],
+      "tags": [
+        "rose-quartz",
+        "energy-stones",
+        "bracelet",
+        "love"
+      ],
+      "purpose": [
+        "Love",
+        "Balance"
+      ],
+      "bead": "Rose Quartz",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports love intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rose Quartz style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 8
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 8
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 9
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0032",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-rose-quartz-rudraksha-nazar-raksha-band",
+      "title": "Rose Quartz Rudraksha Nazar Raksha Band",
+      "slug": "rose-quartz-rudraksha-nazar-raksha-band",
+      "subtitle": "Rose Quartz wearable for love intention",
+      "description": "Rose Quartz Rudraksha Nazar Raksha Band crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rose Quartz",
+      "collection": "Rudraksha Bracelets",
+      "price": 699,
+      "compareAtPrice": 1099,
+      "stock": 23,
+      "rating": 4.7,
+      "images": [
+        "/assets/home/rose-quartz.png"
+      ],
+      "tags": [
+        "rose-quartz",
+        "rudraksha-bracelets",
+        "bracelet",
+        "love"
+      ],
+      "purpose": [
+        "Love",
+        "Balance"
+      ],
+      "bead": "Rose Quartz",
+      "mukhi": "5 - Paanch",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports love intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rose Quartz style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 7
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 7
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 8
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0033",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-rose-quartz-heart-charm-bracelet",
+      "title": "Rose Quartz Heart Charm Bracelet",
+      "slug": "rose-quartz-heart-charm-bracelet",
+      "subtitle": "Rose Quartz wearable for love intention",
+      "description": "Rose Quartz Heart Charm Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rose Quartz",
+      "collection": "Spiritual Jewellery",
+      "price": 899,
+      "compareAtPrice": 1399,
+      "stock": 18,
+      "rating": 4.8,
+      "images": [
+        "/assets/home/rose-quartz.png"
+      ],
+      "tags": [
+        "rose-quartz",
+        "spiritual-jewellery",
+        "bracelet",
+        "love"
+      ],
+      "purpose": [
+        "Love",
+        "Balance"
+      ],
+      "bead": "Rose Quartz",
+      "mukhi": "Special",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports love intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rose Quartz style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 6
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 6
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0034",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-amethyst-calm-bracelet",
+      "title": "Amethyst Calm Bracelet",
+      "slug": "amethyst-calm-bracelet",
+      "subtitle": "Amethyst wearable for peace intention",
+      "description": "Amethyst Calm Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Amethyst",
+      "collection": "Energy Stones",
+      "price": 849,
+      "compareAtPrice": 1299,
+      "stock": 21,
+      "rating": 4.9,
+      "images": [
+        "/assets/home/amethyst.png"
+      ],
+      "tags": [
+        "amethyst",
+        "energy-stones",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Amethyst",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Amethyst style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 7
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 7
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 7
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0035",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-amethyst-rudraksha-bracelet",
+      "title": "Amethyst Rudraksha Bracelet",
+      "slug": "amethyst-rudraksha-bracelet",
+      "subtitle": "Amethyst wearable for balance intention",
+      "description": "Amethyst Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Amethyst",
+      "collection": "Rudraksha Bracelets",
+      "price": 999,
+      "compareAtPrice": 1599,
+      "stock": 15,
+      "rating": 4.6,
+      "images": [
+        "/assets/home/amethyst.png"
+      ],
+      "tags": [
+        "amethyst",
+        "rudraksha-bracelets",
+        "bracelet",
+        "balance"
+      ],
+      "purpose": [
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Amethyst",
+      "mukhi": "5 - Paanch",
+      "plating": "Silver",
+      "audience": "Men",
+      "benefits": [
+        "Supports balance intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Amethyst style beads",
+        "Silver-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0036",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-amethyst-meditation-mala",
+      "title": "Amethyst Meditation Mala",
+      "slug": "amethyst-meditation-mala",
+      "subtitle": "Amethyst mala for peace intention",
+      "description": "Amethyst Meditation Mala crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Amethyst",
+      "collection": "Rudraksha Malas",
+      "price": 1299,
+      "compareAtPrice": 1999,
+      "stock": 11,
+      "rating": 4.7,
+      "images": [
+        "/assets/home/amethyst.png"
+      ],
+      "tags": [
+        "amethyst",
+        "rudraksha-malas",
+        "mala",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Amethyst",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Amethyst style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 11
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0037",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-seven-chakra-rudraksha-bracelet",
+      "title": "Seven Chakra Rudraksha Bracelet",
+      "slug": "seven-chakra-rudraksha-bracelet",
+      "subtitle": "Spiritual Jewellery wearable for balance intention",
+      "description": "Seven Chakra Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Spiritual Jewellery",
+      "collection": "Spiritual Jewellery",
+      "price": 999,
+      "compareAtPrice": 1599,
+      "stock": 20,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "spiritual-jewellery",
+        "spiritual-jewellery",
+        "bracelet",
+        "balance"
+      ],
+      "purpose": [
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports balance intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 6
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 6
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 7
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0038",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-nazar-suraksha-rudraksha-bracelet",
+      "title": "Nazar Suraksha Rudraksha Bracelet",
+      "slug": "nazar-suraksha-rudraksha-bracelet",
+      "subtitle": "Spiritual Jewellery wearable for protection intention",
+      "description": "Nazar Suraksha Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Spiritual Jewellery",
+      "collection": "Rudraksha Bracelets",
+      "price": 699,
+      "compareAtPrice": 999,
+      "stock": 32,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "spiritual-jewellery",
+        "rudraksha-bracelets",
+        "bracelet",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Black",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Black-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 10
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 10
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 11
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0039",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-trishul-damru-rudraksha-bracelet",
+      "title": "Trishul Damru Rudraksha Bracelet",
+      "slug": "trishul-damru-rudraksha-bracelet",
+      "subtitle": "Spiritual Jewellery wearable for courage intention",
+      "description": "Trishul Damru Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Spiritual Jewellery",
+      "collection": "Rudraksha Bracelets",
+      "price": 899,
+      "compareAtPrice": 1399,
+      "stock": 17,
+      "rating": 4.6,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "spiritual-jewellery",
+        "rudraksha-bracelets",
+        "bracelet",
+        "courage"
+      ],
+      "purpose": [
+        "Courage",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Women",
+      "benefits": [
+        "Supports courage intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0040",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-om-charm-rudraksha-bracelet",
+      "title": "Om Charm Rudraksha Bracelet",
+      "slug": "om-charm-rudraksha-bracelet",
+      "subtitle": "Spiritual Jewellery wearable for peace intention",
+      "description": "Om Charm Rudraksha Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Spiritual Jewellery",
+      "collection": "Rudraksha Bracelets",
+      "price": 799,
+      "compareAtPrice": 1199,
+      "stock": 25,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "spiritual-jewellery",
+        "rudraksha-bracelets",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 8
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 8
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 9
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0041",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-mahadev-rudraksha-kada-bracelet",
+      "title": "Mahadev Rudraksha Kada Bracelet",
+      "slug": "mahadev-rudraksha-kada-bracelet",
+      "subtitle": "Spiritual Jewellery wearable for protection intention",
+      "description": "Mahadev Rudraksha Kada Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Spiritual Jewellery",
+      "collection": "Rudraksha Bracelets",
+      "price": 1199,
+      "compareAtPrice": 1899,
+      "stock": 13,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "spiritual-jewellery",
+        "rudraksha-bracelets",
+        "bracelet",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Silver",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Silver-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 4
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 4
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0042",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-rudraksha-rakhi-bracelet",
+      "title": "Rudraksha Rakhi Bracelet",
+      "slug": "rudraksha-rakhi-bracelet",
+      "subtitle": "Rudraksha wearable for protection intention",
+      "description": "Rudraksha Rakhi Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha Bracelets",
+      "price": 399,
+      "compareAtPrice": 699,
+      "stock": 40,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "rudraksha-bracelets",
+        "bracelet",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 13
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 13
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 14
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0043",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-mini-rudraksha-kids-bracelet",
+      "title": "Mini Rudraksha Kids Bracelet",
+      "slug": "mini-rudraksha-kids-bracelet",
+      "subtitle": "Rudraksha wearable for health intention",
+      "description": "Mini Rudraksha Kids Bracelet crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha Bracelets",
+      "price": 499,
+      "compareAtPrice": 899,
+      "stock": 22,
+      "rating": 4.6,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "rudraksha-bracelets",
+        "bracelet",
+        "health"
+      ],
+      "purpose": [
+        "Health",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports health intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 7
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 7
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 8
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0044",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-rudraksha-couple-bracelet-set",
+      "title": "Rudraksha Couple Bracelet Set",
+      "slug": "rudraksha-couple-bracelet-set",
+      "subtitle": "Rudraksha wearable for love intention",
+      "description": "Rudraksha Couple Bracelet Set crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Rudraksha",
+      "collection": "Rudraksha Bracelets",
+      "price": 1299,
+      "compareAtPrice": 1999,
+      "stock": 15,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "rudraksha",
+        "rudraksha-bracelets",
+        "bracelet",
+        "love"
+      ],
+      "purpose": [
+        "Love",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Women",
+      "benefits": [
+        "Supports love intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0045",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-silver-plated-karungali-mala-karungali-bracelet-combo-for-men",
+      "title": "Silver Plated Karungali Mala + Karungali Bracelet Combo For Men",
+      "slug": "silver-plated-karungali-mala-karungali-bracelet-combo-for-men",
+      "subtitle": "Combos mala for protection intention",
+      "description": "Silver Plated Karungali Mala + Karungali Bracelet Combo For Men crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Combos",
+      "collection": "Combos",
+      "price": 999,
+      "compareAtPrice": 1499,
+      "stock": 18,
+      "rating": 4.8,
+      "images": [
+        "/assets/home/karungali.png"
+      ],
+      "tags": [
+        "combos",
+        "combos",
+        "mala",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Mixed",
+      "mukhi": "Special",
+      "plating": "Silver",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Mixed style beads",
+        "Silver-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Standard",
+          "value": "standard",
+          "stock": 18
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0046",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-gold-plated-modern-elemental-rudraksha-bracelet-combo",
+      "title": "Gold Plated Modern + Elemental Rudraksha Bracelet Combo",
+      "slug": "gold-plated-modern-elemental-rudraksha-bracelet-combo",
+      "subtitle": "Combos wearable for balance intention",
+      "description": "Gold Plated Modern + Elemental Rudraksha Bracelet Combo crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Combos",
+      "collection": "Combos",
+      "price": 899,
+      "compareAtPrice": 1599,
+      "stock": 20,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "combos",
+        "combos",
+        "bracelet",
+        "balance"
+      ],
+      "purpose": [
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports balance intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 6
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 6
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 7
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0047",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-dreamy-duo-combo-with-rose-quartz-and-amethyst-bands",
+      "title": "Dreamy Duo Combo with Rose Quartz and Amethyst Bands",
+      "slug": "dreamy-duo-combo-with-rose-quartz-and-amethyst-bands",
+      "subtitle": "Combos wearable for love intention",
+      "description": "Dreamy Duo Combo with Rose Quartz and Amethyst Bands crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Combos",
+      "collection": "Combos",
+      "price": 799,
+      "compareAtPrice": 1299,
+      "stock": 16,
+      "rating": 4.6,
+      "images": [
+        "/assets/home/rose-quartz.png"
+      ],
+      "tags": [
+        "combos",
+        "combos",
+        "bracelet",
+        "love"
+      ],
+      "purpose": [
+        "Love",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Mixed",
+      "mukhi": "Special",
+      "plating": "Gold",
+      "audience": "Men",
+      "benefits": [
+        "Supports love intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Mixed style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0048",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-gold-plated-essential-elemental-rudraksha-bracelet-combo",
+      "title": "Gold Plated Essential + Elemental Rudraksha Bracelet Combo",
+      "slug": "gold-plated-essential-elemental-rudraksha-bracelet-combo",
+      "subtitle": "Combos wearable for peace intention",
+      "description": "Gold Plated Essential + Elemental Rudraksha Bracelet Combo crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Combos",
+      "collection": "Combos",
+      "price": 899,
+      "compareAtPrice": 1599,
+      "stock": 22,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/rudraksha-bracelet.png"
+      ],
+      "tags": [
+        "combos",
+        "combos",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 7
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 7
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 8
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0049",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-power-om-energy-combo-of-black-onyx-hematite-and-tiger-eye-bands",
+      "title": "Power Om Energy Combo of Black Onyx, Hematite and Tiger Eye Bands",
+      "slug": "power-om-energy-combo-of-black-onyx-hematite-and-tiger-eye-bands",
+      "subtitle": "Combos wearable for courage intention",
+      "description": "Power Om Energy Combo of Black Onyx, Hematite and Tiger Eye Bands crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Combos",
+      "collection": "Combos",
+      "price": 899,
+      "compareAtPrice": 1299,
+      "stock": 14,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/pyrite-tiger-eye.png"
+      ],
+      "tags": [
+        "combos",
+        "combos",
+        "bracelet",
+        "courage"
+      ],
+      "purpose": [
+        "Courage",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Mixed",
+      "mukhi": "Special",
+      "plating": "Gold",
+      "audience": "Women",
+      "benefits": [
+        "Supports courage intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Mixed style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 4
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 4
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0050",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-rudraksha-gift-hamper",
+      "title": "Rudraksha Gift Hamper",
+      "slug": "rudraksha-gift-hamper",
+      "subtitle": "Gift Hampers wearable for luck intention",
+      "description": "Rudraksha Gift Hamper crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Gift Hampers",
+      "collection": "Gift Hampers",
+      "price": 1599,
+      "compareAtPrice": 2499,
+      "stock": 12,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/hero-spiritual-shop.png"
+      ],
+      "tags": [
+        "gift-hampers",
+        "gift-hampers",
+        "bracelet",
+        "luck"
+      ],
+      "purpose": [
+        "Luck",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Rudraksha",
+      "mukhi": "5 - Paanch",
+      "plating": "Gold",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports luck intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Rudraksha style beads",
+        "Gold-tone accents"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 4
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 4
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 4
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0051",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-energy-stone-gift-hamper",
+      "title": "Energy Stone Gift Hamper",
+      "slug": "energy-stone-gift-hamper",
+      "subtitle": "Gift Hampers wearable for balance intention",
+      "description": "Energy Stone Gift Hamper crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Gift Hampers",
+      "collection": "Gift Hampers",
+      "price": 1799,
+      "compareAtPrice": 2799,
+      "stock": 10,
+      "rating": 4.6,
+      "images": [
+        "/assets/products/hero-spiritual-shop.png"
+      ],
+      "tags": [
+        "gift-hampers",
+        "gift-hampers",
+        "bracelet",
+        "balance"
+      ],
+      "purpose": [
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Mixed",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Men",
+      "benefits": [
+        "Supports balance intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Mixed style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 3
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 3
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 4
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0052",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-daily-peace-bracelet-combo",
+      "title": "Daily Peace Bracelet Combo",
+      "slug": "daily-peace-bracelet-combo",
+      "subtitle": "Gift Hampers wearable for peace intention",
+      "description": "Daily Peace Bracelet Combo crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Gift Hampers",
+      "collection": "Gift Hampers",
+      "price": 1399,
+      "compareAtPrice": 2199,
+      "stock": 14,
+      "rating": 4.7,
+      "images": [
+        "/assets/products/hero-spiritual-shop.png"
+      ],
+      "tags": [
+        "gift-hampers",
+        "gift-hampers",
+        "bracelet",
+        "peace"
+      ],
+      "purpose": [
+        "Peace",
+        "Balance"
+      ],
+      "bead": "Mixed",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports peace intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Mixed style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 4
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 4
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 5
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0053",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.450Z"
+    },
+    {
+      "_id": "local-product-seed-wealth-and-luck-bracelet-combo",
+      "title": "Wealth and Luck Bracelet Combo",
+      "slug": "wealth-and-luck-bracelet-combo",
+      "subtitle": "Gift Hampers wearable for wealth intention",
+      "description": "Wealth and Luck Bracelet Combo crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Gift Hampers",
+      "collection": "Gift Hampers",
+      "price": 1499,
+      "compareAtPrice": 2399,
+      "stock": 16,
+      "rating": 4.8,
+      "images": [
+        "/assets/products/hero-spiritual-shop.png"
+      ],
+      "tags": [
+        "gift-hampers",
+        "gift-hampers",
+        "bracelet",
+        "wealth"
+      ],
+      "purpose": [
+        "Wealth",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Mixed",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Unisex",
+      "benefits": [
+        "Supports wealth intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Mixed style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 5
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 5
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0054",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.451Z"
+    },
+    {
+      "_id": "local-product-seed-protection-essentials-combo",
+      "title": "Protection Essentials Combo",
+      "slug": "protection-essentials-combo",
+      "subtitle": "Gift Hampers wearable for protection intention",
+      "description": "Protection Essentials Combo crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.",
+      "category": "Gift Hampers",
+      "collection": "Gift Hampers",
+      "price": 1299,
+      "compareAtPrice": 1999,
+      "stock": 18,
+      "rating": 4.9,
+      "images": [
+        "/assets/products/hero-spiritual-shop.png"
+      ],
+      "tags": [
+        "gift-hampers",
+        "gift-hampers",
+        "bracelet",
+        "protection"
+      ],
+      "purpose": [
+        "Protection",
+        "Balance",
+        "Peace"
+      ],
+      "bead": "Mixed",
+      "mukhi": "Special",
+      "plating": "None",
+      "audience": "Women",
+      "benefits": [
+        "Supports protection intention",
+        "Gift-ready styling",
+        "Everyday spiritual wear"
+      ],
+      "materials": [
+        "Mixed style beads",
+        "Elastic cord"
+      ],
+      "sizeOptions": [
+        {
+          "label": "Small - 6.5 inch",
+          "value": "small-6-5",
+          "stock": 6
+        },
+        {
+          "label": "Medium - 7 inch",
+          "value": "medium-7",
+          "stock": 6
+        },
+        {
+          "label": "Large - 7.5 inch",
+          "value": "large-7-5",
+          "stock": 6
+        }
+      ],
+      "addOnServices": [],
+      "delivery": {
+        "minDays": 3,
+        "maxDays": 7,
+        "expressMinDays": 2,
+        "expressMaxDays": 4
+      },
+      "careInstructions": "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+      "sku": "AB-0055",
+      "featured": false,
+      "active": true,
+      "createdAt": "2026-06-24T20:38:34.451Z"
+    }
+  ],
+  "categories": [
+    {
+      "_id": "local-category-1",
+      "name": "Rudraksha",
+      "slug": "rudraksha",
+      "description": "Rudraksha bracelets, malas, and beads.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-2",
+      "name": "Pyrite",
+      "slug": "pyrite",
+      "description": "Energy stone wearables.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-3",
+      "name": "Energy Stones",
+      "slug": "energy-stones",
+      "description": "Crystal and gemstone products.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-karungali",
+      "name": "Karungali",
+      "slug": "karungali",
+      "description": "Karungali products managed from the admin panel.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-sandalwood",
+      "name": "Sandalwood",
+      "slug": "sandalwood",
+      "description": "Sandalwood products managed from the admin panel.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-sphatik",
+      "name": "Sphatik",
+      "slug": "sphatik",
+      "description": "Sphatik products managed from the admin panel.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-tiger-eye",
+      "name": "Tiger Eye",
+      "slug": "tiger-eye",
+      "description": "Tiger Eye products managed from the admin panel.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-rose-quartz",
+      "name": "Rose Quartz",
+      "slug": "rose-quartz",
+      "description": "Rose Quartz products managed from the admin panel.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-amethyst",
+      "name": "Amethyst",
+      "slug": "amethyst",
+      "description": "Amethyst products managed from the admin panel.",
+      "featured": true,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-spiritual-jewellery",
+      "name": "Spiritual Jewellery",
+      "slug": "spiritual-jewellery",
+      "description": "Spiritual Jewellery products managed from the admin panel.",
+      "featured": false,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-rudraksha-bracelets",
+      "name": "Rudraksha Bracelets",
+      "slug": "rudraksha-bracelets",
+      "description": "Rudraksha Bracelets products managed from the admin panel.",
+      "featured": false,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-rudraksha-malas",
+      "name": "Rudraksha Malas",
+      "slug": "rudraksha-malas",
+      "description": "Rudraksha Malas products managed from the admin panel.",
+      "featured": false,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-nepaliindian-rudraksha",
+      "name": "Nepali/Indian Rudraksha",
+      "slug": "nepaliindian-rudraksha",
+      "description": "Nepali/Indian Rudraksha products managed from the admin panel.",
+      "featured": false,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-combos",
+      "name": "Combos",
+      "slug": "combos",
+      "description": "Combos products managed from the admin panel.",
+      "featured": false,
+      "active": true
+    },
+    {
+      "_id": "local-category-seed-gift-hampers",
+      "name": "Gift Hampers",
+      "slug": "gift-hampers",
+      "description": "Gift Hampers products managed from the admin panel.",
+      "featured": false,
+      "active": true
+    }
+  ],
+  "coupons": [
+    {
+      "_id": "local-coupon-1",
+      "code": "FIRST10",
+      "type": "percent",
+      "value": 10,
+      "minSubtotal": 799,
+      "active": true
+    },
+    {
+      "_id": "local-coupon-2",
+      "code": "DIVINE150",
+      "type": "flat",
+      "value": 150,
+      "minSubtotal": 1499,
+      "active": true
+    }
+  ],
+  "orders": [],
+  "supportTickets": [],
+  "homepage": {
+    "hero": {
+      "enabled": true,
+      "autoplay": true,
+      "intervalMs": 5000,
+      "slides": [
+        {
+          "id": "hero-rudraksha",
+          "image": "/assets/banners/rudraksha.jpg",
+          "heading": "Rudraksha Collection Banner",
+          "subheading": "Certified rudraksha wearables crafted for modern, everyday devotion.",
+          "cta": "Explore Rudraksha",
+          "href": "/collections?collection=Rudraksha",
+          "active": true
+        },
+        {
+          "id": "hero-karungali",
+          "image": "/assets/banners/karungali.jpg",
+          "heading": "Karungali Collection Banner",
+          "subheading": "Grounded Karungali-inspired bracelets and malas for protection styling.",
+          "cta": "Shop Karungali",
+          "href": "/collections?collection=Karungali",
+          "active": true
+        },
+        {
+          "id": "hero-energy-stones",
+          "image": "/assets/banners/energy-stones.jpg",
+          "heading": "Energy Stones Collection Banner",
+          "subheading": "Pyrite, rose quartz, tiger eye, sphatik, and more energy stone essentials.",
+          "cta": "Discover Stones",
+          "href": "/collections?collection=Energy%20Stones",
+          "active": true
+        },
+        {
+          "id": "hero-spiritual-jewellery",
+          "image": "/assets/banners/spiritual-jewellery.jpg",
+          "heading": "Spiritual Jewellery Banner",
+          "subheading": "Sacred jewellery pieces with premium finishes for rituals and gifting.",
+          "cta": "View Jewellery",
+          "href": "/collections?collection=Spiritual%20Jewellery",
+          "active": true
+        }
+      ]
+    },
+    "sections": [
+      {
+        "key": "announcement",
+        "title": "Announcement Bar",
+        "description": "Top black offer strip shown above navbar.",
+        "active": true,
+        "managePath": "/admin/website-settings"
+      },
+      {
+        "key": "navbar",
+        "title": "Navbar Categories",
+        "description": "Main menu categories shown in customer header.",
+        "active": true,
+        "managePath": "/admin/product-categories"
+      },
+      {
+        "key": "category-strip",
+        "title": "Category Strip",
+        "description": "Horizontal Rudraksha, Karungali, Pyrite image strip.",
+        "active": true,
+        "managePath": "/admin/product-categories"
+      },
+      {
+        "key": "hero-slider",
+        "title": "Hero Slider",
+        "description": "Four homepage banner photos, text, buttons, and autoplay.",
+        "active": true,
+        "managePath": "/admin/hero-slider"
+      },
+      {
+        "key": "latest-trending",
+        "title": "Latest & Trending",
+        "description": "Homepage product carousel and badges.",
+        "active": true,
+        "managePath": "/admin/latest-trending"
+      },
+      {
+        "key": "shop-collections",
+        "title": "Shop Our Collections",
+        "description": "Circular category carousel and filters.",
+        "active": true,
+        "managePath": "/admin/shop-collections"
+      },
+      {
+        "key": "shop-purpose",
+        "title": "Shop By Purpose",
+        "description": "Purpose cards like Wealth, Health, Love, Protection.",
+        "active": true,
+        "managePath": "/admin/shop-purpose"
+      },
+      {
+        "key": "tradition-gallery",
+        "title": "Rooted In Tradition Gallery",
+        "description": "Six-image lifestyle gallery section.",
+        "active": true,
+        "managePath": "/admin/website-settings"
+      },
+      {
+        "key": "footer",
+        "title": "Footer Content",
+        "description": "Footer links, support, policy and brand text.",
+        "active": true,
+        "managePath": "/admin/website-settings"
+      }
+    ]
+  }
+}

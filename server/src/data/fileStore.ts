@@ -1,0 +1,427 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import slugify from "slugify";
+
+const storePath = fileURLToPath(new URL("../../data/store.json", import.meta.url));
+let cachedStore: Store | null = null;
+
+type Store = {
+  products: any[];
+  categories: any[];
+  coupons: any[];
+  orders: any[];
+  supportTickets: any[];
+  homepage: HomepageStore;
+};
+
+export type HeroSlide = {
+  id: string;
+  image: string;
+  heading: string;
+  subheading: string;
+  cta: string;
+  href: string;
+  active: boolean;
+};
+
+export type HomepageSection = {
+  key: string;
+  title: string;
+  description: string;
+  active: boolean;
+  managePath: string;
+};
+
+export type HomepageStore = {
+  hero: {
+    enabled: boolean;
+    autoplay: boolean;
+    intervalMs: number;
+    slides: HeroSlide[];
+  };
+  sections: HomepageSection[];
+};
+
+const categorySeeds = [
+  "Rudraksha",
+  "Karungali",
+  "Pyrite",
+  "Sandalwood",
+  "Sphatik",
+  "Tiger Eye",
+  "Rose Quartz",
+  "Amethyst",
+  "Spiritual Jewellery",
+  "Energy Stones",
+  "Rudraksha Bracelets",
+  "Rudraksha Malas",
+  "Nepali/Indian Rudraksha",
+  "Combos",
+  "Gift Hampers"
+];
+
+const productSeeds = [
+  ["Gold Plated Modern Rudraksha Bracelet", "Rudraksha", "Rudraksha Bracelets", 599, 999, 42, "Protection", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Silver Plated Modern Rudraksha Bracelet", "Rudraksha", "Rudraksha Bracelets", 599, 999, 35, "Peace", "Silver", "/assets/products/rudraksha-bracelet.png"],
+  ["Gold Plated DuoTone Rudraksha Bracelet", "Rudraksha", "Rudraksha Bracelets", 899, 1499, 24, "Courage", "DuoTone", "/assets/products/rudraksha-bracelet.png"],
+  ["Brown Rudraksha Mala - 108+1 Beads", "Rudraksha", "Rudraksha Malas", 599, 999, 28, "Peace", "None", "/assets/products/meditation-mala.png"],
+  ["Black Rudraksha Mala - 108+1 Beads", "Rudraksha", "Rudraksha Malas", 499, 799, 18, "Protection", "None", "/assets/products/meditation-mala.png"],
+  ["5 Mukhi Nepali Rudraksha - Paanch Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 499, 1099, 60, "Health", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["6 Mukhi Nepali Rudraksha - Chhah Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 499, 899, 34, "Balance", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["7 Mukhi Nepali Rudraksha - Saat Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 499, 799, 22, "Wealth", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["8 Mukhi Nepali Rudraksha - Aath Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 699, 1199, 20, "Luck", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["9 Mukhi Nepali Rudraksha - Nau Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 899, 1499, 16, "Protection", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["10 Mukhi Nepali Rudraksha - Dus Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 999, 1599, 14, "Peace", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["11 Mukhi Nepali Rudraksha - Gyarah Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 1299, 1999, 12, "Courage", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["12 Mukhi Nepali Rudraksha - Barah Mukhi", "Rudraksha", "Nepali/Indian Rudraksha", 1499, 2499, 10, "Health", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["Sphatik and Rudraksha Mala - 108+1 Beads", "Sphatik", "Rudraksha Malas", 799, 1299, 14, "Peace", "None", "/assets/home/sphatik.png"],
+  ["Karungali Protection Bracelet", "Karungali", "Karungali Wearables", 699, 999, 26, "Protection", "None", "/assets/home/karungali.png"],
+  ["Karungali Mala - 108 Beads", "Karungali", "Karungali Wearables", 899, 1399, 18, "Protection", "None", "/assets/home/karungali.png"],
+  ["Karungali Gold Spacer Bracelet", "Karungali", "Karungali Wearables", 799, 1199, 22, "Courage", "Gold", "/assets/home/karungali.png"],
+  ["Karungali Couple Bracelet Set", "Karungali", "Karungali Wearables", 1199, 1799, 15, "Love", "None", "/assets/home/karungali.png"],
+  ["Pyrite Money Magnet Bracelet", "Pyrite", "Energy Stones", 999, 1599, 18, "Wealth", "None", "/assets/products/pyrite-tiger-eye.png"],
+  ["Pyrite Prosperity Bracelet", "Pyrite", "Energy Stones", 799, 1199, 30, "Wealth", "None", "/assets/home/pyrite.png"],
+  ["Pyrite Tiger Eye Wealth Bracelet", "Pyrite", "Energy Stones", 1099, 1699, 16, "Wealth", "None", "/assets/products/pyrite-tiger-eye.png"],
+  ["Pyrite Citrine Bracelet", "Pyrite", "Energy Stones", 1199, 1899, 14, "Luck", "None", "/assets/home/pyrite.png"],
+  ["Sandalwood Meditation Mala", "Sandalwood", "Rudraksha Malas", 749, 1199, 27, "Peace", "None", "/assets/home/sandalwood.png"],
+  ["Red Sandalwood Bracelet", "Sandalwood", "Spiritual Jewellery", 649, 999, 25, "Peace", "None", "/assets/home/sandalwood.png"],
+  ["White Sandalwood Japa Mala", "Sandalwood", "Rudraksha Malas", 899, 1399, 19, "Health", "None", "/assets/home/sandalwood.png"],
+  ["Sphatik Health Mala", "Sphatik", "Rudraksha Malas", 999, 1499, 12, "Health", "None", "/assets/home/sphatik.png"],
+  ["Sphatik Cooling Bracelet", "Sphatik", "Spiritual Jewellery", 699, 1099, 24, "Peace", "None", "/assets/home/sphatik.png"],
+  ["Sphatik and Rose Quartz Bracelet", "Sphatik", "Energy Stones", 899, 1399, 17, "Love", "None", "/assets/home/sphatik.png"],
+  ["Tiger Eye Courage Bracelet", "Tiger Eye", "Energy Stones", 849, 1299, 20, "Courage", "None", "/assets/home/tiger-eye.png"],
+  ["Tiger Eye Wealth Bracelet", "Tiger Eye", "Energy Stones", 799, 1199, 21, "Wealth", "None", "/assets/home/tiger-eye.png"],
+  ["Tiger Eye Rudraksha Bracelet", "Tiger Eye", "Rudraksha Bracelets", 899, 1399, 18, "Balance", "Gold", "/assets/home/tiger-eye.png"],
+  ["Rose Quartz Love Band", "Rose Quartz", "Energy Stones", 749, 1099, 26, "Love", "None", "/assets/home/rose-quartz.png"],
+  ["Rose Quartz Rudraksha Nazar Raksha Band", "Rose Quartz", "Rudraksha Bracelets", 699, 1099, 23, "Love", "None", "/assets/home/rose-quartz.png"],
+  ["Rose Quartz Heart Charm Bracelet", "Rose Quartz", "Spiritual Jewellery", 899, 1399, 18, "Love", "Gold", "/assets/home/rose-quartz.png"],
+  ["Amethyst Calm Bracelet", "Amethyst", "Energy Stones", 849, 1299, 21, "Peace", "None", "/assets/home/amethyst.png"],
+  ["Amethyst Rudraksha Bracelet", "Amethyst", "Rudraksha Bracelets", 999, 1599, 15, "Balance", "Silver", "/assets/home/amethyst.png"],
+  ["Amethyst Meditation Mala", "Amethyst", "Rudraksha Malas", 1299, 1999, 11, "Peace", "None", "/assets/home/amethyst.png"],
+  ["Seven Chakra Rudraksha Bracelet", "Spiritual Jewellery", "Spiritual Jewellery", 999, 1599, 20, "Balance", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Nazar Suraksha Rudraksha Bracelet", "Spiritual Jewellery", "Rudraksha Bracelets", 699, 999, 32, "Protection", "Black", "/assets/products/rudraksha-bracelet.png"],
+  ["Trishul Damru Rudraksha Bracelet", "Spiritual Jewellery", "Rudraksha Bracelets", 899, 1399, 17, "Courage", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Om Charm Rudraksha Bracelet", "Spiritual Jewellery", "Rudraksha Bracelets", 799, 1199, 25, "Peace", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Mahadev Rudraksha Kada Bracelet", "Spiritual Jewellery", "Rudraksha Bracelets", 1199, 1899, 13, "Protection", "Silver", "/assets/products/rudraksha-bracelet.png"],
+  ["Rudraksha Rakhi Bracelet", "Rudraksha", "Rudraksha Bracelets", 399, 699, 40, "Protection", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Mini Rudraksha Kids Bracelet", "Rudraksha", "Rudraksha Bracelets", 499, 899, 22, "Health", "None", "/assets/products/rudraksha-bracelet.png"],
+  ["Rudraksha Couple Bracelet Set", "Rudraksha", "Rudraksha Bracelets", 1299, 1999, 15, "Love", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Silver Plated Karungali Mala + Karungali Bracelet Combo For Men", "Combos", "Combos", 999, 1499, 18, "Protection", "Silver", "/assets/home/karungali.png"],
+  ["Gold Plated Modern + Elemental Rudraksha Bracelet Combo", "Combos", "Combos", 899, 1599, 20, "Balance", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Dreamy Duo Combo with Rose Quartz and Amethyst Bands", "Combos", "Combos", 799, 1299, 16, "Love", "Gold", "/assets/home/rose-quartz.png"],
+  ["Gold Plated Essential + Elemental Rudraksha Bracelet Combo", "Combos", "Combos", 899, 1599, 22, "Peace", "Gold", "/assets/products/rudraksha-bracelet.png"],
+  ["Power Om Energy Combo of Black Onyx, Hematite and Tiger Eye Bands", "Combos", "Combos", 899, 1299, 14, "Courage", "Gold", "/assets/products/pyrite-tiger-eye.png"],
+  ["Rudraksha Gift Hamper", "Gift Hampers", "Gift Hampers", 1599, 2499, 12, "Luck", "Gold", "/assets/products/hero-spiritual-shop.png"],
+  ["Energy Stone Gift Hamper", "Gift Hampers", "Gift Hampers", 1799, 2799, 10, "Balance", "None", "/assets/products/hero-spiritual-shop.png"],
+  ["Daily Peace Bracelet Combo", "Gift Hampers", "Gift Hampers", 1399, 2199, 14, "Peace", "None", "/assets/products/hero-spiritual-shop.png"],
+  ["Wealth and Luck Bracelet Combo", "Gift Hampers", "Gift Hampers", 1499, 2399, 16, "Wealth", "None", "/assets/products/hero-spiritual-shop.png"],
+  ["Protection Essentials Combo", "Gift Hampers", "Gift Hampers", 1299, 1999, 18, "Protection", "None", "/assets/products/hero-spiritual-shop.png"]
+] as const;
+
+export const defaultHomepage: HomepageStore = {
+  hero: {
+    enabled: true,
+    autoplay: true,
+    intervalMs: 5000,
+    slides: [
+      {
+        id: "hero-rudraksha",
+        image: "/assets/banners/rudraksha.jpg",
+        heading: "Rudraksha Collection Banner",
+        subheading: "Certified rudraksha wearables crafted for modern, everyday devotion.",
+        cta: "Explore Rudraksha",
+        href: "/collections?collection=Rudraksha",
+        active: true
+      },
+      {
+        id: "hero-karungali",
+        image: "/assets/banners/karungali.jpg",
+        heading: "Karungali Collection Banner",
+        subheading: "Grounded Karungali-inspired bracelets and malas for protection styling.",
+        cta: "Shop Karungali",
+        href: "/collections?collection=Karungali",
+        active: true
+      },
+      {
+        id: "hero-energy-stones",
+        image: "/assets/banners/energy-stones.jpg",
+        heading: "Energy Stones Collection Banner",
+        subheading: "Pyrite, rose quartz, tiger eye, sphatik, and more energy stone essentials.",
+        cta: "Discover Stones",
+        href: "/collections?collection=Energy%20Stones",
+        active: true
+      },
+      {
+        id: "hero-spiritual-jewellery",
+        image: "/assets/banners/spiritual-jewellery.jpg",
+        heading: "Spiritual Jewellery Banner",
+        subheading: "Sacred jewellery pieces with premium finishes for rituals and gifting.",
+        cta: "View Jewellery",
+        href: "/collections?collection=Spiritual%20Jewellery",
+        active: true
+      }
+    ]
+  },
+  sections: [
+    { key: "announcement", title: "Announcement Bar", description: "Top black offer strip shown above navbar.", active: true, managePath: "/admin/website-settings" },
+    { key: "navbar", title: "Navbar Categories", description: "Main menu categories shown in customer header.", active: true, managePath: "/admin/product-categories" },
+    { key: "category-strip", title: "Category Strip", description: "Horizontal Rudraksha, Karungali, Pyrite image strip.", active: true, managePath: "/admin/product-categories" },
+    { key: "hero-slider", title: "Hero Slider", description: "Four homepage banner photos, text, buttons, and autoplay.", active: true, managePath: "/admin/hero-slider" },
+    { key: "latest-trending", title: "Latest & Trending", description: "Homepage product carousel and badges.", active: true, managePath: "/admin/latest-trending" },
+    { key: "shop-collections", title: "Shop Our Collections", description: "Circular category carousel and filters.", active: true, managePath: "/admin/shop-collections" },
+    { key: "shop-purpose", title: "Shop By Purpose", description: "Purpose cards like Wealth, Health, Love, Protection.", active: true, managePath: "/admin/shop-purpose" },
+    { key: "tradition-gallery", title: "Rooted In Tradition Gallery", description: "Six-image lifestyle gallery section.", active: true, managePath: "/admin/website-settings" },
+    { key: "footer", title: "Footer Content", description: "Footer links, support, policy and brand text.", active: true, managePath: "/admin/website-settings" }
+  ]
+};
+
+const defaultStore: Store = {
+  products: [
+    {
+      _id: "local-product-1",
+      title: "Gold Plated Modern Rudraksha Bracelet",
+      slug: "gold-plated-modern-rudraksha-bracelet",
+      subtitle: "Polished 5 mukhi daily-wear bracelet",
+      description: "A refined rudraksha bracelet with gold-tone separators for everyday spiritual styling.",
+      category: "Rudraksha",
+      collection: "Rudraksha",
+      price: 599,
+      compareAtPrice: 999,
+      stock: 42,
+      rating: 4.9,
+      images: ["/assets/products/rudraksha-bracelet.png"],
+      tags: ["rudraksha", "bracelet", "5 mukhi"],
+      purpose: ["Peace", "Protection", "Balance"],
+      bead: "Rudraksha",
+      mukhi: "5 - Paanch",
+      plating: "Gold",
+      audience: "Unisex",
+      benefits: ["Daily grounding", "Gift-ready"],
+      materials: ["Rudraksha-style beads", "Gold-tone alloy"],
+      sizeOptions: [
+        { label: "Small - 6.5 inch", value: "small-6-5", stock: 12 },
+        { label: "Medium - 7 inch", value: "medium-7", stock: 20 },
+        { label: "Large - 7.5 inch", value: "large-7-5", stock: 10 }
+      ],
+      addOnServices: [],
+      delivery: { minDays: 3, maxDays: 6, expressMinDays: 2, expressMaxDays: 3 },
+      careInstructions: "Keep dry and wipe gently with a soft cloth.",
+      sku: "AB-RUD-BR-001",
+      featured: true,
+      active: true,
+      createdAt: new Date().toISOString()
+    },
+    {
+      _id: "local-product-2",
+      title: "Brown Rudraksha Mala - 108+1 Beads",
+      slug: "brown-rudraksha-mala-108-1-beads",
+      subtitle: "Traditional japa mala for mantra practice",
+      description: "A full-length 108+1 bead mala crafted for mantra counting, meditation, and calm routines.",
+      category: "Rudraksha",
+      collection: "Meditation",
+      price: 599,
+      compareAtPrice: 999,
+      stock: 28,
+      rating: 4.8,
+      images: ["/assets/products/meditation-mala.png"],
+      tags: ["mala", "japa", "meditation", "rudraksha"],
+      purpose: ["Peace", "Health", "Balance"],
+      bead: "Rudraksha",
+      mukhi: "5 - Paanch",
+      plating: "None",
+      audience: "Unisex",
+      benefits: ["Meditation practice", "Mantra counting"],
+      materials: ["Rudraksha-style beads", "Cotton cord"],
+      sizeOptions: [{ label: "108+1 Beads - Standard", value: "108-standard", stock: 28 }],
+      addOnServices: [],
+      delivery: { minDays: 4, maxDays: 7, expressMinDays: 2, expressMaxDays: 4 },
+      careInstructions: "Store in the pouch after use.",
+      sku: "AB-MAL-108-001",
+      featured: true,
+      active: true,
+      createdAt: new Date().toISOString()
+    },
+    {
+      _id: "local-product-3",
+      title: "Pyrite Money Magnet Bracelet",
+      slug: "pyrite-money-magnet-bracelet",
+      subtitle: "Crystal energy bracelet",
+      description: "A polished pyrite and tiger eye style bracelet for confident everyday wear.",
+      category: "Pyrite",
+      collection: "Energy Stones",
+      price: 999,
+      compareAtPrice: 1599,
+      stock: 18,
+      rating: 4.7,
+      images: ["/assets/products/pyrite-tiger-eye.png"],
+      tags: ["pyrite", "tiger-eye", "bracelet"],
+      purpose: ["Wealth", "Balance", "Courage"],
+      bead: "Pyrite",
+      mukhi: "Special",
+      plating: "None",
+      audience: "Unisex",
+      benefits: ["Confidence styling", "Premium gifting"],
+      materials: ["Pyrite-style beads", "Tiger eye-style beads"],
+      sizeOptions: [{ label: "Medium - 7 inch", value: "medium-7", stock: 18 }],
+      addOnServices: [],
+      delivery: { minDays: 3, maxDays: 7, expressMinDays: 2, expressMaxDays: 4 },
+      careInstructions: "Avoid water and clean with a dry cloth.",
+      sku: "AB-PYR-BR-001",
+      featured: true,
+      active: true,
+      createdAt: new Date().toISOString()
+    }
+  ],
+  categories: [
+    { _id: "local-category-1", name: "Rudraksha", slug: "rudraksha", description: "Rudraksha bracelets, malas, and beads.", featured: true, active: true },
+    { _id: "local-category-2", name: "Pyrite", slug: "pyrite", description: "Energy stone wearables.", featured: true, active: true },
+    { _id: "local-category-3", name: "Energy Stones", slug: "energy-stones", description: "Crystal and gemstone products.", featured: true, active: true }
+  ],
+  coupons: [
+    { _id: "local-coupon-1", code: "FIRST10", type: "percent", value: 10, minSubtotal: 799, active: true },
+    { _id: "local-coupon-2", code: "DIVINE150", type: "flat", value: 150, minSubtotal: 1499, active: true }
+  ],
+  orders: [],
+  supportTickets: [],
+  homepage: structuredClone(defaultHomepage)
+};
+
+export async function readStore(): Promise<Store> {
+  if (cachedStore) return cachedStore;
+
+  try {
+    const raw = await fs.readFile(storePath, "utf8");
+    const store = normalizeStore(JSON.parse(raw) as Store);
+    await writeStore(store);
+    return store;
+  } catch {
+    const store = normalizeStore(structuredClone(defaultStore));
+    await writeStore(store);
+    return store;
+  }
+}
+
+function normalizeStore(store: Store): Store {
+  store.homepage = normalizeHomepage(store.homepage);
+  store.supportTickets = store.supportTickets || [];
+  const productSlugs = new Set(store.products.map((product) => product.slug));
+
+  if (store.products.length < productSeeds.length) {
+    store.products = [
+      ...store.products,
+      ...productSeeds
+        .map((seed, index) => productFromSeed(seed, index + 1))
+        .filter((product) => !productSlugs.has(product.slug))
+    ];
+  }
+
+  const categoryNames = new Set(store.categories.map((category) => category.name));
+  categorySeeds.forEach((name, index) => {
+    if (!categoryNames.has(name)) {
+      store.categories.push({
+        _id: `local-category-seed-${makeSlug(name)}`,
+        name,
+        slug: makeSlug(name),
+        description: `${name} products managed from the admin panel.`,
+        featured: index < 8,
+        active: true
+      });
+    }
+  });
+
+  return store;
+}
+
+function normalizeHomepage(homepage?: Partial<HomepageStore>): HomepageStore {
+  const source = homepage || {};
+  const savedSlides = source.hero?.slides || [];
+  const slides = defaultHomepage.hero.slides.map((defaultSlide, index) => ({
+    ...defaultSlide,
+    ...(savedSlides[index] || {}),
+    id: (savedSlides[index] || defaultSlide).id || defaultSlide.id
+  }));
+
+  const savedSections = new Map((source.sections || []).map((section) => [section.key, section]));
+  const sections = defaultHomepage.sections.map((section) => ({
+    ...section,
+    ...(savedSections.get(section.key) || {})
+  }));
+
+  return {
+    hero: {
+      enabled: source.hero?.enabled ?? defaultHomepage.hero.enabled,
+      autoplay: source.hero?.autoplay ?? defaultHomepage.hero.autoplay,
+      intervalMs: source.hero?.intervalMs ?? defaultHomepage.hero.intervalMs,
+      slides
+    },
+    sections
+  };
+}
+
+function productFromSeed(seed: (typeof productSeeds)[number], index: number) {
+  const [title, category, collection, price, compareAtPrice, stock, primaryPurpose, plating, image] = seed;
+  const slug = makeSlug(title);
+  const purpose = Array.from(new Set([primaryPurpose, "Balance", category === "Rose Quartz" ? "Love" : "Peace"]));
+  const bead = ["Rudraksha", "Karungali", "Pyrite", "Sandalwood", "Sphatik", "Tiger Eye", "Rose Quartz", "Amethyst"].includes(category)
+    ? category
+    : title.includes("Rudraksha")
+      ? "Rudraksha"
+      : "Mixed";
+
+  return {
+    _id: `local-product-seed-${slug}`,
+    title,
+    slug,
+    subtitle: `${category} ${title.toLowerCase().includes("mala") ? "mala" : "wearable"} for ${primaryPurpose.toLowerCase()} intention`,
+    description: `${title} crafted as a premium spiritual accessory for daily wear, gifting, and purpose-led routines.`,
+    category,
+    collection,
+    price,
+    compareAtPrice,
+    stock,
+    rating: Number((4.6 + (index % 4) * 0.1).toFixed(1)),
+    images: [image],
+    tags: [
+      makeSlug(category),
+      makeSlug(collection),
+      title.toLowerCase().includes("mala") ? "mala" : "bracelet",
+      makeSlug(primaryPurpose)
+    ],
+    purpose,
+    bead,
+    mukhi: title.match(/\d+ Mukhi/)?.[0] || (title.includes("Rudraksha") ? "5 - Paanch" : "Special"),
+    plating,
+    audience: index % 5 === 0 ? "Women" : index % 4 === 0 ? "Men" : "Unisex",
+    benefits: [`Supports ${primaryPurpose.toLowerCase()} intention`, "Gift-ready styling", "Everyday spiritual wear"],
+    materials: [`${bead} style beads`, plating === "None" ? "Elastic cord" : `${plating}-tone accents`],
+    sizeOptions: title.toLowerCase().includes("mala")
+      ? [{ label: "Standard", value: "standard", stock }]
+      : [
+          { label: "Small - 6.5 inch", value: "small-6-5", stock: Math.max(Math.floor(stock / 3), 1) },
+          { label: "Medium - 7 inch", value: "medium-7", stock: Math.max(Math.floor(stock / 3), 1) },
+          { label: "Large - 7.5 inch", value: "large-7-5", stock: Math.max(stock - Math.floor((stock * 2) / 3), 1) }
+        ],
+    addOnServices: [],
+    delivery: { minDays: 3, maxDays: 7, expressMinDays: 2, expressMaxDays: 4 },
+    careInstructions: "Avoid water, perfume, and harsh chemicals. Store in the pouch after use.",
+    sku: `AB-${String(index).padStart(4, "0")}`,
+    featured: index <= 16,
+    active: true,
+    createdAt: new Date().toISOString()
+  };
+}
+
+export async function writeStore(store: Store) {
+  cachedStore = store;
+  await fs.mkdir(path.dirname(storePath), { recursive: true });
+  await fs.writeFile(storePath, JSON.stringify(store, null, 2));
+}
+
+export function newId(prefix: string) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+}
+
+export function makeSlug(value: string) {
+  return slugify(value || `item-${Date.now()}`, { lower: true, strict: true });
+}
