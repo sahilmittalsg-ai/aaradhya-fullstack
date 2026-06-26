@@ -127,6 +127,21 @@ export type ApiSupportTicket = {
   createdAt?: string;
 };
 
+export type ApiShippingZone = {
+  id: string;
+  zone: string;
+  fee: number;
+  cod: boolean;
+  eta: string;
+};
+
+export type ApiSiteSettings = {
+  _id?: string;
+  key?: string;
+  freeShippingThreshold?: number;
+  shippingZones?: ApiShippingZone[];
+};
+
 export type ApiCustomer = {
   _id?: string;
   id?: string;
@@ -567,6 +582,17 @@ export async function updateAdminSupportTicket(id: string, payload: Partial<ApiS
   return request<ApiSupportTicket>(`/users/support/${id}`, {
     method: "PATCH",
     body: JSON.stringify(payload)
+  });
+}
+
+export async function getAdminSiteSettings(): Promise<ApiSiteSettings> {
+  return (await request<ApiSiteSettings | null>("/content/admin/settings")) || {};
+}
+
+export async function updateAdminSiteSettings(settings: Partial<ApiSiteSettings>): Promise<ApiSiteSettings> {
+  return request<ApiSiteSettings>("/content/admin/settings", {
+    method: "PATCH",
+    body: JSON.stringify(settings)
   });
 }
 

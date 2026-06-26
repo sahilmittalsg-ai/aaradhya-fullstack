@@ -64,6 +64,7 @@ import {
   getAdminHomepage,
   getAdminOrders,
   getAdminProducts,
+  getAdminSiteSettings,
   getAdminSupportTickets,
   updateAdminSupportTicket,
   loginAdminApi,
@@ -71,9 +72,10 @@ import {
   updateAdminCoupon,
   updateAdminHomepage,
   updateAdminOrder,
-  updateAdminProduct
+  updateAdminProduct,
+  updateAdminSiteSettings
 } from "./lib/api";
-import type { ApiCategory, ApiCoupon, ApiCustomer, ApiHomepageSettings, ApiOrder, ApiProduct, ApiSupportTicket } from "./lib/api";
+import type { ApiCategory, ApiCoupon, ApiCustomer, ApiHomepageSettings, ApiOrder, ApiProduct, ApiShippingZone, ApiSupportTicket } from "./lib/api";
 
 const navLinks = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -1712,13 +1714,115 @@ function CouponsPage() {
 }
 
 function ShippingSettingsPage() {
+  const defaultZones: ApiShippingZone[] = shippingSettings.map((setting, index) => ({
+    id: `zone-${index + 1}`,
+    ...setting
+  }));
+  const [zones, setZones] = useState<ApiShippingZone[]>(defaultZones);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(1499);
+  const [editingIndex, setEditingIndex] = useState(0);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const activeZone = zones[editingIndex] || zones[0];
+
+  useEffect(() => {
+    getAdminSiteSettings()
+      .then((settings) => {
+        if (settings.shippingZones?.length) setZones(settings.shippingZones);
+        if (settings.freeShippingThreshold !== undefined) setFreeShippingThreshold(Number(settings.freeShippingThreshold));
+      })
+      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : "Shipping settings load nahi ho payi."));
+  }, []);
+
+  function updateZone(index: number, patch: Partial<ApiShippingZone>) {
+    setZones((current) => current.map((zone, zoneIndex) => (zoneIndex === index ? { ...zone, ...patch } : zone)));
+    setMessage("");
+    setError("");
+  }
+
+  function addZone() {
+    setZones((current) => [
+      ...current,
+      {
+        id: `zone-${Date.now()}`,
+        zone: "New shipping zone",
+        fee: 0,
+        cod: true,
+        eta: "3-7 days"
+      }
+    ]);
+    setEditingIndex(zones.length);
+  }
+
+  async function saveShippingSettings(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSaving(true);
+    setMessage("");
+    setError("");
+
+    try {
+      const savedSettings = await updateAdminSiteSettings({
+        freeShippingThreshold,
+        shippingZones: zones
+      });
+      if (savedSettings.shippingZones?.length) setZones(savedSettings.shippingZones);
+      setMessage("Shipping settings saved. Manage button se rate/name/COD/ETA edit ho rahe hain.");
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Shipping settings save nahi ho payi.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
-    <SimpleGridPage
-      eyebrow="Operations"
-      title="Shipping Settings"
-      subtitle="Configure delivery fees, COD availability, and delivery timelines."
-      items={shippingSettings.map((setting) => ({ title: setting.zone, text: `Rs.${setting.fee} shipping | ${setting.eta}`, status: setting.cod ? "COD enabled" : "Prepaid only" }))}
-    />
+    <Page eyebrow="Operations" title="Shipping Settings" subtitle="Configure delivery fees, COD availability, and delivery timelines.">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {zones.map((setting, index) => (
+          <div key={setting.id || setting.zone} className={`admin-card p-5 transition ${editingIndex === index ? "ring-2 ring-[#5b6cff]" : ""}`}>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-semibold text-[#211d33]">{setting.zone}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#17172a]/60">Rs.{setting.fee} shipping | {setting.eta}</p>
+              </div>
+              <Badge value={setting.cod ? "COD enabled" : "Prepaid only"} />
+            </div>
+            <button type="button" onClick={() => setEditingIndex(index)} className="mini-button mt-5">
+              Manage
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={saveShippingSettings} className="mt-6 grid gap-6">
+        <Panel title={`Manage ${activeZone?.zone || "Shipping Zone"}`}>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <Field label="Zone Name">
+              <input className="admin-input" value={activeZone?.zone || ""} onChange={(event) => updateZone(editingIndex, { zone: event.target.value })} />
+            </Field>
+            <Field label="Shipping Rate">
+              <input className="admin-input" type="number" min={0} value={activeZone?.fee || 0} onChange={(event) => updateZone(editingIndex, { fee: Number(event.target.value) })} />
+            </Field>
+            <Field label="Delivery Timeline">
+              <input className="admin-input" value={activeZone?.eta || ""} onChange={(event) => updateZone(editingIndex, { eta: event.target.value })} placeholder="2-4 days" />
+            </Field>
+            <Field label="Free Shipping Above">
+              <input className="admin-input" type="number" min={0} value={freeShippingThreshold} onChange={(event) => setFreeShippingThreshold(Number(event.target.value))} />
+            </Field>
+            <label className="flex items-center gap-2 rounded-xl bg-[#f8faff] px-4 py-3 text-sm font-semibold">
+              <input type="checkbox" checked={Boolean(activeZone?.cod)} onChange={(event) => updateZone(editingIndex, { cod: event.target.checked })} />
+              COD enabled for this zone
+            </label>
+          </div>
+          {message && <p className="mt-5 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{message}</p>}
+          {error && <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
+          <div className="mt-5 flex flex-wrap gap-3">
+            <button className="admin-button" disabled={saving}>{saving ? "Saving..." : "Save Shipping Settings"}</button>
+            <button type="button" onClick={addZone} className="mini-button">Add Zone</button>
+          </div>
+        </Panel>
+      </form>
+    </Page>
   );
 }
 
