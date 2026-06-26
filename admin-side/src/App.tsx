@@ -372,7 +372,6 @@ function Dashboard() {
   const codOrders = dashboardOrders.filter((order) => order.paymentType === "COD");
   const prepaidOrders = dashboardOrders.filter((order) => order.paymentType === "Prepaid");
   const pendingDispatch = dashboardOrders.filter((order) => ["Pending", "Confirmed", "Packed"].includes(order.orderStatus)).length;
-  const revenue = dashboardOrders.filter((order) => order.paymentStatus === "Paid").reduce((sum, order) => sum + order.total, 0);
   const lowStock = dashboardProducts.filter((product) => product.stock <= 10).length || products.filter((product) => product.stock <= 10).length;
   const activeProducts = dashboardProducts.filter((product) => product.active !== false);
   const chartPoints = buildProfitPoints(dashboardOrders);
@@ -418,25 +417,54 @@ type ProfitPoint = {
   profit: number;
 };
 
-const analyticsBaselineOrders = initialOrders;
-const analyticsBaselineProducts = products;
+type FinancialSummary = {
+  ordersCount: number;
+  grossSales: number;
+  collectedRevenue: number;
+  pendingCod: number;
+  productCost: number;
+  shippingCost: number;
+  paymentCost: number;
+  refundLoss: number;
+  totalCost: number;
+  netProfit: number;
+  profitMargin: number;
+};
 
 function AnalyticsPage() {
-  const reportOrders = analyticsBaselineOrders;
-  const reportProducts = analyticsBaselineProducts;
-  const paidOrders = reportOrders.filter((order) => order.paymentStatus === "Paid");
-  const refundOrders = reportOrders.filter((order) => ["Refunded"].includes(order.paymentStatus) || ["Cancelled", "Returned"].includes(order.orderStatus));
-  const revenue = paidOrders.reduce((sum, order) => sum + order.total, 0);
-  const pendingCod = reportOrders.filter((order) => order.paymentType === "COD" && order.paymentStatus === "Pending").reduce((sum, order) => sum + order.total, 0);
-  const productCost = Math.round(revenue * 0.55);
-  const shippingCost = Math.round(revenue * 0.08 + reportOrders.length * 70);
-  const paymentCost = Math.round(revenue * 0.03);
-  const refundLoss = refundOrders.reduce((sum, order) => sum + order.total, 0);
-  const totalCost = productCost + shippingCost + paymentCost + refundLoss;
-  const netProfit = revenue - totalCost;
-  const profitMargin = revenue ? Math.round((netProfit / revenue) * 100) : 0;
+  const [reportOrders, setReportOrders] = useState<AdminOrder[]>(initialOrders);
+  const [reportProducts, setReportProducts] = useState<ApiProduct[]>([]);
+  const [supportCount, setSupportCount] = useState(0);
+  const [syncError, setSyncError] = useState("");
+
+  useEffect(() => {
+    refreshAnalytics(true);
+    const interval = window.setInterval(() => refreshAnalytics(true), 10_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  async function refreshAnalytics(force = false) {
+    try {
+      const [orderRows, productRows, tickets] = await Promise.all([
+        getAdminOrders(force),
+        getAdminProducts(force),
+        getAdminSupportTickets().catch(() => [])
+      ]);
+      setReportOrders(orderRows.map(adminOrderFromApi));
+      setReportProducts(productRows);
+      setSupportCount(tickets.length);
+      setSyncError("");
+    } catch (error) {
+      setSyncError(error instanceof Error ? error.message : "Could not sync live analytics.");
+    }
+  }
+
+  const summary = calculateFinancialSummary(reportOrders);
   const lowStock = reportProducts.filter((product) => product.stock <= 10).length;
   const chartPoints = buildProfitPoints(reportOrders);
+  const deliveredOrders = reportOrders.filter((order) => order.orderStatus === "Delivered").length;
+  const cancelledOrders = reportOrders.filter((order) => ["Cancelled", "Returned"].includes(order.orderStatus)).length;
+  const pendingOrders = reportOrders.filter((order) => !["Delivered", "Cancelled", "Returned"].includes(order.orderStatus)).length;
 
   return (
     <Page
@@ -444,51 +472,75 @@ function AnalyticsPage() {
       title="Profit & Loss"
       subtitle="Track company revenue flow, estimated expenses, net profit, pending COD, and loss from cancelled or returned orders."
     >
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        {syncError ? <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{syncError}</p> : <span className="text-sm font-semibold text-[#727994]">Live orders, products, payments, and support data.</span>}
+        <button type="button" onClick={() => refreshAnalytics(true)} className="admin-button">
+          Refresh Analytics
+        </button>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
-        <Metric compact label="Paid Revenue" value={formatAdminMoney(revenue)} icon={Wallet} />
-        <Metric compact label="Estimated Cost" value={formatAdminMoney(totalCost)} icon={CreditCard} />
-        <Metric compact label={netProfit >= 0 ? "Net Profit" : "Net Loss"} value={formatAdminMoney(Math.abs(netProfit))} icon={ChartLine} />
-        <Metric compact label="Pending COD" value={formatAdminMoney(pendingCod)} icon={IndianRupee} />
+        <Metric compact label="Collected Revenue" value={formatAdminMoney(summary.collectedRevenue)} icon={Wallet} />
+        <Metric compact label="Estimated Cost" value={formatAdminMoney(summary.totalCost)} icon={CreditCard} />
+        <Metric compact label={summary.netProfit >= 0 ? "Net Profit" : "Net Loss"} value={formatAdminMoney(Math.abs(summary.netProfit))} icon={ChartLine} />
+        <Metric compact label="Pending COD" value={formatAdminMoney(summary.pendingCod)} icon={IndianRupee} />
         <Metric compact label="Low Stock Risk" value={lowStock} icon={Boxes} />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <Panel title="Profit / Loss Line Chart">
           <ProfitLineChart points={chartPoints} />
-          <div className="mt-5 grid gap-3 text-sm text-[#17172a]/65 sm:grid-cols-3">
+          <div className="mt-5 grid gap-3 text-sm text-[#17172a]/65 sm:grid-cols-4">
             <div className="rounded-xl bg-[#fff7ec] p-4">
               <p className="font-semibold text-[#211d33]">Profit margin</p>
-              <p className={`mt-2 text-2xl font-bold ${netProfit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{profitMargin}%</p>
+              <p className={`mt-2 text-2xl font-bold ${summary.netProfit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{summary.profitMargin}%</p>
             </div>
             <div className="rounded-xl bg-[#fff7ec] p-4">
               <p className="font-semibold text-[#211d33]">Orders counted</p>
-              <p className="mt-2 text-2xl font-bold text-[#211d33]">{reportOrders.length}</p>
+              <p className="mt-2 text-2xl font-bold text-[#211d33]">{summary.ordersCount}</p>
+            </div>
+            <div className="rounded-xl bg-[#fff7ec] p-4">
+              <p className="font-semibold text-[#211d33]">Gross sales</p>
+              <p className="mt-2 text-2xl font-bold text-[#211d33]">{formatAdminMoney(summary.grossSales)}</p>
             </div>
             <div className="rounded-xl bg-[#fff7ec] p-4">
               <p className="font-semibold text-[#211d33]">Status</p>
-              <p className={`mt-2 text-2xl font-bold ${netProfit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{netProfit >= 0 ? "Profit" : "Loss"}</p>
+              <p className={`mt-2 text-2xl font-bold ${summary.netProfit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{summary.netProfit >= 0 ? "Profit" : "Loss"}</p>
             </div>
           </div>
         </Panel>
 
         <Panel title="Company Money Flow Chart">
           <div className="grid gap-3">
-            <FlowNode label="Customer Orders" value={`${reportOrders.length} orders`} tone="dark" />
+            <FlowNode label="Customer Orders" value={`${summary.ordersCount} orders`} tone="dark" />
             <FlowConnector />
-            <FlowNode label="Paid Revenue" value={formatAdminMoney(revenue)} tone="green" />
+            <FlowNode label="Collected Revenue" value={formatAdminMoney(summary.collectedRevenue)} tone="green" />
             <FlowConnector />
             <div className="grid gap-3 sm:grid-cols-2">
-              <FlowNode label="Product Cost" value={formatAdminMoney(productCost)} tone="amber" />
-              <FlowNode label="Shipping + Payment" value={formatAdminMoney(shippingCost + paymentCost)} tone="amber" />
+              <FlowNode label="Product Cost" value={formatAdminMoney(summary.productCost)} tone="amber" />
+              <FlowNode label="Shipping + Payment" value={formatAdminMoney(summary.shippingCost + summary.paymentCost)} tone="amber" />
             </div>
             <FlowConnector />
-            <FlowNode label="Returns / Cancel Loss" value={formatAdminMoney(refundLoss)} tone="red" />
+            <FlowNode label="Returns / Cancel Loss" value={formatAdminMoney(summary.refundLoss)} tone="red" />
             <FlowConnector />
-            <FlowNode label={netProfit >= 0 ? "Final Net Profit" : "Final Net Loss"} value={formatAdminMoney(Math.abs(netProfit))} tone={netProfit >= 0 ? "green" : "red"} />
+            <FlowNode label={summary.netProfit >= 0 ? "Final Net Profit" : "Final Net Loss"} value={formatAdminMoney(Math.abs(summary.netProfit))} tone={summary.netProfit >= 0 ? "green" : "red"} />
           </div>
           <p className="mt-5 rounded-xl bg-[#f6e8ce] px-4 py-3 text-xs font-semibold leading-5 text-[#211d33]/70">
             Product, shipping, and payment costs are estimated from live order totals. Add purchase cost fields later for exact accounting.
           </p>
+        </Panel>
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
+        <Panel title="Order Status Analytics">
+          <DashboardDonut delivered={deliveredOrders} pending={pendingOrders} cancelled={cancelledOrders} total={Math.max(reportOrders.length, 1)} />
+        </Panel>
+        <Panel title="Operations Snapshot">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <FlowNode label="Support Requests" value={`${supportCount}`} tone="dark" />
+            <FlowNode label="Active Products" value={`${reportProducts.filter((product) => product.active !== false).length}`} tone="green" />
+            <FlowNode label="Low Stock" value={`${lowStock}`} tone={lowStock ? "red" : "green"} />
+          </div>
         </Panel>
       </div>
     </Page>
@@ -496,9 +548,12 @@ function AnalyticsPage() {
 }
 
 function ProfitLineChart({ points }: { points: ProfitPoint[] }) {
-  const maxValue = Math.max(1, ...points.flatMap((point) => [point.revenue, Math.max(0, point.profit)]));
-  const revenuePath = buildSvgPath(points, "revenue", maxValue);
-  const profitPath = buildSvgPath(points, "profit", maxValue);
+  const values = points.flatMap((point) => [point.revenue, point.profit]);
+  const maxValue = Math.max(1, ...values);
+  const minValue = Math.min(0, ...values);
+  const revenuePath = buildSvgPath(points, "revenue", minValue, maxValue);
+  const profitPath = buildSvgPath(points, "profit", minValue, maxValue);
+  const zeroY = chartY(0, minValue, maxValue);
 
   return (
     <div className="rounded-2xl bg-white">
@@ -510,6 +565,7 @@ function ProfitLineChart({ points }: { points: ProfitPoint[] }) {
         {[0, 1, 2, 3].map((line) => (
           <line key={line} x1="44" x2="690" y1={42 + line * 58} y2={42 + line * 58} stroke="#dfe4fb" strokeWidth="1" />
         ))}
+        <line x1="44" x2="690" y1={zeroY} y2={zeroY} stroke="#9aa0b8" strokeDasharray="6 6" strokeWidth="1.5" />
         <defs>
           <linearGradient id="salesLine" x1="0" x2="1">
             <stop offset="0%" stopColor="#58b8ff" />
@@ -524,8 +580,8 @@ function ProfitLineChart({ points }: { points: ProfitPoint[] }) {
         <path d={profitPath} fill="none" stroke="url(#profitLine)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((point, index) => {
           const x = chartX(index, points.length);
-          const revenueY = chartY(point.revenue, maxValue);
-          const profitY = chartY(point.profit, maxValue);
+          const revenueY = chartY(point.revenue, minValue, maxValue);
+          const profitY = chartY(point.profit, minValue, maxValue);
           return (
             <g key={point.label}>
               <circle cx={x} cy={revenueY} r="6" fill="#fff" stroke="#58b8ff" strokeWidth="3" />
@@ -627,6 +683,42 @@ function FlowConnector() {
   );
 }
 
+function calculateFinancialSummary(orders: AdminOrder[]): FinancialSummary {
+  const validOrders = orders.filter((order) => !["Cancelled", "Returned"].includes(order.orderStatus));
+  const lossOrders = orders.filter((order) => order.paymentStatus === "Refunded" || ["Cancelled", "Returned"].includes(order.orderStatus));
+  const collectedRevenue = validOrders.reduce((sum, order) => sum + recognizedRevenue(order), 0);
+  const grossSales = validOrders.reduce((sum, order) => sum + order.total, 0);
+  const pendingCod = validOrders
+    .filter((order) => order.paymentType === "COD" && order.paymentStatus === "Pending" && order.orderStatus !== "Delivered")
+    .reduce((sum, order) => sum + order.total, 0);
+  const productCost = Math.round(collectedRevenue * 0.55);
+  const shippingCost = Math.round(validOrders.length * 70 + collectedRevenue * 0.05);
+  const paymentCost = Math.round(validOrders.filter((order) => order.paymentType === "Prepaid").reduce((sum, order) => sum + recognizedRevenue(order), 0) * 0.03);
+  const refundLoss = lossOrders.reduce((sum, order) => sum + order.total, 0);
+  const totalCost = productCost + shippingCost + paymentCost + refundLoss;
+  const netProfit = collectedRevenue - totalCost;
+
+  return {
+    ordersCount: orders.length,
+    grossSales,
+    collectedRevenue,
+    pendingCod,
+    productCost,
+    shippingCost,
+    paymentCost,
+    refundLoss,
+    totalCost,
+    netProfit,
+    profitMargin: collectedRevenue ? Math.round((netProfit / collectedRevenue) * 100) : 0
+  };
+}
+
+function recognizedRevenue(order: AdminOrder) {
+  if (order.paymentStatus === "Paid") return order.total;
+  if (order.paymentType === "COD" && order.orderStatus === "Delivered" && order.paymentStatus !== "Failed") return order.total;
+  return 0;
+}
+
 function buildProfitPoints(orders: AdminOrder[]) {
   const today = new Date();
   return Array.from({ length: 7 }, (_, index) => {
@@ -634,24 +726,20 @@ function buildProfitPoints(orders: AdminOrder[]) {
     date.setDate(today.getDate() - (6 - index));
     const key = dateKey(date);
     const dayOrders = orders.filter((order) => dateKey(parseAdminDate(order.createdAt)) === key);
-    const dayRevenue = dayOrders.filter((order) => order.paymentStatus === "Paid").reduce((sum, order) => sum + order.total, 0);
-    const dayLoss = dayOrders
-      .filter((order) => order.paymentStatus === "Refunded" || order.orderStatus === "Cancelled" || order.orderStatus === "Returned")
-      .reduce((sum, order) => sum + order.total, 0);
-    const dayCost = Math.round(dayRevenue * 0.66 + dayOrders.length * 70 + dayLoss);
+    const summary = calculateFinancialSummary(dayOrders);
     return {
       label: date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
-      revenue: dayRevenue,
-      profit: dayRevenue - dayCost
+      revenue: summary.collectedRevenue,
+      profit: summary.netProfit
     };
   });
 }
 
-function buildSvgPath(points: ProfitPoint[], key: "revenue" | "profit", maxValue: number) {
+function buildSvgPath(points: ProfitPoint[], key: "revenue" | "profit", minValue: number, maxValue: number) {
   return points
     .map((point, index) => {
       const command = index === 0 ? "M" : "L";
-      return `${command} ${chartX(index, points.length)} ${chartY(point[key], maxValue)}`;
+      return `${command} ${chartX(index, points.length)} ${chartY(point[key], minValue, maxValue)}`;
     })
     .join(" ");
 }
@@ -660,9 +748,9 @@ function chartX(index: number, count: number) {
   return 54 + (index * 626) / Math.max(1, count - 1);
 }
 
-function chartY(value: number, maxValue: number) {
-  const clamped = Math.max(0, value);
-  return 226 - (clamped / maxValue) * 184;
+function chartY(value: number, minValue: number, maxValue: number) {
+  const range = Math.max(1, maxValue - minValue);
+  return 226 - ((value - minValue) / range) * 184;
 }
 
 function parseAdminDate(value: string) {
