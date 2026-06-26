@@ -1,5 +1,5 @@
-import { Grid2X2, List, SlidersHorizontal, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Grid2X2, List, Search, SlidersHorizontal, X } from "lucide-react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ProductCard } from "../../components/ProductCard";
 import { useLiveProducts } from "../../hooks/useLiveProducts";
@@ -22,9 +22,11 @@ export function Collections() {
   const [plating, setPlating] = useState("All");
   const [audience, setAudience] = useState("All");
   const [priceBand, setPriceBand] = useState("all");
+  const [searchText, setSearchText] = useState("");
   const [sort, setSort] = useState("featured");
   const [view, setView] = useState<"grid" | "list">("grid");
   const active = params.get("collection") || "All";
+  const searchParam = (params.get("search") || "").trim();
   const purposeParam = params.get("purpose") || "All";
   const beadParam = params.get("bead") || "All";
   const mukhiParam = params.get("mukhi") || "All";
@@ -39,7 +41,8 @@ export function Collections() {
     setPlating(platingParam);
     setAudience(audienceParam);
     setPriceBand(priceParam);
-  }, [audienceParam, beadParam, mukhiParam, platingParam, priceParam, purposeParam]);
+    setSearchText(searchParam);
+  }, [audienceParam, beadParam, mukhiParam, platingParam, priceParam, purposeParam, searchParam]);
 
   const purposeOptions = useMemo(() => uniqueOptions(products.flatMap((product) => product.purpose || [])), [products]);
   const beadOptions = useMemo(() => uniqueOptions(products.map((product) => product.bead)), [products]);
@@ -61,7 +64,8 @@ export function Collections() {
       const matchesMukhi = mukhi === "All" || product.mukhi === mukhi;
       const matchesPlating = plating === "All" || product.plating === plating;
       const matchesAudience = audience === "All" || product.audience === audience;
-      return matchesCollection && matchesPurpose && matchesBead && matchesMukhi && matchesPlating && matchesAudience && selectedBand.test(product.price);
+      const matchesSearch = !searchParam || productSearchText(product).includes(searchParam.toLowerCase());
+      return matchesCollection && matchesPurpose && matchesBead && matchesMukhi && matchesPlating && matchesAudience && matchesSearch && selectedBand.test(product.price);
     });
 
     return [...result].sort((a, b) => {
@@ -71,10 +75,10 @@ export function Collections() {
       if (sort === "name") return a.title.localeCompare(b.title);
       return Number(b.featured) - Number(a.featured) || b.rating - a.rating;
     });
-  }, [active, audience, bead, mukhi, plating, priceBand, products, purpose, sort]);
+  }, [active, audience, bead, mukhi, plating, priceBand, products, purpose, searchParam, sort]);
 
   const hasFilters =
-    purpose !== "All" || bead !== "All" || mukhi !== "All" || plating !== "All" || audience !== "All" || priceBand !== "all";
+    Boolean(searchParam) || purpose !== "All" || bead !== "All" || mukhi !== "All" || plating !== "All" || audience !== "All" || priceBand !== "all";
 
   function clearFilters() {
     setPurpose("All");
@@ -83,14 +87,23 @@ export function Collections() {
     setPlating("All");
     setAudience("All");
     setPriceBand("all");
+    setSearchText("");
     const nextParams = new URLSearchParams(params);
-    ["purpose", "bead", "mukhi", "plating", "audience", "price"].forEach((key) => nextParams.delete(key));
+    ["search", "purpose", "bead", "mukhi", "plating", "audience", "price"].forEach((key) => nextParams.delete(key));
     setParams(nextParams);
   }
 
   function setFilterParam(key: string, value: string, emptyValue = "All") {
     const nextParams = new URLSearchParams(params);
     value === emptyValue ? nextParams.delete(key) : nextParams.set(key, value);
+    setParams(nextParams);
+  }
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const nextParams = new URLSearchParams(params);
+    const query = searchText.trim();
+    query ? nextParams.set("search", query) : nextParams.delete("search");
     setParams(nextParams);
   }
 
@@ -111,6 +124,11 @@ export function Collections() {
             {filtered.length} of {products.length} items
           </div>
         </div>
+        {searchParam && (
+          <p className="mt-5 rounded-md bg-white/70 px-4 py-3 text-sm font-bold text-ink/65">
+            Search results for "{searchParam}"
+          </p>
+        )}
       </div>
 
       <div className="my-8 flex flex-wrap gap-2">
@@ -178,10 +196,38 @@ export function Collections() {
             <div>
               <p className="font-heading text-lg font-semibold">{active === "All" ? "All products" : active}</p>
               <p className="text-sm text-ink/55">
-                {hasFilters ? "Filtered by selected spiritual details" : "Showing featured and latest products"}
+                {searchParam ? "Showing products matching your search" : hasFilters ? "Filtered by selected spiritual details" : "Showing featured and latest products"}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
+              <form onSubmit={submitSearch} className="flex min-w-0 overflow-hidden rounded-md border border-[#dedbd5] bg-white">
+                <label className="relative min-w-0 flex-1">
+                  <span className="sr-only">Search products</span>
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/45" size={16} />
+                  <input
+                    className="w-full min-w-48 px-9 py-2 text-sm outline-none"
+                    value={searchText}
+                    onChange={(event) => setSearchText(event.target.value)}
+                    placeholder="Search products"
+                  />
+                </label>
+                {searchText && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchText("");
+                      const nextParams = new URLSearchParams(params);
+                      nextParams.delete("search");
+                      setParams(nextParams);
+                    }}
+                    className="px-2 text-ink/45 hover:text-ink"
+                    aria-label="Clear search"
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+                <button className="bg-ink px-4 text-sm font-black text-white">Go</button>
+              </form>
               <select value={sort} onChange={(event) => setSort(event.target.value)} className="input min-w-44 py-2">
                 <option value="featured">Featured first</option>
                 <option value="price-low">Price: low to high</option>
@@ -209,7 +255,7 @@ export function Collections() {
           {filtered.length === 0 ? (
             <div className="rounded-lg border border-rudra/10 bg-white p-8 text-center">
               <h2 className="text-2xl font-semibold">No products found</h2>
-              <p className="mt-2 text-ink/55">Try removing one filter or choose another collection.</p>
+              <p className="mt-2 text-ink/55">Try another search, remove one filter, or choose another collection.</p>
               <button onClick={clearFilters} className="btn-primary mt-5">
                 Reset filters
               </button>
@@ -305,6 +351,27 @@ function FilterSelect({
 
 function uniqueOptions(values: Array<string | undefined>) {
   return Array.from(new Set(values.filter(Boolean) as string[])).sort((a, b) => a.localeCompare(b));
+}
+
+function productSearchText(product: Product) {
+  return [
+    product.title,
+    product.subtitle,
+    product.description,
+    product.category,
+    product.collection,
+    product.bead,
+    product.mukhi,
+    product.plating,
+    product.audience,
+    ...(product.tags || []),
+    ...(product.purpose || []),
+    ...(product.benefits || []),
+    ...(product.materials || [])
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 }
 
 function withAll(options: string[]) {

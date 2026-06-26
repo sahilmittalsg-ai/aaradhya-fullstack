@@ -1,6 +1,6 @@
 import { ChevronDown, Menu, Search, ShoppingBag, Sparkles, UserRound, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 const preferredNavOrder = ["Rudraksha", "Energy Stones", "Karungali", "Combos", "Spiritual Jewellery", "Gift Hampers"];
@@ -21,9 +21,21 @@ const announcements = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { items, openCart } = useCart();
+  const navigate = useNavigate();
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const nav = useMemo(() => buildNav(), []);
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const query = searchTerm.trim();
+    if (!query) return;
+    setOpen(false);
+    setSearchOpen(false);
+    navigate(`/collections?search=${encodeURIComponent(query)}`);
+  }
 
   return (
     <header className="sticky top-0 z-40 bg-[#fbf2e3] text-[#17172a] shadow-sm">
@@ -45,8 +57,13 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 xl:flex">
-          <button className="rounded-full p-2.5 hover:bg-white/70" aria-label="Search">
-            <Search size={20} />
+          <button
+            type="button"
+            className="rounded-full p-2.5 hover:bg-white/70"
+            aria-label="Search"
+            onClick={() => setSearchOpen((value) => !value)}
+          >
+            {searchOpen ? <X size={20} /> : <Search size={20} />}
           </button>
           <Link to="/account" className="rounded-full p-2.5 hover:bg-white/70" aria-label="Account">
             <UserRound size={20} />
@@ -72,6 +89,37 @@ export function Header() {
         </button>
       </div>
 
+      {searchOpen && (
+        <div className="border-t border-[#211d33]/10 bg-[#fbf2e3] px-4 py-4">
+          <form onSubmit={submitSearch} className="container-pad flex flex-col gap-3 p-0 sm:flex-row">
+            <label className="relative min-w-0 flex-1">
+              <span className="sr-only">Search products</span>
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/45" size={18} />
+              <input
+                autoFocus
+                className="w-full rounded-full border border-[#211d33]/15 bg-white px-12 py-3 text-sm font-semibold outline-none transition focus:border-rudra focus:ring-2 focus:ring-rudra/10"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search products, categories, purpose..."
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-ink/50 hover:bg-sandal hover:text-ink"
+                  aria-label="Clear search"
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </label>
+            <button className="rounded-full bg-[#211d33] px-6 py-3 text-sm font-black text-white">
+              Search
+            </button>
+          </form>
+        </div>
+      )}
+
       {open && (
         <div className="border-t border-[#211d33]/10 bg-[#fbf2e3] px-4 pb-5 xl:hidden">
           <nav className="grid gap-1 text-sm font-medium">
@@ -93,7 +141,13 @@ export function Header() {
                 key={index}
                 className="rounded-md bg-white/70 p-3"
                 aria-label="Header action"
-                onClick={index === 3 ? () => { setOpen(false); openCart(); } : undefined}
+                onClick={
+                  index === 0
+                    ? () => setSearchOpen((value) => !value)
+                    : index === 3
+                      ? () => { setOpen(false); openCart(); }
+                      : undefined
+                }
               >
                 <Icon size={18} className="mx-auto" />
               </button>
