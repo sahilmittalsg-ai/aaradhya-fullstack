@@ -30,6 +30,15 @@ export function AdminOrders() {
                 <td className="px-4 py-4 font-black">{order.orderNumber}</td>
                 <td className="px-4 py-4">
                   <p className="font-bold">{order.customer.name}</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-sandal px-3 py-1 text-xs font-black text-rudra">
+                      {order.customerSummary?.segment || "New Customer"}
+                    </span>
+                    <span className="text-xs font-bold text-ink/45">
+                      {order.customerSummary?.orders || 1} orders
+                      {order.customerSummary?.spent ? ` | Rs.${order.customerSummary.spent}` : ""}
+                    </span>
+                  </div>
                   <p className="text-xs text-ink/50">{order.customer.email}</p>
                 </td>
                 <td className="px-4 py-4">{order.items.length}</td>

@@ -19,6 +19,10 @@ export async function updateHomepage(req: Request, res: Response) {
   store.homepage = {
     ...store.homepage,
     ...req.body,
+    settings: {
+      ...store.homepage.settings,
+      ...(req.body.settings || {})
+    },
     hero: {
       ...store.homepage.hero,
       ...(req.body.hero || {}),

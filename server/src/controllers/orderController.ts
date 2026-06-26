@@ -7,6 +7,7 @@ import { Order } from "../models/Order.js";
 import { PaymentMethod } from "../models/PaymentMethod.js";
 import { Product } from "../models/Product.js";
 import { User } from "../models/User.js";
+import { addCustomerSummariesToOrders } from "../utils/customerSegments.js";
 
 const fallbackPaymentMethods = [
   { code: "cod", type: "cod", provider: "manual", fee: 0 },
@@ -170,11 +171,11 @@ export async function createOrder(req: AuthRequest, res: Response) {
 export async function listOrders(_req: AuthRequest, res: Response) {
   if (!isDbConnected()) {
     const store = await readStore();
-    return res.json(store.orders);
+    return res.json(addCustomerSummariesToOrders(store.orders));
   }
 
   const orders = await Order.find().sort({ createdAt: -1 }).populate("user", "name email");
-  return res.json(orders);
+  return res.json(addCustomerSummariesToOrders(orders));
 }
 
 export async function trackOrder(req: AuthRequest, res: Response) {

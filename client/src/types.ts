@@ -72,6 +72,14 @@ export type Order = {
     email: string;
     phone: string;
   };
+  customerSummary?: {
+    id?: string;
+    _id?: string;
+    orders?: number;
+    spent?: number;
+    productCount?: number;
+    segment?: string;
+  };
   status: "placed" | "confirmed" | "packed" | "shipped" | "delivered" | "cancelled";
   paymentStatus: "pending" | "paid" | "failed";
   mrpTotal?: number;

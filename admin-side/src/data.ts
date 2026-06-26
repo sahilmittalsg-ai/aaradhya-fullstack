@@ -34,6 +34,10 @@ export type AdminOrder = {
   adminNotes: string;
   provider?: "Razorpay" | "UPI" | "Wallet" | "Cashfree";
   walletTransactionId?: string;
+  customerSegment?: string;
+  customerOrderCount?: number;
+  customerSpent?: number;
+  customerProductCount?: number;
   createdAt: string;
 };
 

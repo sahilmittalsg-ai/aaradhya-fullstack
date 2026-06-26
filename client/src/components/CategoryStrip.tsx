@@ -1,5 +1,6 @@
 type CategoryOption = {
   name: string;
+  value?: string;
   image: string;
 };
 
@@ -12,19 +13,20 @@ export function CategoryStrip({
   onSelect: (category: string) => void;
   categories: CategoryOption[];
 }) {
-  const options = [{ name: "All", image: "/assets/categories/rudraksha.png" }, ...categories];
+  const options = [{ name: "All", value: "All", image: "/assets/categories/rudraksha.png" }, ...categories];
 
   return (
     <section className="w-full border-y border-[#211d33]/10 bg-[#f6e8ce]">
       <div className="w-full overflow-x-auto">
         <div className="flex min-w-max items-center gap-10 px-5 py-4 sm:gap-16 sm:px-8 lg:min-w-full lg:justify-between lg:gap-6 lg:px-10 xl:px-16">
           {options.map((category) => {
-            const active = selectedCategory === category.name;
+            const value = category.value || category.name;
+            const active = selectedCategory === value;
 
             return (
               <button
-                key={category.name}
-                onClick={() => onSelect(category.name)}
+                key={value}
+                onClick={() => onSelect(value)}
                 className={`group flex h-[124px] w-[112px] shrink-0 flex-col items-center justify-center rounded-lg px-3 text-center transition ${
                   active ? "bg-white/80 shadow-sm" : "hover:bg-white/35"
                 }`}

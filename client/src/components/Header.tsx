@@ -2,25 +2,11 @@ import { ChevronDown, Menu, Search, ShoppingBag, Sparkles, UserRound, X } from "
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
-const preferredNavOrder = ["Rudraksha", "Energy Stones", "Karungali", "Combos", "Spiritual Jewellery", "Gift Hampers"];
-const searchPlaceholders = ["Search for Rudraksha", "Search for Karungali", "Search for Pyrite"];
-const announcements = [
-  {
-    text: "100% Cashback available upto Rs.500",
-    href: "/pages/cashback-policy"
-  },
-  {
-    text: "Free delivery on orders over Rs.299",
-    href: "/collections"
-  },
-  {
-    text: "Har Ghar Rudraksha - Claim Free 5 Mukhi",
-    href: collectionHref("Rudraksha")
-  }
-];
+import { fallbackHomepage, getHomepage } from "../lib/api";
+import type { HomepageSettings } from "../lib/api";
 
 export function Header() {
+  const [settings, setSettings] = useState<HomepageSettings>(fallbackHomepage.settings);
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,8 +15,13 @@ export function Header() {
   const { items, openCart } = useCart();
   const navigate = useNavigate();
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
-  const nav = useMemo(() => buildNav(), []);
+  const nav = useMemo(() => buildNav(settings), [settings]);
+  const searchPlaceholders = settings.searchPlaceholders.length ? settings.searchPlaceholders : fallbackHomepage.settings.searchPlaceholders;
   const searchPlaceholder = searchPlaceholders[placeholderIndex];
+
+  useEffect(() => {
+    getHomepage().then((homepage) => setSettings(homepage.settings)).catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     if (!searchOpen || searchTerm) return;
@@ -39,7 +30,7 @@ export function Header() {
     }, 2400);
 
     return () => window.clearInterval(interval);
-  }, [searchOpen, searchTerm]);
+  }, [searchOpen, searchTerm, searchPlaceholders.length]);
 
   useEffect(() => {
     if (searchOpen) searchInputRef.current?.focus();
@@ -56,16 +47,17 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-[#fbf2e3] text-[#17172a] shadow-sm">
-      <AnnouncementBar />
+      <AnnouncementBar announcements={settings.announcements} />
 
       <div className="mx-auto flex h-[92px] w-full max-w-[1680px] items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex shrink-0 items-center gap-3" aria-label="Aaradhya Beads home">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-xl font-black tracking-tight text-[#f6e8ce] shadow-sm">
+        <Link to="/" className="flex shrink-0 items-center gap-3" aria-label={`${settings.brandName} home`}>
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-[0px] font-black tracking-tight text-transparent shadow-sm">
             जपं
+            <span className="text-xl text-[#f6e8ce]">{settings.logoText}</span>
           </span>
           <span className="hidden leading-tight sm:block">
-            <span className="block font-heading text-2xl font-black text-[#211d33]">Aaradhya</span>
-            <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8d4b25]">Beads</span>
+            <span className="block font-heading text-2xl font-black text-[#211d33]">{settings.brandName}</span>
+            <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8d4b25]">{settings.brandTagline}</span>
           </span>
         </Link>
 
@@ -102,7 +94,7 @@ export function Header() {
             )}
           </button>
           <Link to="/support" className="rounded-full bg-[#211d33] px-5 py-3 text-sm font-semibold text-white">
-            Chat with Sevak
+            {settings.supportCta}
           </Link>
         </div>
 
@@ -205,7 +197,7 @@ export function Header() {
             ))}
           </div>
           <Link to="/support" onClick={() => setOpen(false)} className="mt-3 flex justify-center rounded-full bg-[#211d33] px-5 py-3 text-sm font-semibold text-white">
-            Chat with Sevak
+            {settings.supportCta}
           </Link>
         </div>
       )}
@@ -213,22 +205,24 @@ export function Header() {
   );
 }
 
-function AnnouncementBar() {
+function AnnouncementBar({ announcements }: { announcements: HomepageSettings["announcements"] }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const activeAnnouncements = announcements.filter((item) => item.active);
+  const visibleAnnouncements = activeAnnouncements.length ? activeAnnouncements : fallbackHomepage.settings.announcements;
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % announcements.length);
+      setActiveIndex((current) => (current + 1) % visibleAnnouncements.length);
     }, 7000);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [visibleAnnouncements.length]);
 
   return (
     <div className="bg-black text-white">
       <div className="container-pad flex h-[38px] items-center justify-center md:justify-between">
         <div className="relative flex h-full min-w-0 flex-1 items-center justify-center overflow-hidden md:justify-start">
-          {announcements.map((item, index) => (
+          {visibleAnnouncements.map((item, index) => (
             <Link
               key={item.text}
               to={item.href}
@@ -251,18 +245,7 @@ function AnnouncementBar() {
   );
 }
 
-function buildNav() {
-  return [
-    ...preferredNavOrder.map((name) => ({
-      label: name,
-      href: collectionHref(name),
-      dropdown: ["Rudraksha", "Energy Stones", "Combos", "Spiritual Jewellery", "Gift Hampers"].includes(name)
-    })),
-    { label: "Bulk / Wholesale", href: "/pages/bulk-wholesale", dropdown: false },
-    { label: "Support", href: "/support", dropdown: true }
-  ];
-}
-
-function collectionHref(name: string) {
-  return `/collections?collection=${encodeURIComponent(name)}`;
+function buildNav(settings: HomepageSettings) {
+  const items = settings.navItems.filter((item) => item.active);
+  return items.length ? items : fallbackHomepage.settings.navItems.filter((item) => item.active);
 }

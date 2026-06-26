@@ -52,6 +52,7 @@ export type HomepageTraditionGalleryItem = {
 };
 
 export type HomepageContent = {
+  settings: HomepageSettings;
   hero: {
     enabled: boolean;
     autoplay: boolean;
@@ -71,7 +72,77 @@ export type HomepageContent = {
   };
 };
 
+export type HomepageSettings = {
+  brandName: string;
+  brandTagline: string;
+  logoText: string;
+  footerDescription: string;
+  supportCta: string;
+  searchPlaceholders: string[];
+  announcements: Array<{ text: string; href: string; active: boolean }>;
+  navItems: Array<{ label: string; href: string; dropdown: boolean; active: boolean }>;
+  categoryStrip: Array<{ name: string; value: string; image: string; active: boolean }>;
+  collectionCircles: Array<{ name: string; value: string; href: string; image: string; active: boolean }>;
+  purposeCards: Array<{ name: string; value: string; image: string; active: boolean }>;
+};
+
 export const fallbackHomepage: HomepageContent = {
+  settings: {
+    brandName: "Aaradhya",
+    brandTagline: "Beads",
+    logoText: "Jap",
+    footerDescription: "A complete ecommerce build for spiritual bracelets, malas, crystals, orders, and admin operations.",
+    supportCta: "Chat with Sevak",
+    searchPlaceholders: ["Search for Rudraksha", "Search for Karungali", "Search for Pyrite"],
+    announcements: [
+      { text: "100% Cashback available upto Rs.500", href: "/pages/cashback-policy", active: true },
+      { text: "Free delivery on orders over Rs.299", href: "/collections", active: true },
+      { text: "Har Ghar Rudraksha - Claim Free 5 Mukhi", href: "/collections?collection=Rudraksha", active: true }
+    ],
+    navItems: [
+      { label: "Rudraksha", href: "/collections?collection=Rudraksha", dropdown: true, active: true },
+      { label: "Energy Stones", href: "/collections?collection=Energy%20Stones", dropdown: true, active: true },
+      { label: "Karungali", href: "/collections?collection=Karungali", dropdown: false, active: true },
+      { label: "Combos", href: "/collections?collection=Combos", dropdown: true, active: true },
+      { label: "Spiritual Jewellery", href: "/collections?collection=Spiritual%20Jewellery", dropdown: true, active: true },
+      { label: "Gift Hampers", href: "/collections?collection=Gift%20Hampers", dropdown: true, active: true },
+      { label: "Bulk / Wholesale", href: "/pages/bulk-wholesale", dropdown: false, active: true },
+      { label: "Support", href: "/support", dropdown: true, active: true }
+    ],
+    categoryStrip: [
+      { name: "Rudraksha", value: "Rudraksha", image: "/assets/categories/rudraksha.png", active: true },
+      { name: "Karungali", value: "Karungali", image: "/assets/categories/karungali.png", active: true },
+      { name: "Pyrite", value: "Pyrite", image: "/assets/categories/pyrite.png", active: true },
+      { name: "Sandalwood", value: "Sandalwood", image: "/assets/categories/sandalwood.png", active: true },
+      { name: "Sphatik", value: "Sphatik", image: "/assets/categories/sphatik.png", active: true },
+      { name: "Tiger Eye", value: "Tiger Eye", image: "/assets/categories/tiger-eye.png", active: true },
+      { name: "Rose Quartz", value: "Rose Quartz", image: "/assets/categories/rose-quartz.png", active: true },
+      { name: "Amethyst", value: "Amethyst", image: "/assets/categories/amethyst.png", active: true },
+      { name: "Combos", value: "Combos", image: "/assets/products/hero-spiritual-shop.png", active: true },
+      { name: "Gift Hampers", value: "Gift Hampers", image: "/assets/categories/gift-hampers.png", active: true }
+    ],
+    collectionCircles: [
+      { name: "Rudraksha Bracelets", value: "Rudraksha Bracelets", href: "/collections?collection=Rudraksha%20Bracelets", image: "/assets/collections/rudraksha-bracelets.jpg", active: true },
+      { name: "Rudraksha Malas", value: "Rudraksha Malas", href: "/collections?collection=Rudraksha%20Malas", image: "/assets/collections/rudraksha-malas.jpg", active: true },
+      { name: "Nepali/Indian Rudraksha", value: "Rudraksha", href: "/collections?collection=Rudraksha", image: "/assets/collections/nepali-indian-rudraksha.jpg", active: true },
+      { name: "Spiritual Jewellery", value: "Spiritual Jewellery", href: "/collections?collection=Spiritual%20Jewellery", image: "/assets/collections/spiritual-jewellery.jpg", active: true },
+      { name: "Karungali Wearables", value: "Karungali", href: "/collections?collection=Karungali", image: "/assets/collections/karungali-wearables.jpg", active: true },
+      { name: "Energy Stones", value: "Energy Stones", href: "/collections?collection=Energy%20Stones", image: "/assets/collections/energy-stones.jpg", active: true },
+      { name: "Pyrite Wearables", value: "Pyrite", href: "/collections?bead=Pyrite", image: "/assets/collections/pyrite-wearables.jpg", active: true },
+      { name: "Combo Deals", value: "Combos", href: "/collections?collection=Combos", image: "/assets/products/hero-spiritual-shop.png", active: true },
+      { name: "Gift Hampers", value: "Gift Hampers", href: "/collections?collection=Gift%20Hampers", image: "/assets/categories/gift-hampers.png", active: true }
+    ],
+    purposeCards: [
+      { name: "Wealth", value: "Wealth", image: "/assets/purpose/wealth.jpg", active: true },
+      { name: "Health", value: "Health", image: "/assets/purpose/health.jpg", active: true },
+      { name: "Love", value: "Love", image: "/assets/purpose/love.jpg", active: true },
+      { name: "Luck", value: "Luck", image: "/assets/purpose/luck.jpg", active: true },
+      { name: "Protection", value: "Protection", image: "/assets/purpose/protection.jpg", active: true },
+      { name: "Peace", value: "Peace", image: "/assets/purpose/peace.jpg", active: true },
+      { name: "Courage", value: "Courage", image: "/assets/purpose/courage.jpg", active: true },
+      { name: "Balance", value: "Balance", image: "/assets/purpose/balance.jpg", active: true }
+    ]
+  },
   hero: {
     enabled: true,
     autoplay: true,
@@ -516,13 +587,13 @@ export async function getOrders(): Promise<Order[]> {
 
 export async function getCustomers() {
   try {
-    return await request<Array<{ _id: string; name: string; email: string; phone?: string; createdAt?: string }>>(
+    return await request<Array<{ _id: string; name: string; email: string; phone?: string; orders?: number; spent?: number; productCount?: number; segment?: string; createdAt?: string }>>(
       "/admin/customers"
     );
   } catch {
     return [
-      { _id: "1", name: "Client User", email: "client@demo.com", phone: "8888888888", createdAt: "2026-06-22" },
-      { _id: "2", name: "Asha Sharma", email: "asha@example.com", phone: "9876543210", createdAt: "2026-06-20" }
+      { _id: "1", name: "Client User", email: "client@demo.com", phone: "8888888888", orders: 1, spent: 899, productCount: 1, segment: "New Customer", createdAt: "2026-06-22" },
+      { _id: "2", name: "Asha Sharma", email: "asha@example.com", phone: "9876543210", orders: 4, spent: 5396, productCount: 6, segment: "VIP", createdAt: "2026-06-20" }
     ];
   }
 }

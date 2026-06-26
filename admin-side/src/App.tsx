@@ -32,9 +32,9 @@ import {
   X
 } from "lucide-react";
 import type { ReactNode } from "react";
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
-import { NavLink, Navigate, Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
+import { NavLink, Navigate, Route, Routes, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AdminTraditionGalleryManager } from "./components/AdminTraditionGalleryManager";
 import { AdminHeroSliderManager } from "./components/AdminHeroSliderManager";
 import { AdminTrendingManager } from "./components/AdminTrendingManager";
@@ -57,9 +57,11 @@ import {
   deleteAdminCategory,
   deleteAdminCoupon,
   deleteAdminProduct,
+  fallbackHomepage,
   getAdminCategories,
   getAdminCustomers,
   getAdminCoupons,
+  getAdminHomepage,
   getAdminOrders,
   getAdminProducts,
   getAdminSupportTickets,
@@ -67,10 +69,11 @@ import {
   loginAdminApi,
   updateAdminCategory,
   updateAdminCoupon,
+  updateAdminHomepage,
   updateAdminOrder,
   updateAdminProduct
 } from "./lib/api";
-import type { ApiCategory, ApiCoupon, ApiCustomer, ApiOrder, ApiProduct, ApiSupportTicket } from "./lib/api";
+import type { ApiCategory, ApiCoupon, ApiCustomer, ApiHomepageSettings, ApiOrder, ApiProduct, ApiSupportTicket } from "./lib/api";
 
 const navLinks = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -323,6 +326,7 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
             <Route path="/admin/products" element={<ProductsPage />} />
             <Route path="/admin/product-categories" element={<ProductCategoriesPage />} />
             <Route path="/admin/homepage" element={<HomepagePage />} />
+            <Route path="/admin/homepage/:sectionKey" element={<HomepageSectionEditor />} />
             <Route path="/admin/hero-slider" element={<HeroSliderPage />} />
             <Route path="/admin/latest-trending" element={<LatestTrendingPage />} />
             <Route path="/admin/shop-collections" element={<ShopCollectionsPage />} />
@@ -1116,6 +1120,230 @@ function HomepagePage() {
   );
 }
 
+function HomepageSectionEditor() {
+  const { sectionKey = "" } = useParams();
+  const [homepage, setHomepage] = useState(fallbackHomepage);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    getAdminHomepage()
+      .then(setHomepage)
+      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : "Homepage settings load nahi ho payi."));
+  }, []);
+
+  if (sectionKey === "hero-slider") return <HeroSliderPage />;
+  if (sectionKey === "latest-trending") return <LatestTrendingPage />;
+  if (sectionKey === "tradition-gallery") {
+    return (
+      <Page eyebrow="Homepage" title="Rooted In Tradition Gallery" subtitle="Change gallery heading and photos shown on the client homepage.">
+        <AdminTraditionGalleryManager />
+      </Page>
+    );
+  }
+
+  function updateSettings(patch: Partial<ApiHomepageSettings>) {
+    setHomepage((current) => ({
+      ...current,
+      settings: {
+        ...current.settings,
+        ...patch
+      }
+    }));
+    setMessage("");
+    setError("");
+  }
+
+  function updateSettingList(
+    listKey: "announcements" | "navItems" | "categoryStrip" | "collectionCircles" | "purposeCards",
+    index: number,
+    patch: Record<string, unknown>
+  ) {
+    const rows = homepage.settings[listKey] as Array<Record<string, unknown>>;
+    updateSettings({
+      [listKey]: rows.map((row, rowIndex) => (rowIndex === index ? { ...row, ...patch } : row))
+    } as Partial<ApiHomepageSettings>);
+  }
+
+  function addSettingRow(listKey: "announcements" | "navItems" | "categoryStrip" | "collectionCircles" | "purposeCards") {
+    const defaults = fallbackHomepage.settings[listKey] as Array<Record<string, unknown>>;
+    const current = homepage.settings[listKey] as Array<Record<string, unknown>>;
+    updateSettings({
+      [listKey]: [
+        ...current,
+        {
+          ...(defaults[0] || {}),
+          name: "New item",
+          label: "New item",
+          text: "New announcement",
+          href: "/collections",
+          value: "New item",
+          active: true
+        }
+      ]
+    } as Partial<ApiHomepageSettings>);
+  }
+
+  function uploadListImage(
+    listKey: "categoryStrip" | "collectionCircles" | "purposeCards",
+    index: number,
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => updateSettingList(listKey, index, { image: String(reader.result) });
+    reader.readAsDataURL(file);
+  }
+
+  async function saveSettings(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSaving(true);
+    setMessage("");
+    setError("");
+
+    try {
+      const savedHomepage = await updateAdminHomepage(homepage);
+      setHomepage(savedHomepage);
+      setMessage("Saved. Client panel refresh ke baad updated content dikhega.");
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Settings save nahi ho payi.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Page eyebrow="Homepage" title={homepageEditorTitle(sectionKey)} subtitle="Yahan se client panel ke text, names, links, images, aur visibility control hoti hai.">
+      <form onSubmit={saveSettings} className="grid gap-5">
+        {sectionKey === "logo" && (
+          <Panel title="Logo & Brand">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Brand Name">
+                <input className="admin-input" value={homepage.settings.brandName} onChange={(event) => updateSettings({ brandName: event.target.value })} />
+              </Field>
+              <Field label="Small Tagline">
+                <input className="admin-input" value={homepage.settings.brandTagline} onChange={(event) => updateSettings({ brandTagline: event.target.value })} />
+              </Field>
+              <Field label="Logo Text">
+                <input className="admin-input" value={homepage.settings.logoText} onChange={(event) => updateSettings({ logoText: event.target.value })} />
+              </Field>
+              <Field label="Support Button Text">
+                <input className="admin-input" value={homepage.settings.supportCta} onChange={(event) => updateSettings({ supportCta: event.target.value })} />
+              </Field>
+            </div>
+          </Panel>
+        )}
+
+        {sectionKey === "announcement" && (
+          <Panel title="Announcement Bar Text">
+            <ListEditorHeader onAdd={() => addSettingRow("announcements")} />
+            <div className="mt-4 grid gap-4">
+              {homepage.settings.announcements.map((item, index) => (
+                <div key={`${item.text}-${index}`} className="grid gap-3 rounded-xl border border-[#211d33]/10 p-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+                  <Field label="Text">
+                    <input className="admin-input" value={item.text} onChange={(event) => updateSettingList("announcements", index, { text: event.target.value })} />
+                  </Field>
+                  <Field label="Link">
+                    <input className="admin-input" value={item.href} onChange={(event) => updateSettingList("announcements", index, { href: event.target.value })} />
+                  </Field>
+                  <ActiveToggle active={item.active} onChange={(active) => updateSettingList("announcements", index, { active })} />
+                </div>
+              ))}
+            </div>
+          </Panel>
+        )}
+
+        {sectionKey === "navbar" && (
+          <Panel title="Navbar Categories">
+            <ListEditorHeader onAdd={() => addSettingRow("navItems")} />
+            <div className="mt-4 grid gap-4">
+              {homepage.settings.navItems.map((item, index) => (
+                <div key={`${item.label}-${index}`} className="grid gap-3 rounded-xl border border-[#211d33]/10 p-4 lg:grid-cols-[1fr_1.4fr_auto_auto] lg:items-end">
+                  <Field label="Menu Name">
+                    <input className="admin-input" value={item.label} onChange={(event) => updateSettingList("navItems", index, { label: event.target.value })} />
+                  </Field>
+                  <Field label="Link">
+                    <input className="admin-input" value={item.href} onChange={(event) => updateSettingList("navItems", index, { href: event.target.value })} />
+                  </Field>
+                  <label className="flex items-center gap-2 rounded-xl bg-[#f8faff] px-4 py-3 text-sm font-semibold">
+                    <input type="checkbox" checked={item.dropdown} onChange={(event) => updateSettingList("navItems", index, { dropdown: event.target.checked })} />
+                    Dropdown
+                  </label>
+                  <ActiveToggle active={item.active} onChange={(active) => updateSettingList("navItems", index, { active })} />
+                </div>
+              ))}
+            </div>
+          </Panel>
+        )}
+
+        {sectionKey === "category-strip" && (
+          <Panel title="Category Strip Images">
+            <ListEditorHeader onAdd={() => addSettingRow("categoryStrip")} />
+            <HomepageCardList
+              rows={homepage.settings.categoryStrip}
+              onChange={(index, patch) => updateSettingList("categoryStrip", index, patch)}
+              onImageUpload={(index, event) => uploadListImage("categoryStrip", index, event)}
+            />
+          </Panel>
+        )}
+
+        {sectionKey === "shop-collections" && (
+          <Panel title="Shop Our Collections Circles">
+            <ListEditorHeader onAdd={() => addSettingRow("collectionCircles")} showLink />
+            <HomepageCardList
+              rows={homepage.settings.collectionCircles}
+              showLink
+              onChange={(index, patch) => updateSettingList("collectionCircles", index, patch)}
+              onImageUpload={(index, event) => uploadListImage("collectionCircles", index, event)}
+            />
+          </Panel>
+        )}
+
+        {sectionKey === "shop-purpose" && (
+          <Panel title="Shop By Purpose Cards">
+            <ListEditorHeader onAdd={() => addSettingRow("purposeCards")} />
+            <HomepageCardList
+              rows={homepage.settings.purposeCards}
+              onChange={(index, patch) => updateSettingList("purposeCards", index, patch)}
+              onImageUpload={(index, event) => uploadListImage("purposeCards", index, event)}
+            />
+          </Panel>
+        )}
+
+        {sectionKey === "footer" && (
+          <Panel title="Footer Content">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Footer Description" className="md:col-span-2">
+                <textarea className="admin-input min-h-28" value={homepage.settings.footerDescription} onChange={(event) => updateSettings({ footerDescription: event.target.value })} />
+              </Field>
+              <Field label="Support Button Text">
+                <input className="admin-input" value={homepage.settings.supportCta} onChange={(event) => updateSettings({ supportCta: event.target.value })} />
+              </Field>
+            </div>
+          </Panel>
+        )}
+
+        {!knownHomepageEditor(sectionKey) && (
+          <Panel title="Section Not Found">
+            <p className="text-sm font-semibold text-[#17172a]/60">Is section ka editor abhi available nahi hai.</p>
+          </Panel>
+        )}
+
+        {message && <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{message}</p>}
+        {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
+        {knownHomepageEditor(sectionKey) && (
+          <div className="flex flex-wrap gap-3">
+            <button className="admin-button" disabled={saving}>{saving ? "Saving..." : "Save Changes"}</button>
+          </div>
+        )}
+      </form>
+    </Page>
+  );
+}
+
 function HeroSliderPage() {
   return (
     <Page eyebrow="Homepage" title="Hero Slider" subtitle="Change only the banner photos used by the homepage slider.">
@@ -1316,12 +1544,13 @@ function CustomersPage() {
       <Panel title="Customer Directory">
         <div className="grid gap-3">
           {customerRows.map((customer) => (
-            <div key={customer._id || customer.id || customer.email} className="grid gap-3 rounded-xl border border-[#211d33]/10 bg-white p-4 md:grid-cols-[1fr_130px_130px_140px] md:items-center">
+            <div key={customer._id || customer.id || customer.email} className="grid gap-3 rounded-xl border border-[#211d33]/10 bg-white p-4 md:grid-cols-[1fr_120px_120px_120px_140px] md:items-center">
               <div>
                 <p className="font-semibold text-[#211d33]">{customer.name}</p>
                 <p className="text-sm text-[#17172a]/55">{customer.email} | {customer.phone}</p>
               </div>
               <p className="text-sm font-semibold">{customer.orders || 0} orders</p>
+              <p className="text-sm font-semibold">{customer.productCount || 0} products</p>
               <p className="text-sm font-semibold">Rs.{customer.spent || 0}</p>
               <Badge value={customer.segment || "New"} />
             </div>
@@ -1826,6 +2055,13 @@ function OrderTable({
               </td>
               <td>
                 <p className="font-semibold">{order.customer}</p>
+                <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                  <Badge value={order.customerSegment || "New Customer"} />
+                  <span className="text-xs font-semibold text-[#17172a]/45">
+                    {order.customerOrderCount || 1} orders
+                    {order.customerSpent ? ` | Rs.${order.customerSpent}` : ""}
+                  </span>
+                </div>
                 <p className="text-xs text-[#17172a]/50">{order.phone}</p>
                 <p className="text-xs text-[#17172a]/50">{order.email}</p>
                 <p className="mt-1 max-w-48 text-xs text-[#17172a]/45">{order.address}</p>
@@ -1920,14 +2156,106 @@ function SimpleGridPage({
   );
 }
 
+function ListEditorHeader({ onAdd, showLink = false }: { onAdd: () => void; showLink?: boolean }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <p className="text-sm font-semibold text-[#17172a]/55">
+        Name client panel me dikhega. Value product filtering ke liye use hoti hai.{showLink ? " Link card click par open hota hai." : ""}
+      </p>
+      <button type="button" onClick={onAdd} className="mini-button">
+        Add Row
+      </button>
+    </div>
+  );
+}
+
+function ActiveToggle({ active, onChange }: { active: boolean; onChange: (active: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-2 rounded-xl bg-[#f8faff] px-4 py-3 text-sm font-semibold">
+      <input type="checkbox" checked={active} onChange={(event) => onChange(event.target.checked)} />
+      Visible
+    </label>
+  );
+}
+
+function HomepageCardList({
+  rows,
+  showLink = false,
+  onChange,
+  onImageUpload
+}: {
+  rows: Array<{ name: string; value: string; href?: string; image: string; active: boolean }>;
+  showLink?: boolean;
+  onChange: (index: number, patch: Record<string, unknown>) => void;
+  onImageUpload: (index: number, event: ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <div className="mt-4 grid gap-4">
+      {rows.map((item, index) => (
+        <div key={`${item.name}-${index}`} className="grid gap-4 rounded-xl border border-[#211d33]/10 p-4 xl:grid-cols-[96px_1fr_auto] xl:items-end">
+          <img src={item.image} alt="" className="h-24 w-24 rounded-xl bg-[#f6e8ce] object-cover" />
+          <div className={`grid gap-3 ${showLink ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-2 xl:grid-cols-3"}`}>
+            <Field label="Client Display Name">
+              <input className="admin-input" value={item.name} onChange={(event) => onChange(index, { name: event.target.value })} />
+            </Field>
+            <Field label="Filter Value">
+              <input className="admin-input" value={item.value} onChange={(event) => onChange(index, { value: event.target.value })} />
+            </Field>
+            {showLink && (
+              <Field label="Click Link">
+                <input className="admin-input" value={item.href || ""} onChange={(event) => onChange(index, { href: event.target.value })} />
+              </Field>
+            )}
+            <Field label="Image URL">
+              <input className="admin-input" value={item.image} onChange={(event) => onChange(index, { image: event.target.value })} />
+            </Field>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <label className="mini-button cursor-pointer">
+              Upload
+              <input type="file" accept="image/*" className="hidden" onChange={(event) => onImageUpload(index, event)} />
+            </label>
+            <ActiveToggle active={item.active} onChange={(active) => onChange(index, { active })} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function homepageManagePath(item: string) {
-  if (item.includes("Hero slider")) return "/admin/hero-slider";
-  if (item.includes("Latest & Trending")) return "/admin/latest-trending";
-  if (item.includes("Collections")) return "/admin/shop-collections";
-  if (item.includes("Purpose")) return "/admin/shop-purpose";
-  if (item.includes("categories") || item.includes("Category strip")) return "/admin/product-categories";
-  if (item.includes("gallery") || item.includes("Logo") || item.includes("Footer") || item.includes("Announcement")) return "/admin/website-settings";
-  return "/admin/website-settings";
+  return `/admin/homepage/${homepageControlKey(item)}`;
+}
+
+function homepageControlKey(item: string) {
+  if (item.includes("Announcement")) return "announcement";
+  if (item.includes("Logo")) return "logo";
+  if (item.includes("Navbar")) return "navbar";
+  if (item.includes("Category strip")) return "category-strip";
+  if (item.includes("Hero slider")) return "hero-slider";
+  if (item.includes("Latest & Trending")) return "latest-trending";
+  if (item.includes("Collections")) return "shop-collections";
+  if (item.includes("Purpose")) return "shop-purpose";
+  if (item.includes("Tradition")) return "tradition-gallery";
+  if (item.includes("Footer")) return "footer";
+  return "logo";
+}
+
+function homepageEditorTitle(sectionKey: string) {
+  const titles: Record<string, string> = {
+    announcement: "Announcement Bar Text",
+    logo: "Logo & Brand",
+    navbar: "Navbar Categories",
+    "category-strip": "Category Strip Images",
+    "shop-collections": "Shop Our Collections Circles",
+    "shop-purpose": "Shop By Purpose Cards",
+    footer: "Footer Content"
+  };
+  return titles[sectionKey] || "Homepage Section";
+}
+
+function knownHomepageEditor(sectionKey: string) {
+  return ["announcement", "logo", "navbar", "category-strip", "shop-collections", "shop-purpose", "footer"].includes(sectionKey);
 }
 
 function Page({ eyebrow, title, subtitle, children }: { eyebrow: string; title: string; subtitle: string; children: ReactNode }) {

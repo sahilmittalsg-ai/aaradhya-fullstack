@@ -8,7 +8,7 @@ import {
   Truck,
   Star
 } from "lucide-react";
-import { memo, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CategoryStrip } from "../../components/CategoryStrip";
 import { HeroCarousel } from "../../components/HeroCarousel";
@@ -16,6 +16,8 @@ import { LatestTrendingCarousel } from "../../components/latest-trending/LatestT
 import { ProductCard } from "../../components/ProductCard";
 import { TraditionGallery } from "../../components/TraditionGallery";
 import { useLiveProducts } from "../../hooks/useLiveProducts";
+import { fallbackHomepage, getHomepage } from "../../lib/api";
+import type { HomepageSettings } from "../../lib/api";
 import type { Product } from "../../types";
 
 const defaultCategoryOptions = [
@@ -101,11 +103,18 @@ const purposeShowcaseOptions = [
 
 export function Home() {
   const products = useLiveProducts();
+  const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>(fallbackHomepage.settings);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedCollection, setSelectedCollection] = useState("All");
   const [selectedPurpose, setSelectedPurpose] = useState("All");
 
-  const categoryOptions = defaultCategoryOptions;
+  useEffect(() => {
+    getHomepage().then((homepage) => setHomepageSettings(homepage.settings)).catch(() => undefined);
+  }, []);
+
+  const categoryOptions = homepageSettings.categoryStrip.filter((item) => item.active);
+  const collectionOptions = homepageSettings.collectionCircles.filter((item) => item.active);
+  const purposeOptions = homepageSettings.purposeCards.filter((item) => item.active);
 
   const filteredProducts = useMemo(() => {
     const categoryProducts =
@@ -135,10 +144,10 @@ export function Home() {
     <div className="bg-[#fbf2e3] text-[#17172a]">
       <CategoryStrip selectedCategory={selectedCategory} onSelect={setSelectedCategory} categories={categoryOptions} />
       <HeroCarousel />
-      <CollectionCarousel selectedCategory={selectedCollection} onSelect={setSelectedCollection} categories={collectionShowcaseOptions} />
+      <CollectionCarousel selectedCategory={selectedCollection} onSelect={setSelectedCollection} categories={collectionOptions.length ? collectionOptions : collectionShowcaseOptions} />
       <LatestTrendingCarousel />
       <SingleRudrakshaSection products={products} />
-      <PurposeSection selectedPurpose={selectedPurpose} onSelect={setSelectedPurpose} purposes={purposeShowcaseOptions} />
+      <PurposeSection selectedPurpose={selectedPurpose} onSelect={setSelectedPurpose} purposes={purposeOptions.length ? purposeOptions : purposeShowcaseOptions} />
       <EnergyStonesSection products={products} />
       <BestsellersSection products={products} />
       <TraditionGallery />
@@ -767,7 +776,7 @@ function CollectionCarousel({
 }: {
   selectedCategory: string;
   onSelect: (category: string) => void;
-  categories: Array<{ name: string; value: string; href: string; image: string }>;
+  categories: Array<{ name: string; value: string; href: string; image: string; active?: boolean }>;
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const options = [
@@ -857,7 +866,7 @@ function PurposeSection({
 }: {
   selectedPurpose: string;
   onSelect: (purpose: string) => void;
-  purposes: Array<{ name: string; image: string }>;
+  purposes: Array<{ name: string; value?: string; image: string; active?: boolean }>;
 }) {
   return (
     <section className="bg-[#f6e8ce] py-8 md:py-10">
@@ -866,13 +875,14 @@ function PurposeSection({
         <div className="mt-7 overflow-x-auto pb-2">
           <div className="flex min-w-max justify-center gap-7 px-3 md:gap-9">
             {purposes.map((purpose) => {
-              const active = selectedPurpose === purpose.name;
+              const value = purpose.value || purpose.name;
+              const active = selectedPurpose === value;
 
               return (
                 <Link
-                  key={purpose.name}
-                  to={`/collections?purpose=${encodeURIComponent(purpose.name)}`}
-                  onClick={() => onSelect(purpose.name)}
+                  key={value}
+                  to={`/collections?purpose=${encodeURIComponent(value)}`}
+                  onClick={() => onSelect(value)}
                   className={`group relative block h-[126px] w-[126px] shrink-0 overflow-hidden bg-[#2d2a39] shadow-sm transition hover:-translate-y-1 hover:shadow-soft md:h-[132px] md:w-[132px] ${
                     active ? "ring-2 ring-[#211d33] ring-offset-4 ring-offset-[#f6e8ce]" : ""
                   }`}

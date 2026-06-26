@@ -1,13 +1,22 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { fallbackHomepage, getHomepage } from "../lib/api";
+import type { HomepageSettings } from "../lib/api";
 
 export function Footer() {
+  const [settings, setSettings] = useState<HomepageSettings>(fallbackHomepage.settings);
+
+  useEffect(() => {
+    getHomepage().then((homepage) => setSettings(homepage.settings)).catch(() => undefined);
+  }, []);
+
   return (
     <footer className="mt-20 bg-ink text-sandal">
       <div className="container-pad grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <h2 className="text-2xl font-black">Aaradhya Beads</h2>
+          <h2 className="text-2xl font-black">{settings.brandName} {settings.brandTagline}</h2>
           <p className="mt-4 max-w-md text-sm leading-7 text-sandal/70">
-            A complete ecommerce build for spiritual bracelets, malas, crystals, orders, and admin operations.
+            {settings.footerDescription}
           </p>
         </div>
         <div>

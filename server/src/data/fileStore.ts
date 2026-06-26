@@ -34,6 +34,7 @@ export type HomepageSection = {
 };
 
 export type HomepageStore = {
+  settings: HomepageSettings;
   hero: {
     enabled: boolean;
     autoplay: boolean;
@@ -69,6 +70,45 @@ export type HomepageStore = {
     }>;
   };
   sections: HomepageSection[];
+};
+
+export type HomepageSettings = {
+  brandName: string;
+  brandTagline: string;
+  logoText: string;
+  footerDescription: string;
+  supportCta: string;
+  searchPlaceholders: string[];
+  announcements: Array<{
+    text: string;
+    href: string;
+    active: boolean;
+  }>;
+  navItems: Array<{
+    label: string;
+    href: string;
+    dropdown: boolean;
+    active: boolean;
+  }>;
+  categoryStrip: Array<{
+    name: string;
+    value: string;
+    image: string;
+    active: boolean;
+  }>;
+  collectionCircles: Array<{
+    name: string;
+    value: string;
+    href: string;
+    image: string;
+    active: boolean;
+  }>;
+  purposeCards: Array<{
+    name: string;
+    value: string;
+    image: string;
+    active: boolean;
+  }>;
 };
 
 const categorySeeds = [
@@ -148,6 +188,62 @@ const productSeeds = [
 ] as const;
 
 export const defaultHomepage: HomepageStore = {
+  settings: {
+    brandName: "Aaradhya",
+    brandTagline: "Beads",
+    logoText: "Jap",
+    footerDescription: "A complete ecommerce build for spiritual bracelets, malas, crystals, orders, and admin operations.",
+    supportCta: "Chat with Sevak",
+    searchPlaceholders: ["Search for Rudraksha", "Search for Karungali", "Search for Pyrite"],
+    announcements: [
+      { text: "100% Cashback available upto Rs.500", href: "/pages/cashback-policy", active: true },
+      { text: "Free delivery on orders over Rs.299", href: "/collections", active: true },
+      { text: "Har Ghar Rudraksha - Claim Free 5 Mukhi", href: "/collections?collection=Rudraksha", active: true }
+    ],
+    navItems: [
+      { label: "Rudraksha", href: "/collections?collection=Rudraksha", dropdown: true, active: true },
+      { label: "Energy Stones", href: "/collections?collection=Energy%20Stones", dropdown: true, active: true },
+      { label: "Karungali", href: "/collections?collection=Karungali", dropdown: false, active: true },
+      { label: "Combos", href: "/collections?collection=Combos", dropdown: true, active: true },
+      { label: "Spiritual Jewellery", href: "/collections?collection=Spiritual%20Jewellery", dropdown: true, active: true },
+      { label: "Gift Hampers", href: "/collections?collection=Gift%20Hampers", dropdown: true, active: true },
+      { label: "Bulk / Wholesale", href: "/pages/bulk-wholesale", dropdown: false, active: true },
+      { label: "Support", href: "/support", dropdown: true, active: true }
+    ],
+    categoryStrip: [
+      { name: "Rudraksha", value: "Rudraksha", image: "/assets/categories/rudraksha.png", active: true },
+      { name: "Karungali", value: "Karungali", image: "/assets/categories/karungali.png", active: true },
+      { name: "Pyrite", value: "Pyrite", image: "/assets/categories/pyrite.png", active: true },
+      { name: "Sandalwood", value: "Sandalwood", image: "/assets/categories/sandalwood.png", active: true },
+      { name: "Sphatik", value: "Sphatik", image: "/assets/categories/sphatik.png", active: true },
+      { name: "Tiger Eye", value: "Tiger Eye", image: "/assets/categories/tiger-eye.png", active: true },
+      { name: "Rose Quartz", value: "Rose Quartz", image: "/assets/categories/rose-quartz.png", active: true },
+      { name: "Amethyst", value: "Amethyst", image: "/assets/categories/amethyst.png", active: true },
+      { name: "Combos", value: "Combos", image: "/assets/products/hero-spiritual-shop.png", active: true },
+      { name: "Gift Hampers", value: "Gift Hampers", image: "/assets/categories/gift-hampers.png", active: true }
+    ],
+    collectionCircles: [
+      { name: "Rudraksha Bracelets", value: "Rudraksha Bracelets", href: "/collections?collection=Rudraksha%20Bracelets", image: "/assets/collections/rudraksha-bracelets.jpg", active: true },
+      { name: "Rudraksha Malas", value: "Rudraksha Malas", href: "/collections?collection=Rudraksha%20Malas", image: "/assets/collections/rudraksha-malas.jpg", active: true },
+      { name: "Nepali/Indian Rudraksha", value: "Rudraksha", href: "/collections?collection=Rudraksha", image: "/assets/collections/nepali-indian-rudraksha.jpg", active: true },
+      { name: "Spiritual Jewellery", value: "Spiritual Jewellery", href: "/collections?collection=Spiritual%20Jewellery", image: "/assets/collections/spiritual-jewellery.jpg", active: true },
+      { name: "Karungali Wearables", value: "Karungali", href: "/collections?collection=Karungali", image: "/assets/collections/karungali-wearables.jpg", active: true },
+      { name: "Energy Stones", value: "Energy Stones", href: "/collections?collection=Energy%20Stones", image: "/assets/collections/energy-stones.jpg", active: true },
+      { name: "Pyrite Wearables", value: "Pyrite", href: "/collections?bead=Pyrite", image: "/assets/collections/pyrite-wearables.jpg", active: true },
+      { name: "Combo Deals", value: "Combos", href: "/collections?collection=Combos", image: "/assets/products/hero-spiritual-shop.png", active: true },
+      { name: "Gift Hampers", value: "Gift Hampers", href: "/collections?collection=Gift%20Hampers", image: "/assets/categories/gift-hampers.png", active: true }
+    ],
+    purposeCards: [
+      { name: "Wealth", value: "Wealth", image: "/assets/purpose/wealth.jpg", active: true },
+      { name: "Health", value: "Health", image: "/assets/purpose/health.jpg", active: true },
+      { name: "Love", value: "Love", image: "/assets/purpose/love.jpg", active: true },
+      { name: "Luck", value: "Luck", image: "/assets/purpose/luck.jpg", active: true },
+      { name: "Protection", value: "Protection", image: "/assets/purpose/protection.jpg", active: true },
+      { name: "Peace", value: "Peace", image: "/assets/purpose/peace.jpg", active: true },
+      { name: "Courage", value: "Courage", image: "/assets/purpose/courage.jpg", active: true },
+      { name: "Balance", value: "Balance", image: "/assets/purpose/balance.jpg", active: true }
+    ]
+  },
   hero: {
     enabled: true,
     autoplay: true,
@@ -292,15 +388,15 @@ export const defaultHomepage: HomepageStore = {
     ]
   },
   sections: [
-    { key: "announcement", title: "Announcement Bar", description: "Top black offer strip shown above navbar.", active: true, managePath: "/admin/website-settings" },
-    { key: "navbar", title: "Navbar Categories", description: "Main menu categories shown in customer header.", active: true, managePath: "/admin/product-categories" },
-    { key: "category-strip", title: "Category Strip", description: "Horizontal Rudraksha, Karungali, Pyrite image strip.", active: true, managePath: "/admin/product-categories" },
-    { key: "hero-slider", title: "Hero Slider", description: "Four homepage banner photos, text, buttons, and autoplay.", active: true, managePath: "/admin/hero-slider" },
-    { key: "latest-trending", title: "Latest & Trending", description: "Homepage product carousel and badges.", active: true, managePath: "/admin/latest-trending" },
-    { key: "shop-collections", title: "Shop Our Collections", description: "Circular category carousel and filters.", active: true, managePath: "/admin/shop-collections" },
-    { key: "shop-purpose", title: "Shop By Purpose", description: "Purpose cards like Wealth, Health, Love, Protection.", active: true, managePath: "/admin/shop-purpose" },
-    { key: "tradition-gallery", title: "Rooted In Tradition Gallery", description: "Six-image lifestyle gallery section.", active: true, managePath: "/admin/website-settings" },
-    { key: "footer", title: "Footer Content", description: "Footer links, support, policy and brand text.", active: true, managePath: "/admin/website-settings" }
+    { key: "announcement", title: "Announcement Bar", description: "Top black offer strip shown above navbar.", active: true, managePath: "/admin/homepage/announcement" },
+    { key: "navbar", title: "Navbar Categories", description: "Main menu categories shown in customer header.", active: true, managePath: "/admin/homepage/navbar" },
+    { key: "category-strip", title: "Category Strip", description: "Horizontal Rudraksha, Karungali, Pyrite image strip.", active: true, managePath: "/admin/homepage/category-strip" },
+    { key: "hero-slider", title: "Hero Slider", description: "Four homepage banner photos, text, buttons, and autoplay.", active: true, managePath: "/admin/homepage/hero-slider" },
+    { key: "latest-trending", title: "Latest & Trending", description: "Homepage product carousel and badges.", active: true, managePath: "/admin/homepage/latest-trending" },
+    { key: "shop-collections", title: "Shop Our Collections", description: "Circular category carousel and filters.", active: true, managePath: "/admin/homepage/shop-collections" },
+    { key: "shop-purpose", title: "Shop By Purpose", description: "Purpose cards like Wealth, Health, Love, Protection.", active: true, managePath: "/admin/homepage/shop-purpose" },
+    { key: "tradition-gallery", title: "Rooted In Tradition Gallery", description: "Six-image lifestyle gallery section.", active: true, managePath: "/admin/homepage/tradition-gallery" },
+    { key: "footer", title: "Footer Content", description: "Footer links, support, policy and brand text.", active: true, managePath: "/admin/homepage/footer" }
   ]
 };
 
@@ -463,6 +559,7 @@ function normalizeStore(store: Store): Store {
 
 function normalizeHomepage(homepage?: Partial<HomepageStore>): HomepageStore {
   const source = homepage || {};
+  const settings = normalizeHomepageSettings(source.settings);
   const savedSlides = source.hero?.slides || [];
   const slides = defaultHomepage.hero.slides.map((defaultSlide, index) => ({
     ...defaultSlide,
@@ -473,7 +570,8 @@ function normalizeHomepage(homepage?: Partial<HomepageStore>): HomepageStore {
   const savedSections = new Map((source.sections || []).map((section) => [section.key, section]));
   const sections = defaultHomepage.sections.map((section) => ({
     ...section,
-    ...(savedSections.get(section.key) || {})
+    ...(savedSections.get(section.key) || {}),
+    managePath: section.managePath
   }));
   const savedTrendingProducts = source.trending?.products || [];
   const trendingProducts = (savedTrendingProducts.length ? savedTrendingProducts : defaultHomepage.trending.products).map((product, index) => ({
@@ -490,6 +588,7 @@ function normalizeHomepage(homepage?: Partial<HomepageStore>): HomepageStore {
   }));
 
   return {
+    settings,
     hero: {
       enabled: source.hero?.enabled ?? defaultHomepage.hero.enabled,
       autoplay: source.hero?.autoplay ?? defaultHomepage.hero.autoplay,
@@ -509,6 +608,64 @@ function normalizeHomepage(homepage?: Partial<HomepageStore>): HomepageStore {
     },
     sections
   };
+}
+
+function normalizeHomepageSettings(settings?: Partial<HomepageSettings>): HomepageSettings {
+  const source = settings || {};
+  const defaults = defaultHomepage.settings;
+
+  return {
+    brandName: source.brandName || defaults.brandName,
+    brandTagline: source.brandTagline || defaults.brandTagline,
+    logoText: source.logoText || defaults.logoText,
+    footerDescription: source.footerDescription || defaults.footerDescription,
+    supportCta: source.supportCta || defaults.supportCta,
+    searchPlaceholders: normalizeStringList(source.searchPlaceholders, defaults.searchPlaceholders),
+    announcements: normalizeSettingsList(source.announcements, defaults.announcements, (item, fallback) => ({
+      text: item.text || fallback.text,
+      href: item.href || fallback.href,
+      active: item.active ?? fallback.active
+    })),
+    navItems: normalizeSettingsList(source.navItems, defaults.navItems, (item, fallback) => ({
+      label: item.label || fallback.label,
+      href: item.href || fallback.href,
+      dropdown: item.dropdown ?? fallback.dropdown,
+      active: item.active ?? fallback.active
+    })),
+    categoryStrip: normalizeSettingsList(source.categoryStrip, defaults.categoryStrip, (item, fallback) => ({
+      name: item.name || fallback.name,
+      value: item.value || item.name || fallback.value,
+      image: item.image || fallback.image,
+      active: item.active ?? fallback.active
+    })),
+    collectionCircles: normalizeSettingsList(source.collectionCircles, defaults.collectionCircles, (item, fallback) => ({
+      name: item.name || fallback.name,
+      value: item.value || fallback.value,
+      href: item.href || fallback.href,
+      image: item.image || fallback.image,
+      active: item.active ?? fallback.active
+    })),
+    purposeCards: normalizeSettingsList(source.purposeCards, defaults.purposeCards, (item, fallback) => ({
+      name: item.name || fallback.name,
+      value: item.value || item.name || fallback.value,
+      image: item.image || fallback.image,
+      active: item.active ?? fallback.active
+    }))
+  };
+}
+
+function normalizeStringList(values: unknown, fallback: string[]) {
+  const rows = Array.isArray(values) ? values.map((item) => String(item || "").trim()).filter(Boolean) : [];
+  return rows.length ? rows : fallback;
+}
+
+function normalizeSettingsList<T extends Record<string, any>>(
+  values: T[] | undefined,
+  fallback: T[],
+  normalize: (item: Partial<T>, fallback: T) => T
+) {
+  const rows = Array.isArray(values) && values.length ? values : fallback;
+  return rows.map((item, index) => normalize(item, fallback[index % fallback.length]));
 }
 
 function productFromSeed(seed: (typeof productSeeds)[number], index: number) {
