@@ -194,17 +194,20 @@ const labMarkers = [
   {
     title: "BTR Card",
     description: "We send samples for lab testing and provide Batch Test Reports.",
-    className: "left-[29%] top-[68%]"
+    className: "left-[29%] top-[68%]",
+    href: "/collections?collection=Energy%20Stones"
   },
   {
     title: "Quality Packaging",
     description: "We focus heavily on customer experience and delight.",
-    className: "left-[60%] top-[32%]"
+    className: "left-[60%] top-[32%]",
+    href: "/collections?collection=Karungali"
   },
   {
     title: "Fit & Finish",
     description: "We put a lot of effort into ensuring our high quality standards.",
-    className: "left-[74%] top-[64%]"
+    className: "left-[74%] top-[64%]",
+    href: "/collections?collection=Rudraksha"
   }
 ];
 
@@ -444,16 +447,19 @@ const LabTestedShowcase = memo(function LabTestedShowcase() {
                 key={marker.title}
                 className={`group absolute ${marker.className} -translate-x-1/2 -translate-y-1/2`}
               >
-                <button
-                  type="button"
+                <Link
+                  to={marker.href}
                   className="flex h-11 w-11 items-center justify-center rounded-full bg-[#070707] text-2xl font-light leading-none text-white shadow-xl ring-2 ring-white/50 transition hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/80"
-                  aria-label={`View details for ${marker.title}`}
+                  aria-label={`Shop products for ${marker.title}`}
                 >
                   +
-                </button>
+                </Link>
                 <div className="pointer-events-none absolute left-1/2 top-12 w-64 -translate-x-1/2 rounded-lg bg-white p-4 text-left opacity-0 shadow-2xl ring-1 ring-[#211d33]/10 transition duration-200 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100">
                   <h3 className="text-sm font-black text-[#211d33]">{marker.title}</h3>
                   <p className="mt-2 text-xs leading-5 text-[#17172a]/70">{marker.description}</p>
+                  <Link to={marker.href} className="mt-3 inline-flex text-xs font-black uppercase tracking-[0.04em] text-rudra">
+                    Shop products
+                  </Link>
                 </div>
               </div>
             ))}

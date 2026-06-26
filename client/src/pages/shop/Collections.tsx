@@ -26,6 +26,11 @@ export function Collections() {
   const [view, setView] = useState<"grid" | "list">("grid");
   const active = params.get("collection") || "All";
   const purposeParam = params.get("purpose") || "All";
+  const beadParam = params.get("bead") || "All";
+  const mukhiParam = params.get("mukhi") || "All";
+  const platingParam = params.get("plating") || "All";
+  const audienceParam = params.get("audience") || "All";
+  const priceParam = params.get("price") || "all";
 
   useEffect(() => {
     getProducts().then(setProducts);
@@ -33,7 +38,12 @@ export function Collections() {
 
   useEffect(() => {
     setPurpose(purposeParam);
-  }, [purposeParam]);
+    setBead(beadParam);
+    setMukhi(mukhiParam);
+    setPlating(platingParam);
+    setAudience(audienceParam);
+    setPriceBand(priceParam);
+  }, [audienceParam, beadParam, mukhiParam, platingParam, priceParam, purposeParam]);
 
   const purposeOptions = useMemo(() => uniqueOptions(products.flatMap((product) => product.purpose || [])), [products]);
   const beadOptions = useMemo(() => uniqueOptions(products.map((product) => product.bead)), [products]);
@@ -77,6 +87,15 @@ export function Collections() {
     setPlating("All");
     setAudience("All");
     setPriceBand("all");
+    const nextParams = new URLSearchParams(params);
+    ["purpose", "bead", "mukhi", "plating", "audience", "price"].forEach((key) => nextParams.delete(key));
+    setParams(nextParams);
+  }
+
+  function setFilterParam(key: string, value: string, emptyValue = "All") {
+    const nextParams = new URLSearchParams(params);
+    value === emptyValue ? nextParams.delete(key) : nextParams.set(key, value);
+    setParams(nextParams);
   }
 
   return (
@@ -103,7 +122,12 @@ export function Collections() {
           <button
             key={category}
             onClick={() => {
-              clearFilters();
+              setPurpose("All");
+              setBead("All");
+              setMukhi("All");
+              setPlating("All");
+              setAudience("All");
+              setPriceBand("all");
               category === "All" ? setParams({}) : setParams({ collection: category });
             }}
             className={`rounded-full px-4 py-2 text-sm font-bold transition ${
@@ -134,8 +158,7 @@ export function Collections() {
                   key={option}
                   onClick={() => {
                     setPurpose(option);
-                    option === "All" ? params.delete("purpose") : params.set("purpose", option);
-                    setParams(params);
+                    setFilterParam("purpose", option);
                   }}
                   className={`rounded-full px-3 py-1.5 text-xs font-bold ${
                     purpose === option ? "bg-rudra text-white" : "bg-sandal text-rudra"
@@ -147,11 +170,11 @@ export function Collections() {
             </div>
           </div>
 
-          <FilterSelect label="Price" value={priceBand} options={priceBands.map(({ label, value }) => ({ label, value }))} onChange={setPriceBand} />
-          <FilterSelect label="Bead Type" value={bead} options={withAll(beadOptions)} onChange={setBead} />
-          <FilterSelect label="Mukhi" value={mukhi} options={withAll(mukhiOptions)} onChange={setMukhi} />
-          <FilterSelect label="Plating" value={plating} options={withAll(platingOptions)} onChange={setPlating} />
-          <FilterSelect label="For" value={audience} options={withAll(audienceOptions)} onChange={setAudience} />
+          <FilterSelect label="Price" value={priceBand} options={priceBands.map(({ label, value }) => ({ label, value }))} onChange={(value) => { setPriceBand(value); setFilterParam("price", value, "all"); }} />
+          <FilterSelect label="Bead Type" value={bead} options={withAll(beadOptions)} onChange={(value) => { setBead(value); setFilterParam("bead", value); }} />
+          <FilterSelect label="Mukhi" value={mukhi} options={withAll(mukhiOptions)} onChange={(value) => { setMukhi(value); setFilterParam("mukhi", value); }} />
+          <FilterSelect label="Plating" value={plating} options={withAll(platingOptions)} onChange={(value) => { setPlating(value); setFilterParam("plating", value); }} />
+          <FilterSelect label="For" value={audience} options={withAll(audienceOptions)} onChange={(value) => { setAudience(value); setFilterParam("audience", value); }} />
         </aside>
 
         <div>
