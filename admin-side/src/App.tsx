@@ -1469,7 +1469,8 @@ function ShopCollectionsPage() {
       items={collections.map((item) => ({
         title: item,
         text: `${catalog.filter((product) => productMatchesCollection(product, item)).length} connected products on client collection filter`,
-        status: "Connected"
+        status: "Connected",
+        actionPath: "/admin/homepage/shop-collections"
       }))}
     />
   );
@@ -1491,7 +1492,8 @@ function ShopPurposePage() {
       items={purposes.map((item) => ({
         title: item,
         text: `${catalog.filter((product) => product.purpose?.includes(item)).length} connected products on client purpose filter`,
-        status: "Connected"
+        status: "Connected",
+        actionPath: "/admin/homepage/shop-purpose"
       }))}
     />
   );
