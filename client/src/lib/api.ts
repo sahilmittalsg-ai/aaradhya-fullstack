@@ -11,8 +11,8 @@ function getApiUrl() {
 }
 
 const API_URL = getApiUrl();
-const PRODUCTS_CACHE_MS = 10_000;
-const HOMEPAGE_CACHE_MS = 15_000;
+const PRODUCTS_CACHE_MS = 60_000;
+const HOMEPAGE_CACHE_MS = 60_000;
 let productsCache: Product[] | undefined;
 let productsCacheAt = 0;
 let productsRequest: Promise<Product[]> | undefined;

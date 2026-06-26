@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fallbackHomepage, getHomepage } from "../lib/api";
 
+const HOMEPAGE_REFRESH_MS = 120_000;
+
 export function HeroCarousel() {
   const [slides, setSlides] = useState(() => fallbackHomepage.hero.slides.filter((slide) => slide.active));
   const [autoplay, setAutoplay] = useState(fallbackHomepage.hero.autoplay);
@@ -30,6 +32,7 @@ export function HeroCarousel() {
     void loadHomepage();
 
     const refresh = () => {
+      if (document.hidden) return;
       void loadHomepage(true);
     };
     const refreshWhenVisible = () => {
@@ -38,7 +41,7 @@ export function HeroCarousel() {
 
     window.addEventListener("focus", refresh);
     document.addEventListener("visibilitychange", refreshWhenVisible);
-    const interval = window.setInterval(refresh, 45_000);
+    const interval = window.setInterval(refresh, HOMEPAGE_REFRESH_MS);
 
     return () => {
       active = false;

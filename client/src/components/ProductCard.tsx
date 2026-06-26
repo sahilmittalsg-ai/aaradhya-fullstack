@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useCartActions } from "../context/CartContext";
 import type { Product } from "../types";
 
+const starIndexes = [0, 1, 2, 3, 4];
+
 export const ProductCard = memo(function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCartActions();
   const discountPercent = product.compareAtPrice
@@ -33,7 +35,7 @@ export const ProductCard = memo(function ProductCard({ product }: { product: Pro
             {product.collection}
           </span>
           <span className="flex items-center gap-0.5 text-[#d69b34]" aria-label={`${product.rating} star rating`}>
-            {Array.from({ length: 5 }).map((_, index) => (
+            {starIndexes.map((index) => (
               <Star key={index} size={13} fill="currentColor" />
             ))}
           </span>

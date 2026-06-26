@@ -4,6 +4,8 @@ import { fallbackHomepage, getHomepage } from "../../lib/api";
 import type { HomepageTrendingProduct } from "../../lib/api";
 import { ProductCard } from "./ProductCard";
 
+const HOMEPAGE_REFRESH_MS = 120_000;
+
 export function LatestTrendingCarousel() {
   const [products, setProducts] = useState<HomepageTrendingProduct[]>(() => fallbackHomepage.trending.products.filter((product) => product.enabled));
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -28,6 +30,7 @@ export function LatestTrendingCarousel() {
     void loadHomepage();
 
     const refresh = () => {
+      if (document.hidden) return;
       void loadHomepage(true);
     };
     const refreshWhenVisible = () => {
@@ -36,7 +39,7 @@ export function LatestTrendingCarousel() {
 
     window.addEventListener("focus", refresh);
     document.addEventListener("visibilitychange", refreshWhenVisible);
-    const interval = window.setInterval(refresh, 45_000);
+    const interval = window.setInterval(refresh, HOMEPAGE_REFRESH_MS);
 
     return () => {
       active = false;

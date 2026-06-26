@@ -12,6 +12,7 @@ const priceBands: Array<{ label: string; value: string; test: (price: number) =>
   { label: "Rs.900 - Rs.1499", value: "900-1499", test: (price: number) => price >= 900 && price <= 1499 },
   { label: "Rs.1500+", value: "1500-plus", test: (price: number) => price >= 1500 }
 ];
+const PRODUCTS_PAGE_SIZE = 24;
 
 export function Collections() {
   const [params, setParams] = useSearchParams();
@@ -28,6 +29,7 @@ export function Collections() {
   const [searchText, setSearchText] = useState("");
   const [sort, setSort] = useState("featured");
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [visibleCount, setVisibleCount] = useState(PRODUCTS_PAGE_SIZE);
   const active = params.get("collection") || "All";
   const searchParam = (params.get("search") || "").trim();
   const purposeParam = params.get("purpose") || "All";
@@ -90,6 +92,11 @@ export function Collections() {
       return Number(b.featured) - Number(a.featured) || b.rating - a.rating;
     });
   }, [active, audience, bead, inStockOnly, maxPrice, minPrice, mukhi, plating, priceBand, products, purpose, searchParam, sort]);
+  const visibleProducts = filtered.slice(0, visibleCount);
+
+  useEffect(() => {
+    setVisibleCount(PRODUCTS_PAGE_SIZE);
+  }, [active, audience, bead, inStockOnly, maxPrice, minPrice, mukhi, plating, priceBand, purpose, searchParam, sort, view]);
 
   const hasFilters =
     active !== "All" ||
@@ -408,15 +415,26 @@ export function Collections() {
             </div>
           ) : view === "grid" ? (
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {filtered.map((product) => (
+              {visibleProducts.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
             </div>
           ) : (
             <div className="grid gap-4">
-              {filtered.map((product) => (
+              {visibleProducts.map((product) => (
                 <ProductListItem key={product.slug} product={product} />
               ))}
+            </div>
+          )}
+          {visibleProducts.length < filtered.length && (
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((count) => count + PRODUCTS_PAGE_SIZE)}
+                className="btn-secondary"
+              >
+                Show More Products
+              </button>
             </div>
           )}
         </div>

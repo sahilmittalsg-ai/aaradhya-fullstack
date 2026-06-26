@@ -468,9 +468,13 @@ const LabTestedShowcase = memo(function LabTestedShowcase() {
 
 const ComboDealsSection = memo(function ComboDealsSection({ products }: { products: Product[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const combos = products
-    .filter((product) => product.collection === "Combos" || product.category === "Combos" || product.title.toLowerCase().includes("combo"))
-    .slice(0, 10);
+  const combos = useMemo(
+    () =>
+      products
+        .filter((product) => product.collection === "Combos" || product.category === "Combos" || product.title.toLowerCase().includes("combo"))
+        .slice(0, 10),
+    [products]
+  );
 
   if (!combos.length) return null;
 
