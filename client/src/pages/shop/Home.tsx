@@ -129,6 +129,7 @@ export function Home() {
       <TraditionGallery />
       <LabTestedShowcase />
       <ComboDealsSection products={products} />
+      <SiddhVideoSection />
       <StyleShowcase />
       <HappyCustomers />
 
@@ -353,65 +354,97 @@ const LabTestedShowcase = memo(function LabTestedShowcase() {
 });
 
 const ComboDealsSection = memo(function ComboDealsSection({ products }: { products: Product[] }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const combos = products
     .filter((product) => product.collection === "Combos" || product.category === "Combos" || product.title.toLowerCase().includes("combo"))
-    .slice(0, 5);
+    .slice(0, 10);
 
   if (!combos.length) return null;
 
+  function scroll(direction: "left" | "right") {
+    scrollerRef.current?.scrollBy({
+      left: direction === "left" ? -420 : 420,
+      behavior: "smooth"
+    });
+  }
+
   return (
-    <section className="bg-[#fbf2e3] py-12">
+    <section className="bg-[#fbf2e3] py-10 md:py-12">
       <div className="container-pad">
-        <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="mb-5 flex items-center justify-between gap-4">
           <h2 className="font-heading text-2xl font-bold md:text-3xl">Save More With Combos</h2>
-          <Link to="/collections?collection=Combos" className="text-sm font-semibold underline underline-offset-4 hover:text-rudra">
-            View all
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/collections?collection=Combos" className="text-sm font-semibold underline underline-offset-4 hover:text-rudra">
+              View all
+            </Link>
+            <div className="hidden gap-2 md:flex">
+              <button
+                type="button"
+                onClick={() => scroll("left")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll combo products left"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll combo products right"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {combos.map((product) => {
-            const discountPercent = product.compareAtPrice
-              ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
-              : 0;
-
-            return (
-              <Link key={product.slug} to={`/products/${product.slug}`} className="group block">
-                <div className="relative aspect-square overflow-hidden rounded-md bg-white shadow-sm">
-                  {discountPercent > 0 && (
-                    <span className="absolute left-0 top-0 z-10 bg-[#cf3f3f] px-3 py-1 text-xs font-black text-white">
-                      {discountPercent}% off
-                    </span>
-                  )}
-                  <img
-                    src={product.images[0]}
-                    alt={product.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <h3 className="mt-3 line-clamp-2 min-h-11 text-sm font-black leading-6 text-[#17172a] group-hover:text-rudra">
-                  {product.title}
-                </h3>
-                <div className="mt-2 flex items-center gap-0.5 text-[#cf3f3f]">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <Star key={index} size={14} fill="currentColor" strokeWidth={0} />
-                  ))}
-                  <span className="ml-2 text-xs font-medium text-[#17172a]/60">({Math.round(product.rating * 70)})</span>
-                </div>
-                <div className="mt-2 flex flex-wrap items-end gap-2">
-                  <span className="font-heading text-xl font-bold text-[#211d33]">Rs.{product.price}</span>
-                  {product.compareAtPrice > product.price && (
-                    <span className="pb-0.5 text-sm font-medium text-[#17172a]/45 line-through">Rs.{product.compareAtPrice}</span>
-                  )}
-                </div>
-              </Link>
-            );
-          })}
+        <div ref={scrollerRef} className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 md:gap-5">
+          {combos.map((product) => (
+            <div key={product.slug} className="min-w-[calc(50vw-26px)] max-w-[220px] snap-start sm:min-w-[210px] lg:min-w-[220px] xl:min-w-[224px]">
+              <ProductCard product={product} />
+            </div>
+          ))}
         </div>
 
         <div className="mt-10 h-px bg-gradient-to-r from-[#211d33] via-[#211d33]/50 to-transparent" />
+      </div>
+    </section>
+  );
+});
+
+const SiddhVideoSection = memo(function SiddhVideoSection() {
+  return (
+    <section className="bg-[#fff7ec] py-12 md:py-16">
+      <div className="container-pad">
+        <div className="mx-auto max-w-5xl overflow-hidden bg-white shadow-soft">
+          <div className="px-6 py-8 text-center md:px-12">
+            <h2 className="font-heading text-2xl font-bold text-[#17172a] md:text-3xl">
+              Siddh Products Delivered To Your Home
+            </h2>
+            <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-[#17172a]/70 md:text-base">
+              Each Siddh order comes with a Siddhi Prakriya Report (SPR) with a QR code to watch a short video of the
+              Siddhi ceremony of your product.
+            </p>
+          </div>
+
+          <div className="relative aspect-video w-full overflow-hidden bg-[#211d33]">
+            <img
+              src="/assets/home/siddhi-prakriya.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover opacity-30"
+            />
+            <iframe
+              className="relative z-10 h-full w-full"
+              src="https://www.youtube.com/embed/LCrxcFGokJk?controls=1&modestbranding=1&playsinline=1&rel=0"
+              title="Siddhi Prakriya ceremony video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
