@@ -3,9 +3,9 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import { createMockPayment, getPaymentMethods, getProfile, placeOrder, updateProfile, validateCoupon } from "../../lib/api";
+import { createMockPayment, getPaymentMethods, getProfile, getPublicCoupons, placeOrder, updateProfile, validateCoupon } from "../../lib/api";
 import { calculatePriceSummary } from "../../lib/pricing";
-import type { Address, ClientUser, PaymentApp, PaymentMethod } from "../../types";
+import type { Address, ClientUser, Coupon, PaymentApp, PaymentMethod } from "../../types";
 
 type Step = "address" | "payment" | "review";
 
@@ -109,6 +109,7 @@ export function Checkout() {
   const [error, setError] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
+  const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [placing, setPlacing] = useState(false);
   const [user, setUser] = useState<ClientUser | null>(null);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<number | "new">("new");
@@ -119,6 +120,9 @@ export function Checkout() {
       setPaymentMethods(methods);
       if (methods[0]) setForm((current) => ({ ...current, paymentMethod: methods[0].code }));
     });
+    getPublicCoupons()
+      .then((coupons) => setAvailableCoupons(coupons.filter((coupon) => coupon.active)))
+      .catch(() => setAvailableCoupons([]));
     if (localStorage.getItem("token")) {
       getProfile()
         .then((profile) => {
@@ -191,16 +195,18 @@ export function Checkout() {
     localStorage.setItem("user", JSON.stringify(updated));
   }
 
-  async function applyCoupon() {
+  async function applyCoupon(selectedCode?: string) {
     setError("");
     setCouponMessage("");
-    const code = form.couponCode.trim();
+    const code = (selectedCode || form.couponCode).trim();
 
     if (!code) {
       setCouponDiscount(0);
       setCouponMessage("");
       return;
     }
+
+    setForm((current) => ({ ...current, couponCode: code.toUpperCase() }));
 
     try {
       const result = await validateCoupon(code, subtotal);
@@ -630,6 +636,7 @@ export function Checkout() {
           summary={summary}
           couponCode={form.couponCode}
           couponMessage={couponMessage}
+          coupons={availableCoupons}
           onCouponChange={(value) => updateField("couponCode", value)}
           onApplyCoupon={applyCoupon}
           step={step}
@@ -707,6 +714,7 @@ function OrderSummary({
   summary,
   couponCode,
   couponMessage,
+  coupons,
   onCouponChange,
   onApplyCoupon,
   step,
@@ -716,8 +724,9 @@ function OrderSummary({
   summary: ReturnType<typeof calculatePriceSummary>;
   couponCode: string;
   couponMessage: string;
+  coupons: Coupon[];
   onCouponChange: (value: string) => void;
-  onApplyCoupon: () => void;
+  onApplyCoupon: (code?: string) => void;
   step: Step;
   placing: boolean;
   onConfirmOrder: () => void;
@@ -760,11 +769,37 @@ function OrderSummary({
           onChange={(event) => onCouponChange(event.target.value)}
           placeholder="Discount code"
         />
-        <button type="button" onClick={onApplyCoupon} className="px-4 text-sm font-black">
+        <button type="button" onClick={() => onApplyCoupon()} className="px-4 text-sm font-black">
           Apply
         </button>
       </div>
       {couponMessage && <p className="mt-2 text-xs font-bold text-green-700">{couponMessage}</p>}
+      {coupons.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {coupons.map((coupon) => {
+            const eligible = subtotal >= coupon.minSubtotal;
+            const discount = coupon.type === "percent" ? `${coupon.value}% off` : `Rs.${coupon.value} off`;
+            return (
+              <button
+                key={coupon._id || coupon.code}
+                type="button"
+                onClick={() => onApplyCoupon(coupon.code)}
+                className={`w-full rounded-md border border-dashed px-3 py-3 text-left transition ${
+                  eligible ? "border-green-300 bg-green-50 hover:bg-green-100" : "border-[#dedbd5] bg-sandal text-ink/55"
+                }`}
+              >
+                <span className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-black uppercase tracking-[0.12em]">{coupon.code}</span>
+                  <span className={`rounded-full px-2 py-1 text-[10px] font-black ${eligible ? "bg-white text-green-700" : "bg-white text-ink/55"}`}>
+                    {eligible ? "Available" : `Add Rs.${Math.ceil(coupon.minSubtotal - subtotal)} more`}
+                  </span>
+                </span>
+                <span className="mt-1 block text-xs font-bold">{discount} on minimum Rs.{coupon.minSubtotal}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       <div className="mt-5 space-y-2 border-t border-[#dedbd5] pt-4 text-sm">
         <SummaryRow label="Subtotal" value={subtotal} />

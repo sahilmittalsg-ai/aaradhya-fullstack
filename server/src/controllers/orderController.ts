@@ -48,10 +48,10 @@ export async function createOrder(req: AuthRequest, res: Response) {
     let discount = 0;
 
     if (couponCode) {
-      const coupon = store.coupons.find((item) => item.code === String(couponCode).toUpperCase() && item.active);
-      if (coupon && subtotal >= coupon.minSubtotal) {
-        discount = coupon.type === "percent" ? Math.round((subtotal * coupon.value) / 100) : coupon.value;
-      }
+      const coupon = [...store.coupons]
+        .sort(sortNewestFirst)
+        .find((item) => normalizeCouponCode(item.code) === normalizeCouponCode(couponCode) && item.active);
+      if (coupon && subtotal >= toNumber(coupon.minSubtotal)) discount = calculateCouponDiscount(coupon, subtotal);
     }
 
     const taxableAmount = Math.max(subtotal - discount, 0);
@@ -124,10 +124,8 @@ export async function createOrder(req: AuthRequest, res: Response) {
   let discount = 0;
 
   if (couponCode) {
-    const coupon = await Coupon.findOne({ code: String(couponCode).toUpperCase(), active: true });
-    if (coupon && subtotal >= coupon.minSubtotal) {
-      discount = coupon.type === "percent" ? Math.round((subtotal * coupon.value) / 100) : coupon.value;
-    }
+    const [coupon] = await Coupon.find({ code: normalizeCouponCode(couponCode), active: true }).sort({ createdAt: -1 }).limit(1);
+    if (coupon && subtotal >= toNumber(coupon.minSubtotal)) discount = calculateCouponDiscount(coupon, subtotal);
   }
 
   const taxableAmount = Math.max(subtotal - discount, 0);
@@ -362,4 +360,22 @@ function findAddressByLocation(addresses: any[], address: NonNullable<ReturnType
     String(item.state || "").trim().toLowerCase() === address.state.toLowerCase() &&
     String(item.pincode || "").trim() === address.pincode
   );
+}
+
+function normalizeCouponCode(value: unknown) {
+  return String(value || "").trim().toUpperCase();
+}
+
+function toNumber(value: unknown) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function calculateCouponDiscount(coupon: Record<string, any>, subtotal: number) {
+  const discount = coupon.type === "percent" ? Math.round((subtotal * toNumber(coupon.value)) / 100) : toNumber(coupon.value);
+  return Math.min(Math.max(discount, 0), subtotal);
+}
+
+function sortNewestFirst(a: Record<string, any>, b: Record<string, any>) {
+  return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
 }
