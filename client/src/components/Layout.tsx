@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { CartDrawer } from "./cart/CartDrawer";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import { HelpMeChoose } from "./HelpMeChoose";
 
 export function Layout() {
   return (
@@ -12,6 +13,7 @@ export function Layout() {
       </main>
       <Footer />
       <CartDrawer />
+      <HelpMeChoose />
     </div>
   );
 }
