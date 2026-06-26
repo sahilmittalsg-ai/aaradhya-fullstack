@@ -1732,7 +1732,7 @@ function ShippingSettingsPage() {
         if (settings.shippingZones?.length) setZones(settings.shippingZones);
         if (settings.freeShippingThreshold !== undefined) setFreeShippingThreshold(Number(settings.freeShippingThreshold));
       })
-      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : "Shipping settings load nahi ho payi."));
+      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : "Could not load shipping settings."));
   }, []);
 
   function updateZone(index: number, patch: Partial<ApiShippingZone>) {
@@ -1767,9 +1767,9 @@ function ShippingSettingsPage() {
         shippingZones: zones
       });
       if (savedSettings.shippingZones?.length) setZones(savedSettings.shippingZones);
-      setMessage("Shipping settings saved. Manage button se rate/name/COD/ETA edit ho rahe hain.");
+      setMessage("Shipping settings updated successfully.");
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Shipping settings save nahi ho payi.");
+      setError(saveError instanceof Error ? saveError.message : "Could not save shipping settings.");
     } finally {
       setSaving(false);
     }
