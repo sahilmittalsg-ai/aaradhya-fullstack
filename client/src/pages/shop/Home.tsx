@@ -91,6 +91,7 @@ export function Home() {
     <div className="bg-[#fbf2e3] text-[#17172a]">
       <CategoryStrip selectedCategory={selectedCategory} onSelect={setSelectedCategory} categories={categoryOptions} />
       <HeroCarousel />
+      <BestsellersSection products={products} />
       <TraditionGallery />
 
       <CollectionCarousel selectedCategory={selectedCollection} onSelect={setSelectedCollection} categories={collectionOptions} />
@@ -155,6 +156,64 @@ const labMarkers = [
     className: "left-[75%] top-[68%]"
   }
 ];
+
+const BestsellersSection = memo(function BestsellersSection({ products }: { products: Product[] }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const bestsellers = useMemo(() => {
+    const featured = products.filter((product) => product.featured || product.rating >= 4.7);
+    return (featured.length ? featured : products).slice(0, 10);
+  }, [products]);
+
+  if (!bestsellers.length) return null;
+
+  function scroll(direction: "left" | "right") {
+    scrollerRef.current?.scrollBy({
+      left: direction === "left" ? -420 : 420,
+      behavior: "smooth"
+    });
+  }
+
+  return (
+    <section className="bg-[#fbf2e3] py-10 md:py-12">
+      <div className="container-pad">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <h2 className="font-heading text-2xl font-bold md:text-3xl">Japam Bestsellers</h2>
+          <div className="flex items-center gap-3">
+            <Link to="/collections" className="text-sm font-semibold underline underline-offset-4 hover:text-rudra">
+              View all
+            </Link>
+            <div className="hidden gap-2 md:flex">
+              <button
+                type="button"
+                onClick={() => scroll("left")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll bestsellers left"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll bestsellers right"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div ref={scrollerRef} className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 md:gap-5">
+          {bestsellers.map((product) => (
+            <div key={product.slug} className="min-w-[calc(50vw-26px)] max-w-[220px] snap-start sm:min-w-[210px] lg:min-w-[220px] xl:min-w-[224px]">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
 
 const LabTestedShowcase = memo(function LabTestedShowcase() {
   return (
