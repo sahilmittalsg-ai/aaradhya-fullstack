@@ -14,7 +14,10 @@ export function Footer() {
     <footer className="mt-20 bg-ink text-sandal">
       <div className="container-pad grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <h2 className="text-2xl font-black">{settings.brandName} {settings.brandTagline}</h2>
+          <Link to="/" className="flex items-center gap-3">
+            <img src="/assets/brand/aaradhya-logo.svg" alt="" className="h-11 w-11 shrink-0 rounded-xl" />
+            <h2 className="text-2xl font-black">{settings.brandName} {settings.brandTagline}</h2>
+          </Link>
           <p className="mt-4 max-w-md text-sm leading-7 text-sandal/70">
             {settings.footerDescription}
           </p>
