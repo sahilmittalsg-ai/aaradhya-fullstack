@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
-import mongoose from "mongoose";
+import { isDbConnected } from "../db/postgres.js";
 import { OtpCode } from "../models/OtpCode.js";
 import { User } from "../models/User.js";
 import { signAccessToken, signRefreshToken, verifyToken } from "../utils/token.js";
@@ -49,7 +49,7 @@ export async function login(req: Request, res: Response) {
   const email = normalizeEmail(req.body.email);
   const { password } = req.body;
 
-  if (mongoose.connection.readyState !== 1 && email === "admin@demo.com" && password === "admin123") {
+  if (!isDbConnected() && email === "admin@demo.com" && password === "admin123") {
     const user = {
       id: "local-admin",
       name: "Admin User",
@@ -83,38 +83,50 @@ export async function login(req: Request, res: Response) {
 }
 
 export async function requestOtp(req: Request, res: Response) {
+  const email = normalizeEmail(req.body.email);
   const phone = normalizePhone(req.body.phone);
-  if (!phone) return res.status(400).json({ message: "Valid mobile number is required" });
+  const identifier = email || phone;
+  if (!identifier) return res.status(400).json({ message: "Valid email is required" });
 
   const developmentOtpMode = isDevelopmentOtpMode();
   const code = developmentOtpMode ? process.env.OTP_DEV_CODE || "123456" : generateOtp();
   const codeHash = await bcrypt.hash(code, 10);
   const ttlMinutes = Number(process.env.OTP_TTL_MINUTES || 5);
   const expiresAt = Date.now() + ttlMinutes * 60 * 1000;
-  const smsResult = developmentOtpMode ? { sent: false, reason: "Twilio environment values are missing" } : await sendOtpSms(phone, code);
+  const smsResult = email
+    ? { sent: false, reason: "Email OTP provider is not configured" }
+    : developmentOtpMode
+      ? { sent: false, reason: "Twilio environment values are missing" }
+      : await sendOtpSms(phone, code);
 
-  if (mongoose.connection.readyState !== 1) {
-    localOtps.set(phone, { codeHash, attempts: 0, expiresAt });
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`Development OTP for ${identifier}: ${code}`);
+  }
+
+  if (!isDbConnected()) {
+    localOtps.set(identifier, { codeHash, attempts: 0, expiresAt });
     return res.status(201).json({
-      message: smsResult.sent ? "OTP sent successfully" : "OTP generated. SMS provider is not configured.",
-      phone,
+      message: smsResult.sent ? "OTP sent successfully" : "OTP generated. Use the visible development OTP.",
+      email: email || undefined,
+      phone: phone || undefined,
       expiresInSeconds: ttlMinutes * 60,
       smsSent: smsResult.sent,
       devOtp: process.env.NODE_ENV === "production" ? undefined : code
     });
   }
 
-  await OtpCode.deleteMany({ phone, purpose: "login", consumedAt: null });
+  await OtpCode.deleteMany({ phone: identifier, purpose: "login", consumedAt: null });
   await OtpCode.create({
-    phone,
+    phone: identifier,
     codeHash,
     purpose: "login",
     expiresAt: new Date(expiresAt)
   });
 
   return res.status(201).json({
-    message: smsResult.sent ? "OTP sent successfully" : "OTP generated. SMS provider is not configured.",
-    phone,
+    message: smsResult.sent ? "OTP sent successfully" : "OTP generated. Use the visible development OTP.",
+    email: email || undefined,
+    phone: phone || undefined,
     expiresInSeconds: ttlMinutes * 60,
     smsSent: smsResult.sent,
     devOtp: process.env.NODE_ENV === "production" ? undefined : code
@@ -122,78 +134,86 @@ export async function requestOtp(req: Request, res: Response) {
 }
 
 export async function verifyOtp(req: Request, res: Response) {
+  const email = normalizeEmail(req.body.email);
   const phone = normalizePhone(req.body.phone);
+  const identifier = email || phone;
   const code = String(req.body.code || "").trim();
 
-  if (!phone || code.length !== 6) {
-    return res.status(400).json({ message: "Mobile number and 6 digit OTP are required" });
+  if (!identifier || code.length !== 6) {
+    return res.status(400).json({ message: "Email and 6 digit OTP are required" });
   }
 
-  if (mongoose.connection.readyState !== 1) {
-    const otp = localOtps.get(phone);
-    if (!otp || otp.expiresAt < Date.now()) {
-      localOtps.delete(phone);
+  if (!isDbConnected()) {
+    const otp = localOtps.get(identifier);
+    const devOtpAccepted = isDevOtp(code);
+    if ((!otp || otp.expiresAt < Date.now()) && !devOtpAccepted) {
+      localOtps.delete(identifier);
       return res.status(401).json({ message: "OTP expired or not found" });
     }
-    if (otp.attempts >= 5) return res.status(429).json({ message: "Too many OTP attempts" });
+    if (otp && otp.attempts >= 5) return res.status(429).json({ message: "Too many OTP attempts" });
 
-    const valid = await bcrypt.compare(code, otp.codeHash);
+    const valid = devOtpAccepted || (otp ? await bcrypt.compare(code, otp.codeHash) : false);
     if (!valid) {
-      otp.attempts += 1;
+      if (otp) otp.attempts += 1;
       return res.status(401).json({ message: "Invalid OTP" });
     }
 
-    localOtps.delete(phone);
+    localOtps.delete(identifier);
 
-    const existing = localUsers.get(phone);
+    const existing = localUsers.get(identifier);
     const user: LocalUser =
       existing ||
       {
-        id: `local-user-${phone}`,
-        name: req.body.name || `Customer ${phone.slice(-4)}`,
-        email: req.body.email || `${phone}@otp.local`,
-        phone,
+        id: `local-user-${identifier}`,
+        name: req.body.name || (email ? email.split("@")[0] : `Customer ${phone.slice(-4)}`),
+        email: email || `${phone}@otp.local`,
+        phone: phone || "",
         phoneVerifiedAt: new Date().toISOString(),
         role: "client" as const,
         addresses: []
       };
-    localUsers.set(phone, user);
+    localUsers.set(identifier, user);
 
     const tokens = await issueTokens(user.id, user.role);
     user.refreshTokenHash = await bcrypt.hash(tokens.refreshToken, 10);
     localRefreshTokens.set(user.id, user.refreshTokenHash);
-    localUsers.set(phone, user);
+    localUsers.set(identifier, user);
     return res.json({ ...tokens, token: tokens.accessToken, user });
   }
 
   const otp = await OtpCode.findOne({
-    phone,
+    phone: identifier,
     purpose: "login",
     consumedAt: null,
     expiresAt: { $gt: new Date() }
   }).sort({ createdAt: -1 });
 
-  if (!otp) return res.status(401).json({ message: "OTP expired or not found" });
-  if (otp.attempts >= 5) return res.status(429).json({ message: "Too many OTP attempts" });
+  const devOtpAccepted = isDevOtp(code);
+  if (!otp && !devOtpAccepted) return res.status(401).json({ message: "OTP expired or not found" });
+  if (otp && otp.attempts >= 5) return res.status(429).json({ message: "Too many OTP attempts" });
 
-  const valid = await bcrypt.compare(code, otp.codeHash);
+  const valid = devOtpAccepted || (otp ? await bcrypt.compare(code, otp.codeHash) : false);
   if (!valid) {
-    otp.attempts += 1;
-    await otp.save();
+    if (otp) {
+      otp.attempts += 1;
+      await otp.save();
+    }
     return res.status(401).json({ message: "Invalid OTP" });
   }
 
-  otp.consumedAt = new Date();
-  await otp.save();
+  if (otp) {
+    otp.consumedAt = new Date();
+    await otp.save();
+  }
 
-  let user = await User.findOne({ phone });
+  let user = email ? await User.findOne({ email }) : await User.findOne({ phone });
   if (!user) {
     user = await User.create({
-      name: req.body.name || `Customer ${phone.slice(-4)}`,
-      email: req.body.email || `${phone}@otp.local`,
-      phone,
+      name: req.body.name || (email ? email.split("@")[0] : `Customer ${phone.slice(-4)}`),
+      email: email || `${phone}@otp.local`,
+      phone: phone || "",
       phoneVerifiedAt: new Date(),
-      password: `${phone}-${Date.now()}`,
+      password: `${identifier}-${Date.now()}`,
       role: "client"
     });
   } else if (!user.phoneVerifiedAt) {
@@ -212,7 +232,7 @@ export async function refreshToken(req: Request, res: Response) {
     const payload = verifyToken(refreshTokenValue);
     if (payload.tokenType !== "refresh") return res.status(401).json({ message: "Refresh token is invalid" });
 
-    if (mongoose.connection.readyState !== 1) {
+    if (!isDbConnected()) {
       const hash = localRefreshTokens.get(payload.id);
       if (!hash || !(await bcrypt.compare(refreshTokenValue, hash))) {
         return res.status(401).json({ message: "Refresh token is invalid" });
@@ -240,7 +260,7 @@ export async function logout(req: Request, res: Response) {
     if (refreshTokenValue) {
       const payload = verifyToken(refreshTokenValue);
       localRefreshTokens.delete(payload.id);
-      if (mongoose.connection.readyState === 1) {
+      if (isDbConnected()) {
         await User.findByIdAndUpdate(payload.id, { refreshTokenHash: "" });
       }
     }
@@ -335,6 +355,10 @@ function normalizePhone(phone: unknown) {
   const digits = String(phone || "").replace(/\D/g, "");
   if (digits.length < 10) return "";
   return digits.length === 10 ? `91${digits}` : digits;
+}
+
+function isDevOtp(code: string) {
+  return process.env.NODE_ENV !== "production" && code === (process.env.OTP_DEV_CODE || "123456");
 }
 
 function isDevelopmentOtpMode() {

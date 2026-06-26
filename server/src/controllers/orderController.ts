@@ -1,11 +1,12 @@
 import { Response } from "express";
-import mongoose from "mongoose";
+import { isDbConnected } from "../db/postgres.js";
 import { newId, readStore, writeStore } from "../data/fileStore.js";
 import { AuthRequest } from "../middleware/auth.js";
 import { Coupon } from "../models/Coupon.js";
 import { Order } from "../models/Order.js";
 import { PaymentMethod } from "../models/PaymentMethod.js";
 import { Product } from "../models/Product.js";
+import { User } from "../models/User.js";
 
 const fallbackPaymentMethods = [
   { code: "cod", type: "cod", provider: "manual", fee: 0 },
@@ -29,8 +30,9 @@ export async function createOrder(req: AuthRequest, res: Response) {
 } = req.body;
   if (!items?.length) return res.status(400).json({ message: "Order items are required" });
 
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
+    const orderUserId = req.user?.id || localCustomerId(customer);
     const subtotal = items.reduce(
       (sum: number, item: any) =>
         sum +
@@ -57,7 +59,7 @@ export async function createOrder(req: AuthRequest, res: Response) {
     const order = {
       _id: newId("local-order"),
       orderNumber: `ORD-${Date.now().toString().slice(-8)}`,
-      user: req.user?.id,
+      user: orderUserId,
       customer,
       shippingAddress,
       billingAddress: billingAddress || shippingAddress,
@@ -130,10 +132,11 @@ export async function createOrder(req: AuthRequest, res: Response) {
   const taxableAmount = Math.max(subtotal - discount, 0);
   const tax = Math.round(taxableAmount * 0.05);
   const totalDiscount = productDiscount + discount;
+  const orderUserId = await ensureOrderCustomer(req, customer, shippingAddress);
 
   const order = await Order.create({
     orderNumber: `ORD-${Date.now().toString().slice(-8)}`,
-    user: req.user?.id,
+    user: orderUserId,
     customer,
     shippingAddress,
     billingAddress: billingAddress || shippingAddress,
@@ -165,7 +168,7 @@ export async function createOrder(req: AuthRequest, res: Response) {
 }
 
 export async function listOrders(_req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     return res.json(store.orders);
   }
@@ -175,7 +178,7 @@ export async function listOrders(_req: AuthRequest, res: Response) {
 }
 
 export async function trackOrder(req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const order = store.orders.find((item) => item.orderNumber === req.params.orderNumber);
     if (!order) return res.status(404).json({ message: "Order not found" });
@@ -188,7 +191,7 @@ export async function trackOrder(req: AuthRequest, res: Response) {
 }
 
 export async function updateOrderStatus(req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const index = store.orders.findIndex((order) => order._id === req.params.id);
     if (index === -1) return res.status(404).json({ message: "Order not found" });
@@ -215,7 +218,7 @@ export async function cancelOrder(req: AuthRequest, res: Response) {
   const reason = String(req.body.reason || "Customer requested cancellation").trim();
   const orderId = String(req.params.id);
 
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const order = store.orders.find((item) => item._id === orderId || item.orderNumber === orderId);
     if (!order) return res.status(404).json({ message: "Order not found" });
@@ -263,4 +266,85 @@ function isObjectId(value: string) {
 
 function normalizePhone(value: unknown) {
   return String(value || "").replace(/\D/g, "");
+}
+
+function normalizeEmail(value: unknown) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function localCustomerId(customer: any) {
+  const email = normalizeEmail(customer?.email);
+  if (email) return `local-user-${email}`;
+
+  const phone = normalizePhone(customer?.phone);
+  return phone ? `local-user-${phone}` : undefined;
+}
+
+async function ensureOrderCustomer(req: AuthRequest, customer: any, shippingAddress: any) {
+  const email = normalizeEmail(customer?.email);
+  const phone = normalizePhone(customer?.phone);
+  const name = String(customer?.name || "").trim();
+  const address = normalizeAddress(shippingAddress);
+
+  let user = req.user?.id ? await User.findById(req.user.id) : null;
+
+  if (!user && email) user = await User.findOne({ email });
+  if (!user && phone) user = await User.findOne({ phone });
+
+  if (!user && (email || phone)) {
+    user = await User.create({
+      name: name || (email ? email.split("@")[0] : `Customer ${phone.slice(-4)}`),
+      email: email || `${phone}@checkout.local`,
+      phone,
+      password: `checkout-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      role: "client",
+      addresses: address ? [address] : []
+    });
+    return String(user._id || user.id);
+  }
+
+  if (!user) return req.user?.id;
+
+  let changed = false;
+  if (name && !user.name) {
+    user.name = name;
+    changed = true;
+  }
+  if (email && !user.email) {
+    user.email = email;
+    changed = true;
+  }
+  if (phone && !user.phone) {
+    user.phone = phone;
+    changed = true;
+  }
+  if (address && !hasAddress(user.addresses || [], address)) {
+    user.addresses = [...(user.addresses || []), address];
+    changed = true;
+  }
+
+  if (changed) await user.save();
+  return String(user._id || user.id);
+}
+
+function normalizeAddress(address: any) {
+  if (!address?.line1 || !address?.city || !address?.state || !address?.pincode) return null;
+
+  return {
+    line1: String(address.line1).trim(),
+    line2: String(address.line2 || "").trim(),
+    city: String(address.city).trim(),
+    state: String(address.state).trim(),
+    pincode: String(address.pincode).trim()
+  };
+}
+
+function hasAddress(addresses: any[], address: NonNullable<ReturnType<typeof normalizeAddress>>) {
+  return addresses.some((item) =>
+    String(item.line1 || "").trim().toLowerCase() === address.line1.toLowerCase() &&
+    String(item.line2 || "").trim().toLowerCase() === address.line2.toLowerCase() &&
+    String(item.city || "").trim().toLowerCase() === address.city.toLowerCase() &&
+    String(item.state || "").trim().toLowerCase() === address.state.toLowerCase() &&
+    String(item.pincode || "").trim() === address.pincode
+  );
 }

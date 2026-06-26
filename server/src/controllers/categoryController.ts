@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose from "mongoose";
+import { isDbConnected } from "../db/postgres.js";
 import slugify from "slugify";
 import { makeSlug, newId, readStore, writeStore } from "../data/fileStore.js";
 import { Category } from "../models/Category.js";
@@ -7,7 +7,7 @@ import { Category } from "../models/Category.js";
 export async function listCategories(req: Request, res: Response) {
   const includeAll = req.query.all === "true";
 
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     return res.json(includeAll ? store.categories : store.categories.filter((category) => category.active !== false));
   }
@@ -17,7 +17,7 @@ export async function listCategories(req: Request, res: Response) {
 }
 
 export async function createCategory(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const category = {
       ...req.body,
@@ -36,7 +36,7 @@ export async function createCategory(req: Request, res: Response) {
 }
 
 export async function updateCategory(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const index = store.categories.findIndex((category) => category._id === req.params.id);
     if (index === -1) return res.status(404).json({ message: "Category not found" });
@@ -56,7 +56,7 @@ export async function updateCategory(req: Request, res: Response) {
 }
 
 export async function deleteCategory(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const index = store.categories.findIndex((category) => category._id === req.params.id);
     if (index === -1) return res.status(404).json({ message: "Category not found" });

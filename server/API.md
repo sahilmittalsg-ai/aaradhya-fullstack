@@ -12,7 +12,7 @@ Create `server/.env` from `server/.env.example`.
 
 ```text
 PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/spiritual-commerce
+DATABASE_URL=postgresql://user:password@host:5432/database
 JWT_SECRET=change-this-secret
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=30d
@@ -24,6 +24,8 @@ PASSWORD_RESET_TTL_MINUTES=15
 ```
 
 ## Database Collections
+
+The API stores each collection as JSONB documents inside PostgreSQL table `app_documents`.
 
 - `users`: admin/client accounts, addresses, wishlist
 - `products`: catalog, pricing, stock, images, tags, benefits, materials
@@ -377,7 +379,7 @@ Admin support update body:
 
 ## Seed
 
-After MongoDB is running:
+After PostgreSQL is configured:
 
 ```bash
 npm install

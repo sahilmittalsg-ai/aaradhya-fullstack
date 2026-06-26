@@ -1,13 +1,7 @@
-import mongoose, { InferSchemaType } from "mongoose";
+import { createCollectionModel } from "../db/documentModel.js";
 
-const newsletterSubscriberSchema = new mongoose.Schema(
-  {
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    source: { type: String, default: "website" },
-    active: { type: Boolean, default: true }
-  },
-  { timestamps: true }
-);
+export type NewsletterSubscriberDocument = Record<string, any>;
 
-export type NewsletterSubscriberDocument = InferSchemaType<typeof newsletterSubscriberSchema>;
-export const NewsletterSubscriber = mongoose.model("NewsletterSubscriber", newsletterSubscriberSchema);
+export const NewsletterSubscriber = createCollectionModel("newslettersubscribers", {
+  defaults: () => ({ source: "website", active: true })
+});

@@ -1,6 +1,6 @@
 import { Response } from "express";
 import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
+import { isDbConnected } from "../db/postgres.js";
 import { newId, readStore, writeStore } from "../data/fileStore.js";
 import { AuthRequest } from "../middleware/auth.js";
 import { Order } from "../models/Order.js";
@@ -43,24 +43,40 @@ export async function changePassword(req: AuthRequest, res: Response) {
 }
 
 export async function myOrders(req: AuthRequest, res: Response) {
-  const orders = await Order.find({ user: req.user?.id }).sort({ createdAt: -1 });
+  const userId = String(req.user?.id || "");
+  const { email, phoneTail } = await getCurrentUserContact(userId);
+
+  if (!isDbConnected()) {
+    const store = await readStore();
+    const orders = store.orders
+      .filter((order) => recordBelongsToUser(order, userId, email, phoneTail))
+      .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+    return res.json(orders);
+  }
+
+  const orders = (await Order.find())
+    .filter((order: any) => recordBelongsToUser(order, userId, email, phoneTail))
+    .sort((a: any, b: any) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
   return res.json(orders);
 }
 
 export async function assistantOrders(req: AuthRequest, res: Response) {
   const phone = normalizePhone(req.body.phone);
-  if (phone.length < 8) return res.status(400).json({ message: "Linked mobile number is required" });
+  const email = normalizeEmail(req.body.email);
+  if (phone.length < 8 && !email) return res.status(400).json({ message: "Linked mobile number or email is required" });
   const phoneTail = phone.slice(-10);
 
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const orders = store.orders
-      .filter((order) => normalizePhone(order.customer?.phone).endsWith(phoneTail))
+      .filter((order) => recordBelongsToUser(order, "", email, phoneTail))
       .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return res.json(orders);
   }
 
-  const orders = await Order.find({ "customer.phone": new RegExp(`${phoneTail}$`) }).sort({ createdAt: -1 });
+  const orders = (await Order.find())
+    .filter((order: any) => recordBelongsToUser(order, "", email, phoneTail))
+    .sort((a: any, b: any) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
   return res.json(orders);
 }
 
@@ -69,7 +85,7 @@ export async function toggleWishlist(req: AuthRequest, res: Response) {
   if (!user) return res.status(404).json({ message: "User not found" });
 
   const productId = req.params.productId;
-  const exists = user.wishlist.some((item) => String(item) === productId);
+  const exists = user.wishlist.some((item: any) => String(item) === productId);
   const update = exists ? { $pull: { wishlist: productId } } : { $addToSet: { wishlist: productId } };
   const updatedUser = await User.findByIdAndUpdate(user._id, update, { new: true }).select("wishlist");
 
@@ -77,7 +93,7 @@ export async function toggleWishlist(req: AuthRequest, res: Response) {
 }
 
 export async function createSupportTicket(req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const now = new Date().toISOString();
     const ticket = {
@@ -118,18 +134,25 @@ export async function createSupportTicket(req: AuthRequest, res: Response) {
 }
 
 export async function mySupportTickets(req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  const userId = String(req.user?.id || "");
+  const { email, phoneTail } = await getCurrentUserContact(userId);
+
+  if (!isDbConnected()) {
     const store = await readStore();
-    const tickets = store.supportTickets.filter((ticket) => ticket.user === req.user?.id);
+    const tickets = store.supportTickets
+      .filter((ticket) => recordBelongsToUser(ticket, userId, email, phoneTail))
+      .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return res.json(tickets);
   }
 
-  const tickets = await SupportTicket.find({ user: req.user?.id }).sort({ createdAt: -1 });
+  const tickets = (await SupportTicket.find())
+    .filter((ticket: any) => recordBelongsToUser(ticket, userId, email, phoneTail))
+    .sort((a: any, b: any) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
   return res.json(tickets);
 }
 
 export async function listSupportTickets(_req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     return res.json(store.supportTickets);
   }
@@ -139,7 +162,7 @@ export async function listSupportTickets(_req: AuthRequest, res: Response) {
 }
 
 export async function updateSupportTicket(req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const ticket = store.supportTickets.find((item) => item._id === req.params.id);
     if (!ticket) return res.status(404).json({ message: "Ticket not found" });
@@ -170,7 +193,8 @@ export async function updateSupportTicket(req: AuthRequest, res: Response) {
     patch.$push = {
       replies: {
         message: req.body.reply,
-        authorRole: "admin"
+        authorRole: "admin",
+        createdAt: new Date().toISOString()
       }
     };
   }
@@ -184,7 +208,7 @@ export async function replySupportTicket(req: AuthRequest, res: Response) {
   const message = String(req.body.message || "").trim();
   if (!message) return res.status(400).json({ message: "Reply message is required" });
 
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const ticket = store.supportTickets.find((item) => item._id === req.params.id);
     if (!ticket) return res.status(404).json({ message: "Ticket not found" });
@@ -217,7 +241,7 @@ export async function replySupportTicket(req: AuthRequest, res: Response) {
 }
 
 export async function closeSupportTicket(req: AuthRequest, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const ticket = store.supportTickets.find((item) => item._id === req.params.id);
     if (!ticket) return res.status(404).json({ message: "Ticket not found" });
@@ -240,6 +264,40 @@ export async function closeSupportTicket(req: AuthRequest, res: Response) {
 
 function normalizePhone(value: unknown) {
   return String(value || "").replace(/\D/g, "");
+}
+
+function normalizeEmail(value: unknown) {
+  return String(value || "").trim().toLowerCase();
+}
+
+async function getCurrentUserContact(userId: string) {
+  if (!userId) return { email: "", phoneTail: "" };
+
+  if (!isDbConnected()) {
+    const localIdentifier = userId.startsWith("local-user-") ? userId.slice("local-user-".length) : "";
+    return {
+      email: normalizeEmail(localIdentifier),
+      phoneTail: normalizePhone(localIdentifier).slice(-10)
+    };
+  }
+
+  const currentUser = await User.findById(userId).select("email phone");
+  return {
+    email: normalizeEmail(currentUser?.email),
+    phoneTail: normalizePhone(currentUser?.phone).slice(-10)
+  };
+}
+
+function recordBelongsToUser(record: any, userId: string, email: string, phoneTail: string) {
+  if (userId && String(record.user || "") === userId) return true;
+
+  const recordEmail = normalizeEmail(record.customer?.email || record.email);
+  const recordPhone = normalizePhone(record.customer?.phone || record.phone);
+
+  return Boolean(
+    (email && recordEmail === email) ||
+      (phoneTail.length >= 8 && recordPhone.endsWith(phoneTail))
+  );
 }
 
 function canManageTicket(req: AuthRequest, ticket: any) {

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import mongoose from "mongoose";
+import { isDbConnected } from "../db/postgres.js";
 import { AuthRequest } from "../middleware/auth.js";
 import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
@@ -37,7 +37,7 @@ export async function createReview(req: AuthRequest, res: Response) {
   });
 
   const reviews = await Review.find({ product: product._id, approved: true });
-  const rating = reviews.reduce((sum, item) => sum + item.rating, 0) / reviews.length;
+  const rating = reviews.reduce((sum: number, item: any) => sum + item.rating, 0) / reviews.length;
   await Product.findByIdAndUpdate(product._id, { rating: Number(rating.toFixed(1)) });
 
   return res.status(201).json(review);
@@ -82,8 +82,8 @@ function canManageReview(req: AuthRequest, review: any) {
   return req.user?.role === "admin" || (req.user?.id && String(review.user || "") === req.user.id);
 }
 
-async function refreshProductRating(productId: mongoose.Types.ObjectId) {
+async function refreshProductRating(productId: string) {
   const reviews = await Review.find({ product: productId, approved: true });
-  const rating = reviews.length ? reviews.reduce((sum, item) => sum + item.rating, 0) / reviews.length : 4.8;
+  const rating = reviews.length ? reviews.reduce((sum: number, item: any) => sum + item.rating, 0) / reviews.length : 4.8;
   await Product.findByIdAndUpdate(productId, { rating: Number(rating.toFixed(1)) });
 }

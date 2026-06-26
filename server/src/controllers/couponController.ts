@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import mongoose from "mongoose";
+import { isDbConnected } from "../db/postgres.js";
 import { newId, readStore, writeStore } from "../data/fileStore.js";
 import { Coupon } from "../models/Coupon.js";
 
 export async function listCoupons(_req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     return res.json(store.coupons);
   }
@@ -14,7 +14,7 @@ export async function listCoupons(_req: Request, res: Response) {
 }
 
 export async function listPublicCoupons(_req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     return res.json(store.coupons.filter((coupon) => coupon.active));
   }
@@ -24,7 +24,7 @@ export async function listPublicCoupons(_req: Request, res: Response) {
 }
 
 export async function createCoupon(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const coupon = { ...req.body, _id: newId("local-coupon"), code: String(req.body.code).toUpperCase(), active: req.body.active !== false };
     store.coupons.unshift(coupon);
@@ -38,7 +38,7 @@ export async function createCoupon(req: Request, res: Response) {
 
 export async function validateCoupon(req: Request, res: Response) {
   const { code, subtotal } = req.body;
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const coupon = store.coupons.find((item) => item.code === String(code).toUpperCase() && item.active);
 
@@ -61,7 +61,7 @@ export async function validateCoupon(req: Request, res: Response) {
 }
 
 export async function updateCoupon(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const index = store.coupons.findIndex((coupon) => coupon._id === req.params.id);
     if (index === -1) return res.status(404).json({ message: "Coupon not found" });
@@ -81,7 +81,7 @@ export async function updateCoupon(req: Request, res: Response) {
 }
 
 export async function deleteCoupon(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const index = store.coupons.findIndex((coupon) => coupon._id === req.params.id);
     if (index === -1) return res.status(404).json({ message: "Coupon not found" });

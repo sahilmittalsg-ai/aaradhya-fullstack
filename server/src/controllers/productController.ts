@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose, { SortOrder } from "mongoose";
+import { isDbConnected, type SortOrder } from "../db/postgres.js";
 import slugify from "slugify";
 import { makeSlug, newId, readStore, writeStore } from "../data/fileStore.js";
 import { Product } from "../models/Product.js";
@@ -8,7 +8,7 @@ export async function listProducts(req: Request, res: Response) {
   const includeAll = req.query.all === "true";
   const pagination = getPagination(req);
 
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const products = await listLocalProducts(req);
     return res.json(paginateIfRequested(products, pagination));
   }
@@ -63,7 +63,7 @@ export async function listProducts(req: Request, res: Response) {
 }
 
 export async function getProduct(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     return getLocalProduct(req, res);
   }
 
@@ -77,7 +77,7 @@ export async function getProduct(req: Request, res: Response) {
 }
 
 export async function createProduct(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const product = {
       ...req.body,
@@ -97,7 +97,7 @@ export async function createProduct(req: Request, res: Response) {
 }
 
 export async function updateProduct(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const index = store.products.findIndex((product) => product._id === req.params.id);
     if (index === -1) return res.status(404).json({ message: "Product not found" });
@@ -118,7 +118,7 @@ export async function updateProduct(req: Request, res: Response) {
 }
 
 export async function deleteProduct(req: Request, res: Response) {
-  if (mongoose.connection.readyState !== 1) {
+  if (!isDbConnected()) {
     const store = await readStore();
     const index = store.products.findIndex((product) => product._id === req.params.id);
     if (index === -1) return res.status(404).json({ message: "Product not found" });

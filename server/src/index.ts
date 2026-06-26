@@ -71,10 +71,10 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ message: err.message || "Server error" });
 });
 
-connectDb(process.env.MONGO_URI || "")
+connectDb(process.env.DATABASE_URL || "")
   .then(() => app.listen(port, () => console.log(`API running on ${port}`)))
   .catch((error) => {
-    console.warn("MongoDB unavailable. API running with local file store fallback.");
+    console.warn("PostgreSQL unavailable. API running with local file store fallback.");
     console.warn(error.message);
     app.listen(port, () => console.log(`API running on ${port}`));
   });

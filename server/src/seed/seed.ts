@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import { disconnectDb } from "../db/postgres.js";
 import slugify from "slugify";
 import { connectDb } from "../config/db.js";
 import { Banner } from "../models/Banner.js";
@@ -449,7 +449,7 @@ const products = [
 ];
 
 async function seed() {
-  await connectDb(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/spiritual-commerce");
+  await connectDb(process.env.DATABASE_URL || "");
   await Promise.all([
     User.deleteMany({}),
     Product.deleteMany({}),
@@ -590,7 +590,7 @@ async function seed() {
       slug: "about-us",
       type: "about",
       excerpt: "A premium spiritual wearables brand demo.",
-      body: "Aaradhya Beads is a MERN ecommerce build for spiritual bracelets, malas, crystals, order tracking, customer accounts, and admin operations."
+      body: "Aaradhya Beads is an ecommerce build for spiritual bracelets, malas, crystals, order tracking, customer accounts, and admin operations."
     },
     {
       title: "Shipping Policy",
@@ -884,7 +884,7 @@ async function seed() {
   ]);
 
   console.log("Seed complete");
-  await mongoose.disconnect();
+  await disconnectDb();
 }
 
 seed().catch((error) => {

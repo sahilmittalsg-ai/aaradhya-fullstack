@@ -1,6 +1,8 @@
 # Database Plan
 
-This backend is designed so the customer website, client panel, and admin panel can all be driven from MongoDB.
+This backend is designed so the customer website, client panel, and admin panel can all be driven from PostgreSQL.
+
+The current implementation stores app collections as JSONB documents in a shared `app_documents` table. This keeps the API flexible for the existing storefront/admin data while using PostgreSQL as the production database.
 
 ## Storefront Content
 
