@@ -1,10 +1,11 @@
 import { ImagePlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
-import { ChangeEvent, useState } from "react";
-import { trendingProducts } from "../data";
-import type { TrendingProduct } from "../data";
+import { ChangeEvent, useEffect, useState } from "react";
+import { fallbackHomepage, getAdminHomepage, updateAdminHomepage } from "../lib/api";
+import type { ApiHomepage, ApiTrendingProduct } from "../lib/api";
 
-const blankProduct: TrendingProduct = {
+const blankProduct: ApiTrendingProduct = {
   id: 0,
+  slug: "",
   image: "/assets/products/rudraksha-bracelet.png",
   name: "",
   price: 0,
@@ -16,40 +17,107 @@ const blankProduct: TrendingProduct = {
   enabled: true
 };
 
+function toSlug(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function AdminTrendingManager() {
-  const [items, setItems] = useState<TrendingProduct[]>(trendingProducts);
-  const [draft, setDraft] = useState<TrendingProduct>({ ...blankProduct, id: Date.now() });
+  const [homepage, setHomepage] = useState<ApiHomepage>(fallbackHomepage);
+  const [items, setItems] = useState<ApiTrendingProduct[]>(fallbackHomepage.trending.products);
+  const [draft, setDraft] = useState<ApiTrendingProduct>({ ...blankProduct, id: Date.now() });
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [autoSlide, setAutoSlide] = useState(true);
-  const [slideInterval, setSlideInterval] = useState(4000);
+  const [autoSlide, setAutoSlide] = useState(fallbackHomepage.trending.autoplay);
+  const [slideInterval, setSlideInterval] = useState(fallbackHomepage.trending.intervalMs);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getAdminHomepage()
+      .then((savedHomepage) => {
+        setHomepage(savedHomepage);
+        setItems(savedHomepage.trending.products);
+        setAutoSlide(savedHomepage.trending.autoplay);
+        setSlideInterval(savedHomepage.trending.intervalMs);
+      })
+      .catch((loadError) => {
+        setError(loadError instanceof Error ? loadError.message : "Latest & Trending content load nahi ho paya.");
+      });
+  }, []);
+
+  async function persist(nextItems = items, nextAutoSlide = autoSlide, nextSlideInterval = slideInterval) {
+    setSaving(true);
+    setMessage("");
+    setError("");
+
+    const normalizedItems = nextItems.map((item, index) => ({
+      ...item,
+      id: Number(item.id || Date.now() + index),
+      slug: item.slug || toSlug(item.name),
+      badge: "New arrival" as const
+    }));
+
+    try {
+      const savedHomepage = await updateAdminHomepage({
+        ...homepage,
+        trending: {
+          ...homepage.trending,
+          enabled: true,
+          autoplay: nextAutoSlide,
+          intervalMs: nextSlideInterval,
+          products: normalizedItems
+        }
+      });
+      setHomepage(savedHomepage);
+      setItems(savedHomepage.trending.products);
+      setAutoSlide(savedHomepage.trending.autoplay);
+      setSlideInterval(savedHomepage.trending.intervalMs);
+      setMessage("Latest & Trending saved. Client homepage reload ke baad updated carousel dikhega.");
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Latest & Trending save nahi ho paya.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   function saveProduct() {
     if (!draft.name.trim()) return;
 
-    if (editingId) {
-      setItems((current) => current.map((item) => (item.id === editingId ? draft : item)));
-    } else {
-      setItems((current) => [{ ...draft, id: Date.now() }, ...current]);
-    }
+    const product = {
+      ...draft,
+      id: editingId || Date.now(),
+      slug: draft.slug || toSlug(draft.name)
+    };
+    const nextItems = editingId
+      ? items.map((item) => (item.id === editingId ? product : item))
+      : [product, ...items];
 
+    setItems(nextItems);
+    void persist(nextItems);
     setDraft({ ...blankProduct, id: Date.now() });
     setEditingId(null);
   }
 
-  function editProduct(product: TrendingProduct) {
+  function editProduct(product: ApiTrendingProduct) {
     setDraft(product);
     setEditingId(product.id);
   }
 
   function deleteProduct(id: number) {
-    setItems((current) => current.filter((item) => item.id !== id));
+    const nextItems = items.filter((item) => item.id !== id);
+    setItems(nextItems);
+    void persist(nextItems);
     if (editingId === id) {
       setDraft({ ...blankProduct, id: Date.now() });
       setEditingId(null);
     }
   }
 
-  function updateDraft<K extends keyof TrendingProduct>(key: K, value: TrendingProduct[K]) {
+  function updateDraft<K extends keyof ApiTrendingProduct>(key: K, value: ApiTrendingProduct[K]) {
     setDraft((current) => ({ ...current, [key]: value }));
   }
 
@@ -77,6 +145,7 @@ export function AdminTrendingManager() {
             </div>
           </label>
           <Field label="Product Name" value={draft.name} onChange={(value) => updateDraft("name", value)} />
+          <Field label="Product Slug" value={draft.slug} onChange={(value) => updateDraft("slug", toSlug(value))} />
           <Field label="Price" value={String(draft.price)} onChange={(value) => updateDraft("price", Number(value))} type="number" />
           <Field label="Old Price" value={String(draft.oldPrice)} onChange={(value) => updateDraft("oldPrice", Number(value))} type="number" />
           <Field label="Discount Badge" value={draft.discount} onChange={(value) => updateDraft("discount", value)} />
@@ -86,9 +155,9 @@ export function AdminTrendingManager() {
             <input type="checkbox" checked={draft.enabled} onChange={(event) => updateDraft("enabled", event.target.checked)} />
             Enable in Latest & Trending
           </label>
-          <button onClick={saveProduct} className="admin-button gap-2">
+          <button onClick={saveProduct} disabled={saving} className="admin-button gap-2 disabled:opacity-60">
             {editingId ? <Save size={17} /> : <Plus size={17} />}
-            {editingId ? "Save Changes" : "Add Product"}
+            {saving ? "Saving..." : editingId ? "Save Changes" : "Add Product"}
           </button>
         </div>
       </div>
@@ -111,6 +180,11 @@ export function AdminTrendingManager() {
               </select>
             </label>
           </div>
+          <button type="button" onClick={() => void persist()} disabled={saving} className="admin-button mt-5 gap-2 disabled:opacity-60">
+            <Save size={17} /> {saving ? "Saving..." : "Save Carousel"}
+          </button>
+          {message && <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{message}</p>}
+          {error && <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
         </div>
 
         <div className="admin-card overflow-hidden">

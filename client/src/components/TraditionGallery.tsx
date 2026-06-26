@@ -1,81 +1,63 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-const galleryItems = [
-  {
-    image: "/assets/tradition/mahakal-mala.jpg",
-    label: "Mahakal Rudraksha Mala",
-    href: "/collections?collection=Rudraksha%20Malas",
-    className: "lg:col-span-1"
-  },
-  {
-    image: "/assets/tradition/red-sandalwood.jpg",
-    label: "Red Sandalwood Mala",
-    href: "/collections?bead=Sandalwood",
-    className: "lg:col-span-1"
-  },
-  {
-    image: "/assets/tradition/dreamy-duo.jpg",
-    label: "Dreamy Duo Bands",
-    href: "/collections?collection=Energy%20Stones",
-    className: "sm:col-span-2 lg:col-span-2"
-  },
-  {
-    image: "/assets/tradition/silver-rudraksha-mala.jpg",
-    label: "Silver Rudraksha Mala",
-    href: "/collections?collection=Rudraksha%20Malas",
-    className: "lg:col-span-1"
-  },
-  {
-    image: "/assets/tradition/golden-beads-modern.jpg",
-    label: "Modern Golden Beads",
-    href: "/collections?collection=Rudraksha%20Bracelets",
-    className: "lg:col-span-1"
-  },
-  {
-    image: "/assets/tradition/lunar-karungali.jpg",
-    label: "Lunar Karungali Bracelet",
-    href: "/collections?collection=Karungali",
-    className: "sm:col-span-2 lg:col-span-2"
-  },
-  {
-    image: "/assets/tradition/pyrite-splash.jpg",
-    label: "Pyrite Stone Splash",
-    href: "/collections?bead=Pyrite",
-    className: "lg:col-span-1"
-  },
-  {
-    image: "/assets/tradition/tiger-eye-om.jpg",
-    label: "Tiger Eye Om Band",
-    href: "/products/natural-tiger-eye-om-band",
-    className: "lg:col-span-1"
-  },
-  {
-    image: "/assets/tradition/amethyst-band.jpg",
-    label: "Amethyst Mystic Band",
-    href: "/collections?bead=Amethyst",
-    className: "sm:col-span-2 lg:col-span-2"
-  }
-];
+import { fallbackHomepage, getHomepage } from "../lib/api";
+import type { HomepageTraditionGalleryItem } from "../lib/api";
 
 export function TraditionGallery({
-  heading = "Rooted In Tradition, Made For Today",
-  enabled = true
+  heading = fallbackHomepage.traditionGallery.heading,
+  enabled = fallbackHomepage.traditionGallery.enabled
 }: {
   heading?: string;
   enabled?: boolean;
 }) {
-  if (!enabled) return null;
+  const [galleryEnabled, setGalleryEnabled] = useState(enabled);
+  const [galleryHeading, setGalleryHeading] = useState(heading);
+  const [items, setItems] = useState<HomepageTraditionGalleryItem[]>(fallbackHomepage.traditionGallery.items);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadHomepage(force = false) {
+      const homepage = await getHomepage({ force });
+      if (!active) return;
+      setGalleryEnabled(homepage.traditionGallery.enabled);
+      setGalleryHeading(homepage.traditionGallery.heading);
+      setItems(homepage.traditionGallery.items);
+    }
+
+    void loadHomepage();
+
+    const refresh = () => {
+      void loadHomepage(true);
+    };
+    const refreshWhenVisible = () => {
+      if (!document.hidden) refresh();
+    };
+
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    const interval = window.setInterval(refresh, 45_000);
+
+    return () => {
+      active = false;
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  if (!galleryEnabled) return null;
 
   return (
     <section className="bg-[#fff4e3] py-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 className="mb-6 text-left font-heading text-2xl font-bold text-[#17172a] md:text-3xl">
-          {heading}
+          {galleryHeading}
         </h2>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {galleryItems.map((item) => (
-            <GalleryLink key={item.image} item={item} />
+          {items.map((item) => (
+            <GalleryLink key={`${item.label}-${item.image}`} item={item} />
           ))}
         </div>
       </div>
@@ -83,7 +65,7 @@ export function TraditionGallery({
   );
 }
 
-function GalleryLink({ item }: { item: { image: string; label: string; href: string; className: string } }) {
+function GalleryLink({ item }: { item: HomepageTraditionGalleryItem }) {
   return (
     <Link to={item.href} className={`group relative block overflow-hidden rounded-sm bg-[#211d33] ${item.className}`}>
       <img

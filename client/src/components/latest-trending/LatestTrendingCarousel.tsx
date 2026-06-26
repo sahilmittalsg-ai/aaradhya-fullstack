@@ -1,14 +1,50 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { latestTrendingProducts } from "../../data/latestTrending";
+import { useEffect, useState } from "react";
+import { fallbackHomepage, getHomepage } from "../../lib/api";
+import type { HomepageTrendingProduct } from "../../lib/api";
 import { ProductCard } from "./ProductCard";
 
 export function LatestTrendingCarousel() {
-  const products = useMemo(() => latestTrendingProducts.filter((product) => product.enabled), []);
+  const [products, setProducts] = useState<HomepageTrendingProduct[]>(() => fallbackHomepage.trending.products.filter((product) => product.enabled));
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [autoSlide, setAutoSlide] = useState(true);
+  const [autoSlide, setAutoSlide] = useState(fallbackHomepage.trending.autoplay);
+  const [intervalMs, setIntervalMs] = useState(fallbackHomepage.trending.intervalMs);
   const [pageVisible, setPageVisible] = useState(() => !document.hidden);
   const [visibleCount, setVisibleCount] = useState(4);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadHomepage(force = false) {
+      const homepage = await getHomepage({ force });
+      if (!active) return;
+      const enabledProducts = homepage.trending.products.filter((product) => product.enabled);
+      setProducts(enabledProducts);
+      setAutoSlide(homepage.trending.autoplay);
+      setIntervalMs(homepage.trending.intervalMs);
+      setCurrentIndex(0);
+    }
+
+    void loadHomepage();
+
+    const refresh = () => {
+      void loadHomepage(true);
+    };
+    const refreshWhenVisible = () => {
+      if (!document.hidden) refresh();
+    };
+
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    const interval = window.setInterval(refresh, 45_000);
+
+    return () => {
+      active = false;
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+      window.clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     function updateVisibleCount() {
@@ -40,10 +76,10 @@ export function LatestTrendingCarousel() {
 
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev === products.length - 1 ? 0 : prev + 1));
-    }, 4000);
+    }, intervalMs);
 
     return () => clearInterval(timer);
-  }, [autoSlide, pageVisible, products.length]);
+  }, [autoSlide, intervalMs, pageVisible, products.length]);
 
   function previous() {
     setCurrentIndex((prev) => (prev === 0 ? products.length - 1 : prev - 1));

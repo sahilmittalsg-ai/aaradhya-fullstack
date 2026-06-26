@@ -132,7 +132,7 @@ function saveAdminCredentials(credentials: typeof defaultAdminCredentials) {
 export default function App() {
   const [isAdmin, setIsAdmin] = useState(() => {
     localStorage.removeItem(legacyAdminRoleKey);
-    return sessionStorage.getItem(adminSessionKey) === "active";
+    return localStorage.getItem(adminSessionKey) === "active";
   });
 
   if (!isAdmin) {
@@ -171,7 +171,7 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
       return;
     }
 
-    sessionStorage.setItem(adminSessionKey, "active");
+    localStorage.setItem(adminSessionKey, "active");
     onLogin();
     setSigningIn(false);
   }
@@ -237,7 +237,7 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
   function logout() {
     localStorage.removeItem(legacyAdminRoleKey);
     clearAdminApiSession();
-    sessionStorage.removeItem(adminSessionKey);
+    localStorage.removeItem(adminSessionKey);
     onLogout();
   }
 

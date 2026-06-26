@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { memo } from "react";
-import type { TrendingProduct } from "../../data/latestTrending";
+import type { HomepageTrendingProduct } from "../../lib/api";
 
-export const ProductCard = memo(function ProductCard({ product }: { product: TrendingProduct }) {
+export const ProductCard = memo(function ProductCard({ product }: { product: HomepageTrendingProduct }) {
   return (
     <Link
       to={`/products/${product.slug}`}
