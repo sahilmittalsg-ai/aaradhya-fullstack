@@ -15,9 +15,9 @@ export function CategoryStrip({
   const options = [{ name: "All", image: "/assets/categories/rudraksha.png" }, ...categories];
 
   return (
-    <section className="w-full border-b border-[#211d33]/10 bg-[#f6e8ce] shadow-sm">
+    <section className="w-full border-y border-[#211d33]/10 bg-[#f6e8ce]">
       <div className="w-full overflow-x-auto">
-        <div className="mx-auto flex w-max min-w-full items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-8">
+        <div className="flex min-w-max items-center gap-10 px-5 py-4 sm:gap-16 sm:px-8 lg:min-w-full lg:justify-between lg:gap-6 lg:px-10 xl:px-16">
           {options.map((category) => {
             const active = selectedCategory === category.name;
 
@@ -25,12 +25,12 @@ export function CategoryStrip({
               <button
                 key={category.name}
                 onClick={() => onSelect(category.name)}
-                className={`group flex min-w-[74px] flex-col items-center rounded-lg px-2 py-1.5 text-center transition ${
-                  active ? "bg-white/60" : "hover:bg-white/35"
+                className={`group flex h-[124px] w-[112px] shrink-0 flex-col items-center justify-center rounded-lg px-3 text-center transition ${
+                  active ? "bg-white/80 shadow-sm" : "hover:bg-white/35"
                 }`}
               >
                 <span
-                  className={`flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 bg-white/40 p-1 transition md:h-[68px] md:w-[68px] ${
+                  className={`flex h-[86px] w-[86px] items-center justify-center rounded-full border-2 bg-[#fff8ea] p-1 transition ${
                     active ? "border-[#211d33]" : "border-transparent"
                   }`}
                 >
@@ -39,10 +39,10 @@ export function CategoryStrip({
                     alt={category.name}
                     loading="lazy"
                     decoding="async"
-                    className="h-[50px] w-[50px] object-contain p-1 transition duration-300 group-hover:scale-105 md:h-[60px] md:w-[60px]"
+                    className="h-[72px] w-[72px] rounded-full object-cover transition duration-300 group-hover:scale-105"
                   />
                 </span>
-                <span className={`mt-1 text-xs leading-4 text-[#17172a] ${active ? "font-bold" : "font-medium"}`}>
+                <span className={`mt-2 text-[15px] leading-5 text-[#0f0d18] ${active ? "font-bold" : "font-semibold"}`}>
                   {category.name}
                 </span>
               </button>
