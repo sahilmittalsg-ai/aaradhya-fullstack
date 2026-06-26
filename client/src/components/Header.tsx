@@ -51,7 +51,9 @@ export function Header() {
 
       <div className="mx-auto flex h-[92px] w-full max-w-[1680px] items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex shrink-0 items-center gap-3" aria-label={`${settings.brandName} home`}>
-          <img src="/assets/brand/aaradhya-logo.svg" alt="" className="h-12 w-12 shrink-0 rounded-2xl shadow-sm" />
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-xl font-black tracking-tight text-[#f6e8ce] shadow-[0_12px_28px_rgba(33,29,51,0.22)]" aria-hidden="true">
+            जपं
+          </span>
           <span className="hidden leading-tight sm:block">
             <span className="block font-heading text-2xl font-black text-[#211d33]">{settings.brandName}</span>
             <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8d4b25]">{settings.brandTagline}</span>

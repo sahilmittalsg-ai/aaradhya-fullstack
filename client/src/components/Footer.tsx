@@ -15,7 +15,9 @@ export function Footer() {
       <div className="container-pad grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Link to="/" className="flex items-center gap-3">
-            <img src="/assets/brand/aaradhya-logo.svg" alt="" className="h-11 w-11 shrink-0 rounded-xl" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-xl font-black tracking-tight text-[#f6e8ce] shadow-[0_12px_28px_rgba(33,29,51,0.22)]" aria-hidden="true">
+              जपं
+            </span>
             <h2 className="text-2xl font-black">{settings.brandName} {settings.brandTagline}</h2>
           </Link>
           <p className="mt-4 max-w-md text-sm leading-7 text-sandal/70">
