@@ -1,9 +1,10 @@
 import { ChevronDown, Menu, Search, ShoppingBag, Sparkles, UserRound, X } from "lucide-react";
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 const preferredNavOrder = ["Rudraksha", "Energy Stones", "Karungali", "Combos", "Spiritual Jewellery", "Gift Hampers"];
+const searchPlaceholders = ["Search for Rudraksha", "Search for Karungali", "Search for Pyrite"];
 const announcements = [
   {
     text: "100% Cashback available upto Rs.500",
@@ -23,10 +24,26 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [placeholderIndex, setPlaceholderIndex] = useState(1);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const { items, openCart } = useCart();
   const navigate = useNavigate();
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const nav = useMemo(() => buildNav(), []);
+  const searchPlaceholder = searchPlaceholders[placeholderIndex];
+
+  useEffect(() => {
+    if (!searchOpen || searchTerm) return;
+    const interval = window.setInterval(() => {
+      setPlaceholderIndex((current) => (current + 1) % searchPlaceholders.length);
+    }, 2400);
+
+    return () => window.clearInterval(interval);
+  }, [searchOpen, searchTerm]);
+
+  useEffect(() => {
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -91,31 +108,60 @@ export function Header() {
 
       {searchOpen && (
         <div className="border-t border-[#211d33]/10 bg-[#fbf2e3] px-4 py-4">
-          <form onSubmit={submitSearch} className="container-pad flex flex-col gap-3 p-0 sm:flex-row">
-            <label className="relative min-w-0 flex-1">
-              <span className="sr-only">Search products</span>
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/45" size={18} />
+          <form
+            onSubmit={submitSearch}
+            className="search__form container-pad block p-0"
+            role="search"
+          >
+            <input type="hidden" name="options[prefix]" value="last" />
+            <div className="relative mx-auto max-w-4xl">
+              <button
+                className="search__submit absolute left-4 top-1/2 z-10 -translate-y-1/2 text-current focus:outline-none"
+                aria-label="Search"
+              >
+                <Search size={21} />
+              </button>
               <input
-                autoFocus
-                className="w-full rounded-full border border-[#211d33]/15 bg-white px-12 py-3 text-sm font-semibold outline-none transition focus:border-rudra focus:ring-2 focus:ring-rudra/10"
+                ref={searchInputRef}
+                type="search"
+                className="search__input js-search-input w-full rounded-none border-0 border-b-2 border-[#211d33] bg-transparent py-4 pl-14 pr-12 text-lg font-semibold outline-none placeholder:text-[#211d33]/45 focus:border-rudra md:text-2xl"
+                id="header-search"
+                name="q"
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search products, categories, purpose..."
+                placeholder={searchPlaceholder}
+                data-placeholder-one="Search for Rudraksha"
+                data-placeholder-two="Search for Karungali"
+                data-placeholder-three="Search for Pyrite"
+                data-placeholder-prompts-mob="true"
+                data-typing-speed="100"
+                data-deleting-speed="60"
+                data-delay-after-deleting="500"
+                data-delay-before-first-delete="2000"
+                data-delay-after-word-typed="2400"
+                role="combobox"
+                autoComplete="off"
+                aria-autocomplete="list"
+                aria-controls="predictive-search-results"
+                aria-owns="predictive-search-results"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                spellCheck="false"
               />
               {searchTerm && (
                 <button
                   type="button"
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-ink/50 hover:bg-sandal hover:text-ink"
-                  aria-label="Clear search"
+                  className="search__reset js-search-reset absolute right-4 top-1/2 -translate-y-1/2 text-current focus:outline-none"
+                  onClick={() => {
+                    setSearchTerm("");
+                    searchInputRef.current?.focus();
+                  }}
+                  aria-label="Reset search"
                 >
-                  <X size={16} />
+                  <X size={24} strokeWidth={1.5} />
                 </button>
               )}
-            </label>
-            <button className="rounded-full bg-[#211d33] px-6 py-3 text-sm font-black text-white">
-              Search
-            </button>
+            </div>
           </form>
         </div>
       )}
