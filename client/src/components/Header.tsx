@@ -1,9 +1,23 @@
 import { ChevronDown, Menu, Search, ShoppingBag, Sparkles, UserRound, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 const preferredNavOrder = ["Rudraksha", "Energy Stones", "Karungali", "Spiritual Jewellery", "Gift Hampers"];
+const announcements = [
+  {
+    text: "100% Cashback available upto Rs.500",
+    href: "/pages/cashback-policy"
+  },
+  {
+    text: "Free delivery on orders over Rs.299",
+    href: "/collections"
+  },
+  {
+    text: "Har Ghar Rudraksha - Claim Free 5 Mukhi",
+    href: collectionHref("Rudraksha")
+  }
+];
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -13,12 +27,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-[#fbf2e3] text-[#17172a] shadow-sm">
-      <div className="flex h-[38px] items-center justify-center bg-black px-4 text-center text-sm font-medium text-white">
-        <span>🙏 Har Ghar Rudraksha - </span>
-          <Link to={collectionHref("Rudraksha")} className="ml-1 underline underline-offset-4">
-          Claim Free 5 Mukhi
-        </Link>
-      </div>
+      <AnnouncementBar />
 
       <div className="container-pad flex h-[92px] items-center justify-between gap-5">
         <Link to="/" className="relative flex min-w-20 items-center justify-center" aria-label="Japam home">
@@ -96,6 +105,44 @@ export function Header() {
         </div>
       )}
     </header>
+  );
+}
+
+function AnnouncementBar() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % announcements.length);
+    }, 7000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="bg-black text-white">
+      <div className="container-pad flex h-[38px] items-center justify-center md:justify-between">
+        <div className="relative flex h-full min-w-0 flex-1 items-center justify-center overflow-hidden md:justify-start">
+          {announcements.map((item, index) => (
+            <Link
+              key={item.text}
+              to={item.href}
+              aria-hidden={activeIndex !== index}
+              className={`absolute inset-x-0 flex h-full items-center justify-center text-center text-sm font-semibold leading-none transition duration-500 md:justify-start ${
+                activeIndex === index ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+            >
+              {item.text}
+            </Link>
+          ))}
+        </div>
+        <div className="hidden items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-white/75 md:flex">
+          India
+          <span className="h-1 w-1 rounded-full bg-white/55" />
+          INR
+        </div>
+      </div>
+    </div>
   );
 }
 
