@@ -284,7 +284,7 @@ async function ensureOrderCustomer(req: AuthRequest, customer: any, shippingAddr
   const email = normalizeEmail(customer?.email);
   const phone = normalizePhone(customer?.phone);
   const name = String(customer?.name || "").trim();
-  const address = normalizeAddress(shippingAddress);
+  const address = normalizeAddress(shippingAddress, phone);
 
   let user = req.user?.id ? await User.findById(req.user.id) : null;
 
@@ -318,16 +318,26 @@ async function ensureOrderCustomer(req: AuthRequest, customer: any, shippingAddr
     user.phone = phone;
     changed = true;
   }
-  if (address && !hasAddress(user.addresses || [], address)) {
-    user.addresses = [...(user.addresses || []), address];
-    changed = true;
+  if (address) {
+    const addresses = [...(user.addresses || [])];
+    const existingAddressIndex = findAddressByLocation(addresses, address);
+    if (existingAddressIndex >= 0) {
+      if (normalizePhone(addresses[existingAddressIndex].phone) !== normalizePhone(address.phone)) {
+        addresses[existingAddressIndex] = { ...addresses[existingAddressIndex], phone: address.phone };
+        user.addresses = addresses;
+        changed = true;
+      }
+    } else {
+      user.addresses = [...addresses, address];
+      changed = true;
+    }
   }
 
   if (changed) await user.save();
   return String(user._id || user.id);
 }
 
-function normalizeAddress(address: any) {
+function normalizeAddress(address: any, fallbackPhone = "") {
   if (!address?.line1 || !address?.city || !address?.state || !address?.pincode) return null;
 
   return {
@@ -335,12 +345,13 @@ function normalizeAddress(address: any) {
     line2: String(address.line2 || "").trim(),
     city: String(address.city).trim(),
     state: String(address.state).trim(),
-    pincode: String(address.pincode).trim()
+    pincode: String(address.pincode).trim(),
+    phone: normalizePhone(address.phone || fallbackPhone)
   };
 }
 
-function hasAddress(addresses: any[], address: NonNullable<ReturnType<typeof normalizeAddress>>) {
-  return addresses.some((item) =>
+function findAddressByLocation(addresses: any[], address: NonNullable<ReturnType<typeof normalizeAddress>>) {
+  return addresses.findIndex((item) =>
     String(item.line1 || "").trim().toLowerCase() === address.line1.toLowerCase() &&
     String(item.line2 || "").trim().toLowerCase() === address.line2.toLowerCase() &&
     String(item.city || "").trim().toLowerCase() === address.city.toLowerCase() &&

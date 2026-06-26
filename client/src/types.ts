@@ -91,6 +91,7 @@ export type Order = {
     city: string;
     state: string;
     pincode: string;
+    phone?: string;
   };
   paymentMethod?: "cod" | "upi" | "card" | "netbanking" | "wallet";
   paymentApp?: string;
@@ -107,6 +108,7 @@ export type Address = {
   city: string;
   state: string;
   pincode: string;
+  phone?: string;
 };
 
 export type ClientUser = {

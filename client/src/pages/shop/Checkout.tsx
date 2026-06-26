@@ -110,6 +110,7 @@ export function Checkout() {
     setSelectedAddressIndex(index);
     setForm((current) => ({
       ...current,
+      phone: address.phone || current.phone,
       line1: address.line1,
       line2: address.line2 || "",
       city: address.city,
@@ -119,12 +120,22 @@ export function Checkout() {
   }
 
   async function saveCurrentAddressToProfile() {
-    if (!user || !saveAddress || selectedAddressIndex !== "new") return;
+    if (!user || !saveAddress) return;
     const address = currentAddress(form);
-    const exists = (user.addresses || []).some((item) => sameAddress(item, address));
-    if (exists) return;
+    const addresses = [...(user.addresses || [])];
 
-    const updated = await updateProfile({ addresses: [...(user.addresses || []), address] });
+    if (selectedAddressIndex !== "new") {
+      addresses[selectedAddressIndex] = { ...addresses[selectedAddressIndex], ...address };
+    } else {
+      const existingIndex = addresses.findIndex((item) => sameAddressLocation(item, address));
+      if (existingIndex >= 0) {
+        addresses[existingIndex] = { ...addresses[existingIndex], ...address };
+      } else {
+        addresses.push(address);
+      }
+    }
+
+    const updated = await updateProfile({ addresses });
     setUser(updated);
     localStorage.setItem("user", JSON.stringify(updated));
   }
@@ -197,14 +208,16 @@ export function Checkout() {
         line2: form.line2,
         city: form.city,
         state: form.state,
-        pincode: form.pincode
+        pincode: form.pincode,
+        phone: form.phone
       },
       billingAddress: {
         line1: form.line1,
         line2: form.line2,
         city: form.city,
         state: form.state,
-        pincode: form.pincode
+        pincode: form.pincode,
+        phone: form.phone
       },
       shippingMethod: form.shippingMethod,
       paymentMethod: form.paymentMethod,
@@ -287,6 +300,7 @@ export function Checkout() {
                     >
                       <b>Saved Address {index + 1}</b>
                       <p className="mt-2 text-ink/60">
+                        {address.phone ? <>{address.phone}<br /></> : null}
                         {address.line1}
                         {address.line2 ? `, ${address.line2}` : ""}
                         <br />
@@ -638,11 +652,12 @@ function currentAddress(form: CheckoutForm): Address {
     line2: form.line2.trim(),
     city: form.city.trim(),
     state: form.state.trim(),
-    pincode: form.pincode.trim()
+    pincode: form.pincode.trim(),
+    phone: form.phone.trim()
   };
 }
 
-function sameAddress(left: Address, right: Address) {
+function sameAddressLocation(left: Address, right: Address) {
   return (
     left.line1.trim().toLowerCase() === right.line1.trim().toLowerCase() &&
     (left.line2 || "").trim().toLowerCase() === (right.line2 || "").trim().toLowerCase() &&

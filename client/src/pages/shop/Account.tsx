@@ -7,7 +7,8 @@ const emptyAddress: Address = {
   line2: "",
   city: "",
   state: "",
-  pincode: ""
+  pincode: "",
+  phone: ""
 };
 
 export function Account() {
@@ -140,7 +141,8 @@ export function Account() {
       line2: address.line2?.trim() || "",
       city: address.city.trim(),
       state: address.state.trim(),
-      pincode: address.pincode.trim()
+      pincode: address.pincode.trim(),
+      phone: address.phone?.trim() || user.phone || ""
     };
     const addresses = [...(user.addresses || []), nextAddress];
 
@@ -369,6 +371,7 @@ export function Account() {
                 <div key={`${item.line1}-${index}`} className="rounded-md bg-sandal p-4 text-sm leading-6 text-ink/65">
                   <b className="text-ink">Address {index + 1}</b>
                   <p className="mt-2">
+                    {item.phone ? <>{item.phone}<br /></> : null}
                     {item.line1}
                     {item.line2 ? `, ${item.line2}` : ""}
                     <br />
@@ -382,6 +385,7 @@ export function Account() {
             </div>
 
             <form onSubmit={saveAddress} className="mt-5 grid gap-3 md:grid-cols-2">
+              <input className="input md:col-span-2" value={address.phone || ""} onChange={(e) => updateAddress("phone", e.target.value)} placeholder="Phone number for this address" required />
               <input className="input md:col-span-2" value={address.line1} onChange={(e) => updateAddress("line1", e.target.value)} placeholder="House no, street, area" required />
               <input className="input md:col-span-2" value={address.line2 || ""} onChange={(e) => updateAddress("line2", e.target.value)} placeholder="Landmark or apartment, optional" />
               <input className="input" value={address.city} onChange={(e) => updateAddress("city", e.target.value)} placeholder="City" required />
