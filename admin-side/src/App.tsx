@@ -129,14 +129,14 @@ function saveAdminCredentials(credentials: typeof defaultAdminCredentials) {
 }
 
 function BrandMark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const sizeClass = size === "lg" ? "h-14 w-14 text-xl" : size === "sm" ? "h-11 w-11 text-base" : "h-12 w-12 text-lg";
+  const sizeClass = size === "lg" ? "h-14 w-14 text-2xl" : size === "sm" ? "h-11 w-11 text-xl" : "h-12 w-12 text-xl";
 
   return (
     <span
       className={`flex shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading font-black tracking-tight text-[#f6e8ce] shadow-[0_12px_28px_rgba(33,29,51,0.22)] ${sizeClass}`}
       aria-hidden="true"
     >
-      AB
+      जपं
     </span>
   );
 }

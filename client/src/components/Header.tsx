@@ -60,8 +60,8 @@ export function Header() {
 
       <div className="container-pad flex h-[92px] items-center justify-between gap-5">
         <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Aaradhya Beads home">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-lg font-black tracking-tight text-[#f6e8ce] shadow-sm">
-            AB
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-xl font-black tracking-tight text-[#f6e8ce] shadow-sm">
+            जपं
           </span>
           <span className="hidden leading-tight sm:block">
             <span className="block font-heading text-2xl font-black text-[#211d33]">Aaradhya</span>
