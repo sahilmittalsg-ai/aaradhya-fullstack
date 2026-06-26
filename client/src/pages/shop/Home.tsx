@@ -2,6 +2,10 @@ import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
+  MessageCircle,
+  PackageSearch,
+  RotateCcw,
+  Truck,
   Star
 } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
@@ -123,6 +127,7 @@ export function Home() {
       <HeroCarousel />
       <CollectionCarousel selectedCategory={selectedCollection} onSelect={setSelectedCollection} categories={collectionShowcaseOptions} />
       <LatestTrendingCarousel />
+      <SingleRudrakshaSection products={products} />
       <PurposeSection selectedPurpose={selectedPurpose} onSelect={setSelectedPurpose} purposes={purposeShowcaseOptions} />
       <EnergyStonesSection products={products} />
       <BestsellersSection products={products} />
@@ -132,6 +137,7 @@ export function Home() {
       <SiddhVideoSection />
       <StyleShowcase />
       <HappyCustomers />
+      <ServiceHighlights />
 
       <section className="container-pad py-12 lg:py-16">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
@@ -307,6 +313,97 @@ const EnergyStonesSection = memo(function EnergyStonesSection({ products }: { pr
   );
 });
 
+const SingleRudrakshaSection = memo(function SingleRudrakshaSection({ products }: { products: Product[] }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const rudrakshaBeads = useMemo(() => {
+    const filtered = products.filter((product) => {
+      const tagText = product.tags?.join(" ").toLowerCase() || "";
+      return (
+        product.bead === "Rudraksha" &&
+        (product.mukhi || tagText.includes("single bead") || tagText.includes("nepali rudraksha") || product.title.toLowerCase().includes("mukhi"))
+      );
+    });
+    return (filtered.length ? filtered : products.filter((product) => product.bead === "Rudraksha")).slice(0, 10);
+  }, [products]);
+
+  if (!rudrakshaBeads.length) return null;
+
+  function scroll(direction: "left" | "right") {
+    scrollerRef.current?.scrollBy({
+      left: direction === "left" ? -420 : 420,
+      behavior: "smooth"
+    });
+  }
+
+  return (
+    <section className="bg-[#fbf2e3] py-10 md:py-12">
+      <div className="container-pad">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <h2 className="font-heading text-2xl font-bold md:text-3xl">Single Rudraksha Beads</h2>
+          <Link to="/collections?collection=Rudraksha" className="text-sm font-semibold underline underline-offset-4 hover:text-rudra">
+            View all
+          </Link>
+        </div>
+
+        <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+          <Link
+            to="/collections?collection=Rudraksha"
+            className="group overflow-hidden bg-[#211d33] text-white shadow-sm"
+          >
+            <div className="aspect-square overflow-hidden">
+              <img
+                src="/assets/featured/original-nepali-rudraksha.jpg"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div className="flex min-h-[155px] flex-col justify-between bg-[#211d33] p-6">
+              <div>
+                <h3 className="font-heading text-2xl font-bold">Original Nepali Rudraksha</h3>
+                <p className="mt-3 text-sm leading-6 text-white/78">1 Mukhi to 11 Mukhi - with certificate</p>
+              </div>
+              <span className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.06em] text-[#f6e8ce]">
+                Shop certified beads
+              </span>
+            </div>
+          </Link>
+
+          <div className="relative min-w-0">
+            <div className="mb-4 hidden justify-end gap-2 md:flex">
+              <button
+                type="button"
+                onClick={() => scroll("left")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll rudraksha beads left"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll rudraksha beads right"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+
+            <div ref={scrollerRef} className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 md:gap-5">
+              {rudrakshaBeads.map((product) => (
+                <div key={product.slug} className="min-w-[calc(50vw-26px)] max-w-[220px] snap-start sm:min-w-[210px] lg:min-w-[220px] xl:min-w-[224px]">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
 const LabTestedShowcase = memo(function LabTestedShowcase() {
   return (
     <section className="bg-[#fbf2e3] py-10 md:py-14">
@@ -455,49 +552,83 @@ const styleTiles = [
     title: "Everyday Wearables",
     cta: "Shop Bracelets",
     href: "/collections?collection=Rudraksha%20Bracelets",
-    image: "/assets/tradition/tradition-wide-1.jpg"
+    image: "/assets/style/everyday-wearables.jpg"
   },
   {
     title: "Elegance Rudraksha Range",
     cta: "Shop Women",
     href: "/collections?collection=Spiritual%20Jewellery",
-    image: "/assets/banners/spiritual-jewellery.jpg"
+    image: "/assets/style/elegance-rudraksha-range.jpg"
   },
   {
     title: "Premium Designs",
     cta: "Shop Premium",
     href: "/collections?collection=Rudraksha%20Bracelets",
-    image: "/assets/products/hero-spiritual-shop.png"
+    image: "/assets/style/premium-designs.jpg"
   },
   {
     title: "Wear With Pride",
     cta: "Shop Malas",
     href: "/collections?collection=Rudraksha%20Malas",
-    image: "/assets/tradition/tradition-wide-2.jpg"
+    image: "/assets/style/wear-with-pride.jpg"
   }
 ];
 
 const customerReviews = [
   {
-    name: "Shubham Chavan",
-    title: "Best Product",
-    text: "Authentic and genuine product. Value for money and beautifully packed.",
-    image: "/assets/products/pyrite-tiger-eye.png",
-    href: "/products/pyrite-money-magnet-bracelet"
+    name: "Ankita Yogi",
+    title: "Kanthi Mala",
+    text: "Pure original Kanthi. Thank you Japam.",
+    image: "/assets/reviews/ankita-yogi.jpeg",
+    href: "/collections?collection=Rudraksha%20Malas"
   },
   {
-    name: "Manish Kumar",
-    title: "Absolutely Amazing",
-    text: "Loved the finish, delivery, and product quality.",
-    image: "/assets/products/hero-spiritual-shop.png",
-    href: "/products/gold-plated-modern-rudraksha-bracelet"
+    name: "Anil Kumawat",
+    title: "Extremely Satisfied",
+    text: "The crystals feel natural and premium, and the bracelet fits perfectly.",
+    image: "/assets/reviews/anil-kumawat.jpg",
+    href: "/collections?bead=Pyrite"
   },
   {
-    name: "Chandrashekhar Yadav",
-    title: "Good Product",
-    text: "Comfortable for daily wear and looks premium.",
-    image: "/assets/products/meditation-mala.png",
-    href: "/products/brown-rudraksha-mala-108-1-beads"
+    name: "Shridhar Kotabagi",
+    title: "Mind Peace",
+    text: "Nice Rudraksha, peaceful feeling, awesome quality.",
+    image: "/assets/reviews/shridhar-kotabagi.jpg",
+    href: "/collections?collection=Rudraksha"
+  },
+  {
+    name: "Ranjit",
+    title: "Attractive Bracelet",
+    text: "Bracelet is very attractive and the beads feel pure.",
+    image: "/assets/reviews/ranjit.jpg",
+    href: "/collections?collection=Karungali"
+  }
+];
+
+const serviceHighlights = [
+  {
+    title: "Happy to help",
+    text: "Contact our support team for order and product help.",
+    href: "/support",
+    Icon: MessageCircle
+  },
+  {
+    title: "Check order status",
+    text: "Track your order details and delivery progress.",
+    href: "/track-order",
+    Icon: PackageSearch
+  },
+  {
+    title: "Returns & exchanges",
+    text: "Get help with returns, exchanges, or product concerns.",
+    href: "/support",
+    Icon: RotateCcw
+  },
+  {
+    title: "Free delivery",
+    text: "Free delivery on eligible orders over Rs.299.",
+    href: "/collections",
+    Icon: Truck
   }
 ];
 
@@ -506,12 +637,12 @@ const StyleShowcase = memo(function StyleShowcase() {
     <section className="bg-[#fbf2e3] py-12">
       <div className="container-pad">
         <h2 className="font-heading text-3xl font-bold">Choose Your Style</h2>
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
           {styleTiles.map((tile) => (
             <Link
               key={tile.title}
               to={tile.href}
-              className="group relative min-h-[330px] overflow-hidden rounded-sm bg-[#211d33] shadow-sm md:min-h-[430px]"
+              className="group relative min-h-[280px] overflow-hidden rounded-sm bg-[#211d33] shadow-sm md:min-h-[380px]"
               aria-label={`${tile.cta} from ${tile.title}`}
             >
               <img
@@ -545,7 +676,7 @@ const HappyCustomers = memo(function HappyCustomers() {
           <p className="mt-2 text-sm font-medium text-[#17172a]/70">with thousands of 5-star reviews</p>
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {customerReviews.map((review) => (
             <Link
               key={review.name}
@@ -557,7 +688,7 @@ const HappyCustomers = memo(function HappyCustomers() {
                 alt={`${review.name} reviewed product`}
                 loading="lazy"
                 decoding="async"
-                className="h-64 w-full bg-sandal object-cover transition duration-500 group-hover:scale-105"
+                className="h-60 w-full bg-sandal object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="px-6 py-8 text-center">
                 <div className="flex justify-center gap-1 text-[#cf3f3f]">
@@ -570,11 +701,37 @@ const HappyCustomers = memo(function HappyCustomers() {
                   <span className="rounded-sm bg-[#211d33] px-2 py-1 text-[10px] font-black text-white">Verified</span>
                 </div>
                 <p className="mt-5 font-black text-[#363246]">{review.title}</p>
-                <p className="mt-2 min-h-12 text-sm leading-6 text-[#363246]/80">{review.text}</p>
+                <p className="mt-2 min-h-[72px] text-sm leading-6 text-[#363246]/80">{review.text}</p>
                 <span className="mt-6 inline-flex rounded-md border border-rudra/20 px-4 py-2 text-xs font-black uppercase text-rudra transition group-hover:bg-rudra group-hover:text-white">
                   Shop This Product
                 </span>
               </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const ServiceHighlights = memo(function ServiceHighlights() {
+  return (
+    <section className="border-y border-[#211d33]/10 bg-[#fff7ec] py-5">
+      <div className="container-pad">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {serviceHighlights.map(({ title, text, href, Icon }) => (
+            <Link
+              key={title}
+              to={href}
+              className="flex min-h-[118px] items-center gap-4 bg-white px-5 py-4 text-[#17172a] shadow-sm transition hover:-translate-y-1 hover:shadow-soft"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#f6e8ce] text-[#8d4b25]">
+                <Icon size={26} strokeWidth={1.7} />
+              </span>
+              <span>
+                <span className="block text-sm font-black">{title}</span>
+                <span className="mt-1 block text-xs leading-5 text-[#17172a]/65">{text}</span>
+              </span>
             </Link>
           ))}
         </div>
