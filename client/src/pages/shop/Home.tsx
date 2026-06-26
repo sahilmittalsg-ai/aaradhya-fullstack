@@ -867,7 +867,7 @@ function PurposeSection({
                       alt=""
                       loading="lazy"
                       decoding="async"
-                      className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                      className="h-[142%] w-[142%] -translate-y-[15%] object-cover object-top transition duration-300 group-hover:scale-105"
                     />
                   </span>
                   <span className="text-sm font-bold leading-5">{purpose.name}</span>
