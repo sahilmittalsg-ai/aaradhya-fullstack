@@ -59,9 +59,14 @@ export function Header() {
       <AnnouncementBar />
 
       <div className="container-pad flex h-[92px] items-center justify-between gap-5">
-        <Link to="/" className="relative flex min-w-20 items-center justify-center" aria-label="Japam home">
-          <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#c43824]" />
-          <span className="font-heading text-4xl font-bold leading-none tracking-tight">जपं</span>
+        <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Aaradhya Beads home">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-lg font-black tracking-tight text-[#f6e8ce] shadow-sm">
+            AB
+          </span>
+          <span className="hidden leading-tight sm:block">
+            <span className="block font-heading text-2xl font-black text-[#211d33]">Aaradhya</span>
+            <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8d4b25]">Beads</span>
+          </span>
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-5 text-[13px] font-medium xl:flex">

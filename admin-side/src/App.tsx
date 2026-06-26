@@ -6,7 +6,6 @@ import {
   ChevronRight,
   CreditCard,
   Flame,
-  GitBranch,
   Headphones,
   Home,
   Image,
@@ -129,6 +128,19 @@ function saveAdminCredentials(credentials: typeof defaultAdminCredentials) {
   localStorage.setItem(adminCredentialsKey, JSON.stringify(credentials));
 }
 
+function BrandMark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const sizeClass = size === "lg" ? "h-14 w-14 text-xl" : size === "sm" ? "h-11 w-11 text-base" : "h-12 w-12 text-lg";
+
+  return (
+    <span
+      className={`flex shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading font-black tracking-tight text-[#f6e8ce] shadow-[0_12px_28px_rgba(33,29,51,0.22)] ${sizeClass}`}
+      aria-hidden="true"
+    >
+      AB
+    </span>
+  );
+}
+
 export default function App() {
   const [isAdmin, setIsAdmin] = useState(() => {
     localStorage.removeItem(legacyAdminRoleKey);
@@ -179,9 +191,7 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f6f8ff] px-4 py-10">
       <form onSubmit={signIn} className="w-full max-w-md rounded-[28px] border border-[#e8ecff] bg-white p-8 shadow-[0_24px_60px_rgba(59,79,166,0.12)]">
-        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#5b6cff] text-white shadow-[0_12px_28px_rgba(91,108,255,0.28)]">
-          <LockKeyhole size={24} />
-        </span>
+        <BrandMark size="lg" />
         <p className="mt-6 text-sm font-bold uppercase tracking-[0.18em] text-[#8a91ad]">Admin access only</p>
         <h1 className="mt-3 text-3xl font-extrabold text-[#23233c]">Aaradhya Commerce Admin</h1>
         <p className="mt-3 text-sm leading-6 text-[#727994]">
@@ -252,9 +262,7 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#5b6cff] text-white shadow-[0_12px_28px_rgba(91,108,255,0.28)]">
-              <GitBranch size={21} />
-            </span>
+            <BrandMark size="sm" />
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8a91ad]">Ecommerce control</p>
               <h1 className="text-xl font-bold text-[#23233c]">Aaradhya Admin</h1>
@@ -278,11 +286,9 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
       <div className="admin-container grid gap-6 py-6 lg:grid-cols-[260px_1fr]">
         <aside className={`${mobileOpen ? "block" : "hidden"} h-max rounded-[28px] border border-[#e8ecff] bg-white p-4 shadow-[0_24px_60px_rgba(59,79,166,0.10)] lg:sticky lg:top-24 lg:block`}>
           <div className="mb-5 flex items-center gap-3 border-b border-[#edf0ff] pb-5">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef1ff] text-[#5b6cff]">
-              <GitBranch size={22} />
-            </span>
+            <BrandMark />
             <div>
-              <p className="text-lg font-bold text-[#23233c]">Base</p>
+              <p className="text-lg font-bold text-[#23233c]">Aaradhya</p>
               <p className="text-xs font-semibold text-[#9aa0b8]">Store command</p>
             </div>
           </div>
