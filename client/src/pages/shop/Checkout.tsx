@@ -22,6 +22,12 @@ type CheckoutForm = {
   shippingMethod: "standard" | "express";
   paymentMethod: string;
   paymentApp: string;
+  cardholderName: string;
+  cardNumber: string;
+  cardExpiry: string;
+  cardCvv: string;
+  netBankingBank: string;
+  netBankingUserId: string;
   billingSameAsShipping: boolean;
 };
 
@@ -38,6 +44,12 @@ const initialForm: CheckoutForm = {
   shippingMethod: "standard",
   paymentMethod: "cod",
   paymentApp: "",
+  cardholderName: "",
+  cardNumber: "",
+  cardExpiry: "",
+  cardCvv: "",
+  netBankingBank: "",
+  netBankingUserId: "",
   billingSameAsShipping: true
 };
 
@@ -48,6 +60,45 @@ const methodIcons = {
   netbanking: Landmark,
   wallet: Wallet
 };
+
+const netBankingBanks = [
+  { code: "sbi", label: "State Bank of India" },
+  { code: "hdfc", label: "HDFC Bank" },
+  { code: "icici", label: "ICICI Bank" },
+  { code: "axis", label: "Axis Bank" },
+  { code: "kotak", label: "Kotak Mahindra Bank" },
+  { code: "pnb", label: "Punjab National Bank" },
+  { code: "bob", label: "Bank of Baroda" },
+  { code: "canara", label: "Canara Bank" },
+  { code: "yes", label: "YES Bank" },
+  { code: "indusind", label: "IndusInd Bank" }
+];
+
+function cardDigits(value: string) {
+  return value.replace(/\D/g, "").slice(0, 19);
+}
+
+function formatCardNumber(value: string) {
+  return cardDigits(value).replace(/(.{4})/g, "$1 ").trim();
+}
+
+function formatCardExpiry(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 4);
+  return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+}
+
+function isValidCardExpiry(value: string) {
+  return /^(0[1-9]|1[0-2])\/\d{2}$/.test(value.trim());
+}
+
+function maskCardNumber(value: string) {
+  const digits = cardDigits(value);
+  return digits ? `Card ending ${digits.slice(-4)}` : "Card details not entered";
+}
+
+function netBankingBankLabel(code: string) {
+  return netBankingBanks.find((bank) => bank.code === code)?.label || "Bank not selected";
+}
 
 export function Checkout() {
   const { items, subtotal, clearCart } = useCart();
@@ -179,6 +230,21 @@ export function Checkout() {
     if (selectedPayment?.apps?.length && !form.paymentApp) {
       setError(`Please select a ${selectedPayment.code === "wallet" ? "wallet" : "UPI app"}.`);
       return;
+    }
+
+    if (selectedPayment?.code === "card") {
+      const digits = cardDigits(form.cardNumber);
+      if (!form.cardholderName.trim() || digits.length < 12 || !isValidCardExpiry(form.cardExpiry) || !/^\d{3,4}$/.test(form.cardCvv)) {
+        setError("Please enter cardholder name, valid card number, expiry, and CVV.");
+        return;
+      }
+    }
+
+    if (selectedPayment?.code === "netbanking") {
+      if (!form.netBankingBank || !form.netBankingUserId.trim()) {
+        setError("Please select your bank and enter customer/user ID to continue.");
+        return;
+      }
     }
 
     if (selectedPayment?.type === "online") {
@@ -430,6 +496,94 @@ export function Checkout() {
                   )}
                 </div>
               ) : null}
+              {form.paymentMethod === "card" ? (
+                <div className="mt-6 rounded-lg border border-rudra/10 bg-white p-4">
+                  <div className="flex items-start gap-3">
+                    <CreditCard className="mt-1 text-saffron" />
+                    <div>
+                      <h3 className="font-black">Card details</h3>
+                      <p className="mt-1 text-sm text-ink/55">
+                        Enter the details shown on your credit or debit card to continue.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-5 grid gap-4 md:grid-cols-2">
+                    <Field
+                      label="Cardholder name"
+                      value={form.cardholderName}
+                      onChange={(value) => updateField("cardholderName", value)}
+                      placeholder="Name on card"
+                      required
+                    />
+                    <Field
+                      label="Card number"
+                      value={form.cardNumber}
+                      onChange={(value) => updateField("cardNumber", formatCardNumber(value))}
+                      placeholder="1234 5678 9012 3456"
+                      required
+                    />
+                    <Field
+                      label="Expiry"
+                      value={form.cardExpiry}
+                      onChange={(value) => updateField("cardExpiry", formatCardExpiry(value))}
+                      placeholder="MM/YY"
+                      required
+                    />
+                    <Field
+                      label="CVV"
+                      type="password"
+                      value={form.cardCvv}
+                      onChange={(value) => updateField("cardCvv", value.replace(/\D/g, "").slice(0, 4))}
+                      placeholder="123"
+                      required
+                    />
+                  </div>
+                  <p className="mt-4 rounded-md bg-sandal p-3 text-xs font-semibold text-rudra">
+                    Card data is used only for this mock checkout screen. Live payments should be tokenized by the secure payment gateway.
+                  </p>
+                </div>
+              ) : null}
+              {form.paymentMethod === "netbanking" ? (
+                <div className="mt-6 rounded-lg border border-rudra/10 bg-white p-4">
+                  <div className="flex items-start gap-3">
+                    <Landmark className="mt-1 text-saffron" />
+                    <div>
+                      <h3 className="font-black">Net banking details</h3>
+                      <p className="mt-1 text-sm text-ink/55">
+                        Select the bank and enter the customer/user ID before moving ahead.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-5 grid gap-4 md:grid-cols-2">
+                    <label>
+                      <span className="text-xs font-bold text-ink/70">Bank name</span>
+                      <select
+                        className="mt-2 w-full rounded-md border border-[#dedbd5] bg-white px-3 py-3 text-sm outline-none transition focus:border-rudra focus:ring-2 focus:ring-rudra/10"
+                        value={form.netBankingBank}
+                        onChange={(event) => updateField("netBankingBank", event.target.value)}
+                        required
+                      >
+                        <option value="">Select bank</option>
+                        {netBankingBanks.map((bank) => (
+                          <option key={bank.code} value={bank.code}>
+                            {bank.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <Field
+                      label="Customer/User ID"
+                      value={form.netBankingUserId}
+                      onChange={(value) => updateField("netBankingUserId", value)}
+                      placeholder="Enter bank user ID"
+                      required
+                    />
+                  </div>
+                  <p className="mt-4 rounded-md bg-sandal p-3 text-xs font-semibold text-rudra">
+                    Bank password and OTP are entered only on the bank or gateway page, not saved by this store.
+                  </p>
+                </div>
+              ) : null}
               {error && <p className="mt-4 text-sm font-bold text-red-600">{error}</p>}
               <div className="mt-6 flex flex-wrap gap-3">
                 <button type="button" onClick={() => setStep("address")} className="btn-secondary">Back</button>
@@ -452,6 +606,12 @@ export function Checkout() {
                 <ReviewBox title="Payment">
                   {selectedPayment?.label}<br />
                   {selectedApp ? `${selectedApp.label}` : ""}{selectedApp ? <br /> : null}
+                  {form.paymentMethod === "card" ? `${maskCardNumber(form.cardNumber)} - ${form.cardholderName}` : ""}
+                  {form.paymentMethod === "card" ? <br /> : null}
+                  {form.paymentMethod === "netbanking" ? `Bank: ${netBankingBankLabel(form.netBankingBank)}` : ""}
+                  {form.paymentMethod === "netbanking" ? <br /> : null}
+                  {form.paymentMethod === "netbanking" ? `User ID: ${form.netBankingUserId}` : ""}
+                  {form.paymentMethod === "netbanking" ? <br /> : null}
                   {selectedPayment?.provider !== "manual" ? `Provider: ${selectedPayment?.provider}` : "Pay on delivery"}<br />
                   {selectedPayment?.type === "online" ? "Payment will be captured by gateway." : "Payment pending until delivery."}
                 </ReviewBox>
