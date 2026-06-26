@@ -22,6 +22,9 @@ export function Collections() {
   const [plating, setPlating] = useState("All");
   const [audience, setAudience] = useState("All");
   const [priceBand, setPriceBand] = useState("all");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [inStockOnly, setInStockOnly] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [sort, setSort] = useState("featured");
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -33,6 +36,9 @@ export function Collections() {
   const platingParam = params.get("plating") || "All";
   const audienceParam = params.get("audience") || "All";
   const priceParam = params.get("price") || "all";
+  const minPriceParam = params.get("minPrice") || "";
+  const maxPriceParam = params.get("maxPrice") || "";
+  const inStockParam = params.get("inStock") === "true";
 
   useEffect(() => {
     setPurpose(purposeParam);
@@ -41,8 +47,11 @@ export function Collections() {
     setPlating(platingParam);
     setAudience(audienceParam);
     setPriceBand(priceParam);
+    setMinPrice(minPriceParam);
+    setMaxPrice(maxPriceParam);
+    setInStockOnly(inStockParam);
     setSearchText(searchParam);
-  }, [audienceParam, beadParam, mukhiParam, platingParam, priceParam, purposeParam, searchParam]);
+  }, [audienceParam, beadParam, inStockParam, maxPriceParam, minPriceParam, mukhiParam, platingParam, priceParam, purposeParam, searchParam]);
 
   const purposeOptions = useMemo(() => uniqueOptions(products.flatMap((product) => product.purpose || [])), [products]);
   const beadOptions = useMemo(() => uniqueOptions(products.map((product) => product.bead)), [products]);
@@ -56,6 +65,8 @@ export function Collections() {
 
   const filtered = useMemo(() => {
     const selectedBand = priceBands.find((band) => band.value === priceBand) || priceBands[0];
+    const minPriceValue = minPrice ? Number(minPrice) : undefined;
+    const maxPriceValue = maxPrice ? Number(maxPrice) : undefined;
     const result = products.filter((product) => {
       const matchesCollection =
         active === "All" || product.collection === active || product.category === active || product.tags.includes(active.toLowerCase());
@@ -65,7 +76,10 @@ export function Collections() {
       const matchesPlating = plating === "All" || product.plating === plating;
       const matchesAudience = audience === "All" || product.audience === audience;
       const matchesSearch = !searchParam || productSearchText(product).includes(searchParam.toLowerCase());
-      return matchesCollection && matchesPurpose && matchesBead && matchesMukhi && matchesPlating && matchesAudience && matchesSearch && selectedBand.test(product.price);
+      const matchesMinPrice = minPriceValue === undefined || !Number.isFinite(minPriceValue) || product.price >= minPriceValue;
+      const matchesMaxPrice = maxPriceValue === undefined || !Number.isFinite(maxPriceValue) || product.price <= maxPriceValue;
+      const matchesStock = !inStockOnly || Number(product.stock || 0) > 0;
+      return matchesCollection && matchesPurpose && matchesBead && matchesMukhi && matchesPlating && matchesAudience && matchesSearch && selectedBand.test(product.price) && matchesMinPrice && matchesMaxPrice && matchesStock;
     });
 
     return [...result].sort((a, b) => {
@@ -75,10 +89,34 @@ export function Collections() {
       if (sort === "name") return a.title.localeCompare(b.title);
       return Number(b.featured) - Number(a.featured) || b.rating - a.rating;
     });
-  }, [active, audience, bead, mukhi, plating, priceBand, products, purpose, searchParam, sort]);
+  }, [active, audience, bead, inStockOnly, maxPrice, minPrice, mukhi, plating, priceBand, products, purpose, searchParam, sort]);
 
   const hasFilters =
-    Boolean(searchParam) || purpose !== "All" || bead !== "All" || mukhi !== "All" || plating !== "All" || audience !== "All" || priceBand !== "all";
+    active !== "All" ||
+    Boolean(searchParam) ||
+    purpose !== "All" ||
+    bead !== "All" ||
+    mukhi !== "All" ||
+    plating !== "All" ||
+    audience !== "All" ||
+    priceBand !== "all" ||
+    Boolean(minPrice) ||
+    Boolean(maxPrice) ||
+    inStockOnly;
+
+  const activeFilters = [
+    active !== "All" ? { key: "collection", label: `Product Type: ${active}` } : undefined,
+    searchParam ? { key: "search", label: `Search: ${searchParam}` } : undefined,
+    purpose !== "All" ? { key: "purpose", label: `Purpose: ${purpose}` } : undefined,
+    bead !== "All" ? { key: "bead", label: `Bead: ${bead}` } : undefined,
+    mukhi !== "All" ? { key: "mukhi", label: `Mukhi: ${mukhi}` } : undefined,
+    plating !== "All" ? { key: "plating", label: `Plating: ${plating}` } : undefined,
+    audience !== "All" ? { key: "audience", label: `For: ${audience}` } : undefined,
+    priceBand !== "all" ? { key: "price", label: priceBands.find((band) => band.value === priceBand)?.label || "Price filter" } : undefined,
+    minPrice ? { key: "minPrice", label: `Min Rs.${minPrice}` } : undefined,
+    maxPrice ? { key: "maxPrice", label: `Max Rs.${maxPrice}` } : undefined,
+    inStockOnly ? { key: "inStock", label: "In stock" } : undefined
+  ].filter(Boolean) as Array<{ key: string; label: string }>;
 
   function clearFilters() {
     setPurpose("All");
@@ -87,15 +125,31 @@ export function Collections() {
     setPlating("All");
     setAudience("All");
     setPriceBand("all");
+    setMinPrice("");
+    setMaxPrice("");
+    setInStockOnly(false);
     setSearchText("");
     const nextParams = new URLSearchParams(params);
-    ["search", "purpose", "bead", "mukhi", "plating", "audience", "price"].forEach((key) => nextParams.delete(key));
+    ["collection", "search", "purpose", "bead", "mukhi", "plating", "audience", "price", "minPrice", "maxPrice", "inStock"].forEach((key) => nextParams.delete(key));
     setParams(nextParams);
   }
 
   function setFilterParam(key: string, value: string, emptyValue = "All") {
     const nextParams = new URLSearchParams(params);
     value === emptyValue ? nextParams.delete(key) : nextParams.set(key, value);
+    setParams(nextParams);
+  }
+
+  function clearFilter(key: string) {
+    const nextParams = new URLSearchParams(params);
+    nextParams.delete(key);
+    setParams(nextParams);
+  }
+
+  function setOptionalParam(key: string, value: string) {
+    const nextParams = new URLSearchParams(params);
+    const cleanValue = value.trim();
+    cleanValue ? nextParams.set(key, cleanValue) : nextParams.delete(key);
     setParams(nextParams);
   }
 
@@ -164,31 +218,123 @@ export function Collections() {
             )}
           </div>
 
-          <div className="mt-5 border-t border-rudra/10 pt-5">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-rudra/60">Purpose</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {["All", ...purposeOptions].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setPurpose(option);
-                    setFilterParam("purpose", option);
-                  }}
-                  className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-                    purpose === option ? "bg-rudra text-white" : "bg-sandal text-rudra"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
+          {activeFilters.length > 0 && (
+            <div className="mt-5 border-t border-rudra/10 pt-5">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-rudra/60">{activeFilters.length} Applied Filter{activeFilters.length > 1 ? "s" : ""}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {activeFilters.map((filter) => (
+                  <button
+                    key={filter.key}
+                    type="button"
+                    onClick={() => clearFilter(filter.key)}
+                    className="inline-flex items-center gap-1 rounded-full bg-sandal px-3 py-1.5 text-xs font-bold text-rudra"
+                  >
+                    <X size={13} /> {filter.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          <FilterSelect label="Price" value={priceBand} options={priceBands.map(({ label, value }) => ({ label, value }))} onChange={(value) => { setPriceBand(value); setFilterParam("price", value, "all"); }} />
-          <FilterSelect label="Bead Type" value={bead} options={withAll(beadOptions)} onChange={(value) => { setBead(value); setFilterParam("bead", value); }} />
-          <FilterSelect label="Mukhi" value={mukhi} options={withAll(mukhiOptions)} onChange={(value) => { setMukhi(value); setFilterParam("mukhi", value); }} />
-          <FilterSelect label="Plating" value={plating} options={withAll(platingOptions)} onChange={(value) => { setPlating(value); setFilterParam("plating", value); }} />
-          <FilterSelect label="For" value={audience} options={withAll(audienceOptions)} onChange={(value) => { setAudience(value); setFilterParam("audience", value); }} />
+          <FilterGroup
+            label="Product Type"
+            options={categoryOptions}
+            active={active === "All" ? "" : active}
+            onSelect={(value) => {
+              const nextParams = new URLSearchParams(params);
+              active === value ? nextParams.delete("collection") : nextParams.set("collection", value);
+              setParams(nextParams);
+            }}
+            getCount={(value) => countProducts(products, (product) => product.collection === value || product.category === value)}
+          />
+          <FilterGroup
+            label="Purpose"
+            options={purposeOptions}
+            active={purpose === "All" ? "" : purpose}
+            onSelect={(value) => {
+              setPurpose(purpose === value ? "All" : value);
+              setFilterParam("purpose", purpose === value ? "All" : value);
+            }}
+            getCount={(value) => countProducts(products, (product) => product.purpose?.includes(value))}
+          />
+          <PriceFilters
+            priceBand={priceBand}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            onPriceBandChange={(value) => {
+              setPriceBand(value);
+              setFilterParam("price", value, "all");
+            }}
+            onMinPriceChange={(value) => {
+              setMinPrice(value);
+              setOptionalParam("minPrice", value);
+            }}
+            onMaxPriceChange={(value) => {
+              setMaxPrice(value);
+              setOptionalParam("maxPrice", value);
+            }}
+          />
+          <FilterGroup
+            label="Bead"
+            options={beadOptions}
+            active={bead === "All" ? "" : bead}
+            onSelect={(value) => {
+              setBead(bead === value ? "All" : value);
+              setFilterParam("bead", bead === value ? "All" : value);
+            }}
+            getCount={(value) => countProducts(products, (product) => product.bead === value)}
+          />
+          <FilterGroup
+            label="Mukhi"
+            options={mukhiOptions}
+            active={mukhi === "All" ? "" : mukhi}
+            onSelect={(value) => {
+              setMukhi(mukhi === value ? "All" : value);
+              setFilterParam("mukhi", mukhi === value ? "All" : value);
+            }}
+            getCount={(value) => countProducts(products, (product) => product.mukhi === value)}
+          />
+          <FilterGroup
+            label="Plating"
+            options={platingOptions}
+            active={plating === "All" ? "" : plating}
+            onSelect={(value) => {
+              setPlating(plating === value ? "All" : value);
+              setFilterParam("plating", plating === value ? "All" : value);
+            }}
+            getCount={(value) => countProducts(products, (product) => product.plating === value)}
+          />
+          <FilterGroup
+            label="For"
+            options={audienceOptions}
+            active={audience === "All" ? "" : audience}
+            onSelect={(value) => {
+              setAudience(audience === value ? "All" : value);
+              setFilterParam("audience", audience === value ? "All" : value);
+            }}
+            getCount={(value) => countProducts(products, (product) => product.audience === value)}
+          />
+          <div className="mt-5 border-t border-rudra/10 pt-5">
+            <button
+              type="button"
+              onClick={() => {
+                const nextValue = !inStockOnly;
+                setInStockOnly(nextValue);
+                const nextParams = new URLSearchParams(params);
+                nextValue ? nextParams.set("inStock", "true") : nextParams.delete("inStock");
+                setParams(nextParams);
+              }}
+              className="flex w-full items-center justify-between gap-3 rounded-md px-1 py-2 text-left text-sm font-bold hover:bg-sandal"
+            >
+              <span className="inline-flex items-center gap-3">
+                <span className={`flex h-4 w-4 items-center justify-center rounded border ${inStockOnly ? "border-rudra bg-rudra" : "border-rudra/30 bg-white"}`}>
+                  {inStockOnly && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                </span>
+                In stock only
+              </span>
+              <span className="text-xs text-ink/45">({countProducts(products, (product) => Number(product.stock || 0) > 0)})</span>
+            </button>
+          </div>
         </aside>
 
         <div>
@@ -324,28 +470,119 @@ function ProductListItem({ product }: { product: Product }) {
   );
 }
 
-function FilterSelect({
+function FilterGroup({
   label,
-  value,
   options,
-  onChange
+  active,
+  onSelect,
+  getCount
 }: {
   label: string;
-  value: string;
-  options: Array<{ label: string; value: string }>;
-  onChange: (value: string) => void;
+  options: string[];
+  active: string;
+  onSelect: (value: string) => void;
+  getCount: (value: string) => number;
 }) {
   return (
-    <label className="mt-5 block border-t border-rudra/10 pt-5">
-      <span className="text-xs font-bold uppercase tracking-[0.16em] text-rudra/60">{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)} className="input mt-3">
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
+    <details open className="mt-5 border-t border-rudra/10 pt-5">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold uppercase tracking-[0.16em] text-rudra/60">
+        {label}
+        <span className="text-base leading-none text-rudra/45">v</span>
+      </summary>
+      <div className="mt-3 grid gap-1">
+        {options.map((option) => {
+          const selected = active === option;
+          const count = getCount(option);
+          return (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onSelect(option)}
+              className={`flex w-full items-center justify-between gap-3 rounded-md px-1 py-2 text-left text-sm transition ${
+                selected ? "bg-sandal font-black text-rudra" : "font-semibold text-ink hover:bg-sandal"
+              }`}
+            >
+              <span className="inline-flex min-w-0 items-center gap-3">
+                <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${selected ? "border-rudra bg-rudra" : "border-rudra/30 bg-white"}`}>
+                  {selected && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                </span>
+                <span className="truncate">{option}</span>
+              </span>
+              <span className="shrink-0 text-xs text-ink/45">({count})</span>
+            </button>
+          );
+        })}
+      </div>
+    </details>
+  );
+}
+
+function PriceFilters({
+  priceBand,
+  minPrice,
+  maxPrice,
+  onPriceBandChange,
+  onMinPriceChange,
+  onMaxPriceChange
+}: {
+  priceBand: string;
+  minPrice: string;
+  maxPrice: string;
+  onPriceBandChange: (value: string) => void;
+  onMinPriceChange: (value: string) => void;
+  onMaxPriceChange: (value: string) => void;
+}) {
+  return (
+    <details open className="mt-5 border-t border-rudra/10 pt-5">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold uppercase tracking-[0.16em] text-rudra/60">
+        Price
+        <span className="text-base leading-none text-rudra/45">v</span>
+      </summary>
+      <div className="mt-3 grid gap-2">
+        {priceBands.map((band) => (
+          <button
+            key={band.value}
+            type="button"
+            onClick={() => onPriceBandChange(band.value)}
+            className={`flex w-full items-center gap-3 rounded-md px-1 py-2 text-left text-sm transition ${
+              priceBand === band.value ? "bg-sandal font-black text-rudra" : "font-semibold text-ink hover:bg-sandal"
+            }`}
+          >
+            <span className={`flex h-4 w-4 items-center justify-center rounded border ${priceBand === band.value ? "border-rudra bg-rudra" : "border-rudra/30 bg-white"}`}>
+              {priceBand === band.value && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+            </span>
+            {band.label}
+          </button>
         ))}
-      </select>
-    </label>
+      </div>
+      <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <label>
+          <span className="sr-only">Minimum price</span>
+          <input
+            type="number"
+            min="0"
+            step="10"
+            value={minPrice}
+            onChange={(event) => onMinPriceChange(event.target.value)}
+            className="input h-10"
+            placeholder="From"
+          />
+        </label>
+        <span className="text-ink/35">-</span>
+        <label>
+          <span className="sr-only">Maximum price</span>
+          <input
+            type="number"
+            min="0"
+            step="10"
+            value={maxPrice}
+            onChange={(event) => onMaxPriceChange(event.target.value)}
+            className="input h-10"
+            placeholder="To"
+          />
+        </label>
+      </div>
+    </details>
   );
 }
 
@@ -374,6 +611,6 @@ function productSearchText(product: Product) {
     .toLowerCase();
 }
 
-function withAll(options: string[]) {
-  return [{ label: "All", value: "All" }, ...options.map((option) => ({ label: option, value: option }))];
+function countProducts(products: Product[], predicate: (product: Product) => boolean | undefined) {
+  return products.filter((product) => Boolean(predicate(product))).length;
 }
