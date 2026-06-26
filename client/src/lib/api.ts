@@ -1,7 +1,16 @@
 import { fallbackOrders, fallbackProducts } from "../data/fallback";
 import type { Address, ClientUser, ContentPage, Coupon, Order, PaymentMethod, Product, ProductReview, SupportTicket } from "../types";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+function getApiUrl() {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window === "undefined") return "http://localhost:5000/api";
+  if (["localhost", "127.0.0.1"].includes(window.location.hostname) || /^192\.168\./.test(window.location.hostname)) {
+    return `${window.location.protocol}//${window.location.hostname}:5000/api`;
+  }
+  return "http://localhost:5000/api";
+}
+
+const API_URL = getApiUrl();
 const PRODUCTS_CACHE_MS = 10_000;
 const HOMEPAGE_CACHE_MS = 15_000;
 let productsCache: Product[] | undefined;

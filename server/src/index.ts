@@ -23,8 +23,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 const allowedOrigins = [
   process.env.CLIENT_URL || "http://localhost:5173",
-  process.env.ADMIN_URL || "http://localhost:5174"
-];
+  process.env.ADMIN_URL || "http://localhost:5174",
+  "https://aaradhya-fullstack-admin.onrender.com"
+].filter(Boolean);
+const localNetworkOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$/;
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: Number(process.env.RATE_LIMIT_MAX || 300),
@@ -44,7 +46,7 @@ app.use(globalLimiter);
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      if (!origin || allowedOrigins.includes(origin) || localNetworkOriginPattern.test(origin)) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true

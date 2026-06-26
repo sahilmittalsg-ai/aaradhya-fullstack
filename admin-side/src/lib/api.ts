@@ -1,7 +1,16 @@
 import { orders as fallbackOrders } from "../data";
 import type { AdminOrder, AdminProduct } from "../data";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+function getApiUrl() {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window === "undefined") return "http://localhost:5000/api";
+  if (["localhost", "127.0.0.1"].includes(window.location.hostname) || /^192\.168\./.test(window.location.hostname)) {
+    return `${window.location.protocol}//${window.location.hostname}:5000/api`;
+  }
+  return "http://localhost:5000/api";
+}
+
+const API_URL = getApiUrl();
 const adminTokenKey = "aaradhya-admin-api-token";
 const ADMIN_CATALOG_CACHE_MS = 5_000;
 let adminProductsCache: ApiProduct[] | undefined;
