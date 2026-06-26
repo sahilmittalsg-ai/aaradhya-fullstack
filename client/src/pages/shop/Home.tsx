@@ -37,10 +37,13 @@ const purposeIcons: Record<string, LucideIcon> = {
 
 const defaultCategoryOptions = [
   { name: "Rudraksha", image: "/assets/categories/rudraksha.png" },
-  { name: "Energy Stones", image: "/assets/categories/pyrite.png" },
   { name: "Karungali", image: "/assets/categories/karungali.png" },
-  { name: "Spiritual Jewellery", image: "/assets/products/meditation-mala.png" },
-  { name: "Gift Hampers", image: "/assets/categories/gift-hampers-v2.png" }
+  { name: "Pyrite", image: "/assets/categories/pyrite.png" },
+  { name: "Sandalwood", image: "/assets/categories/sandalwood.png" },
+  { name: "Sphatik", image: "/assets/categories/sphatik.png" },
+  { name: "Tiger Eye", image: "/assets/categories/tiger-eye.png" },
+  { name: "Rose Quartz", image: "/assets/categories/rose-quartz.png" },
+  { name: "Amethyst", image: "/assets/categories/amethyst.png" }
 ];
 
 export function Home() {
@@ -533,9 +536,11 @@ function buildFilterOptions(products: Product[], key: "category" | "collection")
 }
 
 function productMatchesOption(product: Product, option: string) {
+  const normalizedOption = option.toLowerCase();
   return (
     product.category === option ||
     product.collection === option ||
-    product.tags?.includes(option.toLowerCase())
+    product.bead === option ||
+    product.tags?.includes(normalizedOption)
   );
 }
