@@ -177,16 +177,19 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#fff7ec] px-4 py-10">
-      <form onSubmit={signIn} className="w-full max-w-md rounded-xl border border-[#211d33]/10 bg-white p-8 shadow-panel">
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#b86b2b]">Admin access only</p>
-        <h1 className="mt-3 text-3xl font-bold text-[#211d33]">Aaradhya Commerce Admin</h1>
-        <p className="mt-3 text-sm leading-6 text-[#17172a]/65">
+    <div className="flex min-h-screen items-center justify-center bg-[#f6f8ff] px-4 py-10">
+      <form onSubmit={signIn} className="w-full max-w-md rounded-[28px] border border-[#e8ecff] bg-white p-8 shadow-[0_24px_60px_rgba(59,79,166,0.12)]">
+        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#5b6cff] text-white shadow-[0_12px_28px_rgba(91,108,255,0.28)]">
+          <LockKeyhole size={24} />
+        </span>
+        <p className="mt-6 text-sm font-bold uppercase tracking-[0.18em] text-[#8a91ad]">Admin access only</p>
+        <h1 className="mt-3 text-3xl font-extrabold text-[#23233c]">Aaradhya Commerce Admin</h1>
+        <p className="mt-3 text-sm leading-6 text-[#727994]">
           Enter admin username and password to manage storefront content, orders, payments, and customer support.
         </p>
 
         <div className="mt-6 grid gap-4">
-          <label className="grid gap-2 text-sm font-semibold text-[#211d33]">
+          <label className="grid gap-2 text-sm font-semibold text-[#23233c]">
             Username
             <input
               value={username}
@@ -194,13 +197,13 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
                 setUsername(event.target.value);
                 setError("");
               }}
-              className="rounded-lg border border-[#211d33]/10 bg-[#fff7ec] px-4 py-3 text-sm outline-none transition focus:border-[#b86b2b]"
+              className="admin-input"
               placeholder="Enter admin username"
               autoComplete="username"
             />
           </label>
 
-          <label className="grid gap-2 text-sm font-semibold text-[#211d33]">
+          <label className="grid gap-2 text-sm font-semibold text-[#23233c]">
             Password
             <input
               value={password}
@@ -208,7 +211,7 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
                 setPassword(event.target.value);
                 setError("");
               }}
-              className="rounded-lg border border-[#211d33]/10 bg-[#fff7ec] px-4 py-3 text-sm outline-none transition focus:border-[#b86b2b]"
+              className="admin-input"
               placeholder="Enter admin password"
               type="password"
               autoComplete="current-password"
@@ -219,10 +222,10 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
         {error && <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
         {syncNote && <p className="mt-4 rounded-lg bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">{syncNote}</p>}
 
-        <button disabled={signingIn} className="mt-6 w-full rounded-lg bg-[#211d33] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#b86b2b] disabled:opacity-60">
+        <button disabled={signingIn} className="admin-button mt-6 w-full disabled:opacity-60">
           {signingIn ? "Opening..." : "Login to Admin Panel"}
         </button>
-        <p className="mt-4 text-center text-xs text-[#17172a]/45">
+        <p className="mt-4 text-center text-xs text-[#8a91ad]">
           Admin login: {defaultAdminCredentials.username} / {defaultAdminCredentials.password}
         </p>
       </form>
@@ -242,46 +245,56 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff7ec] text-[#17172a]">
-      <header className="sticky top-0 z-40 border-b border-[#211d33]/10 bg-[#fff7ec]/95 backdrop-blur">
-        <div className="admin-container flex h-16 items-center justify-between gap-4">
-          <button className="rounded-lg border border-[#211d33]/10 bg-white p-2 lg:hidden" onClick={() => setMobileOpen((value) => !value)} aria-label="Menu">
+    <div className="min-h-screen bg-[#f6f8ff] text-[#23233c]">
+      <header className="sticky top-0 z-40 border-b border-[#e8ecff] bg-white/92 backdrop-blur">
+        <div className="admin-container flex h-20 items-center justify-between gap-4">
+          <button className="rounded-xl border border-[#e0e5ff] bg-white p-2.5 lg:hidden" onClick={() => setMobileOpen((value) => !value)} aria-label="Menu">
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#b86b2b]">Japam-style ecommerce control</p>
-            <h1 className="text-xl font-bold text-[#211d33]">Aaradhya Admin</h1>
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#5b6cff] text-white shadow-[0_12px_28px_rgba(91,108,255,0.28)]">
+              <GitBranch size={21} />
+            </span>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8a91ad]">Ecommerce control</p>
+              <h1 className="text-xl font-bold text-[#23233c]">Aaradhya Admin</h1>
+            </div>
           </div>
           <div className="hidden flex-1 justify-end gap-3 md:flex">
             <label className="relative w-full max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#17172a]/35" size={17} />
-              <input className="w-full rounded-full border border-[#211d33]/10 bg-white py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#b86b2b]" placeholder="Search orders, products, customers" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9aa0b8]" size={17} />
+              <input className="w-full rounded-2xl border border-[#e0e5ff] bg-[#f8faff] py-3 pl-11 pr-4 text-sm font-medium outline-none transition focus:border-[#5b6cff] focus:bg-white focus:ring-4 focus:ring-[#5b6cff]/10" placeholder="Search orders, products, customers" />
             </label>
             <button className="admin-button gap-2" onClick={() => navigate("/admin/products")}>
               <PackagePlus size={17} /> Add Product
             </button>
-            <button onClick={logout} className="rounded-lg border border-[#211d33]/10 bg-white px-4 py-2 text-sm font-semibold text-[#211d33] hover:border-[#b86b2b]">
+            <button onClick={logout} className="rounded-xl border border-[#e0e5ff] bg-white px-4 py-2 text-sm font-semibold text-[#23233c] transition hover:border-[#5b6cff] hover:text-[#5b6cff]">
               Logout
             </button>
           </div>
         </div>
       </header>
 
-      <div className="admin-container grid gap-6 py-6 lg:grid-cols-[280px_1fr]">
-        <aside className={`${mobileOpen ? "block" : "hidden"} h-max rounded-xl bg-[#211d33] p-4 text-white shadow-panel lg:sticky lg:top-24 lg:block`}>
-          <div className="mb-5 border-b border-white/10 pb-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#f6e8ce]/70">Admin Navigation</p>
-            <p className="mt-1 text-sm text-white/65">Storefront, orders, payments</p>
+      <div className="admin-container grid gap-6 py-6 lg:grid-cols-[260px_1fr]">
+        <aside className={`${mobileOpen ? "block" : "hidden"} h-max rounded-[28px] border border-[#e8ecff] bg-white p-4 shadow-[0_24px_60px_rgba(59,79,166,0.10)] lg:sticky lg:top-24 lg:block`}>
+          <div className="mb-5 flex items-center gap-3 border-b border-[#edf0ff] pb-5">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef1ff] text-[#5b6cff]">
+              <GitBranch size={22} />
+            </span>
+            <div>
+              <p className="text-lg font-bold text-[#23233c]">Base</p>
+              <p className="text-xs font-semibold text-[#9aa0b8]">Store command</p>
+            </div>
           </div>
-          <nav className="grid max-h-[calc(100vh-190px)] gap-1 overflow-y-auto pr-1">
+          <nav className="grid max-h-[calc(100vh-210px)] gap-1 overflow-y-auto pr-1">
             {navLinks.map((link) => (
               <NavLink
                 key={link.href}
                 to={link.href}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `group flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-                    isActive ? "bg-[#f6e8ce] text-[#211d33]" : "text-white/72 hover:bg-white/10 hover:text-white"
+                  `group flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+                    isActive ? "bg-[#eef1ff] text-[#5b6cff]" : "text-[#8a91ad] hover:bg-[#f8faff] hover:text-[#23233c]"
                   }`
                 }
               >
@@ -289,7 +302,7 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
                   <link.icon size={17} />
                   {link.label}
                 </span>
-                <ChevronRight size={14} className="opacity-50" />
+                <ChevronRight size={14} className="opacity-35" />
               </NavLink>
             ))}
           </nav>
@@ -327,11 +340,13 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
 function Dashboard() {
   const [dashboardOrders, setDashboardOrders] = useState<AdminOrder[]>(initialOrders);
   const [dashboardProducts, setDashboardProducts] = useState<ApiProduct[]>([]);
+  const [supportCount, setSupportCount] = useState(0);
 
   useEffect(() => {
     refreshDashboardOrders();
     const interval = window.setInterval(refreshDashboardOrders, 5000);
     getAdminProducts(true).then(setDashboardProducts);
+    getAdminSupportTickets().then((tickets) => setSupportCount(tickets.length)).catch(() => setSupportCount(0));
     return () => window.clearInterval(interval);
   }, []);
 
@@ -347,24 +362,38 @@ function Dashboard() {
   const pendingDispatch = dashboardOrders.filter((order) => ["Pending", "Confirmed", "Packed"].includes(order.orderStatus)).length;
   const revenue = dashboardOrders.filter((order) => order.paymentStatus === "Paid").reduce((sum, order) => sum + order.total, 0);
   const lowStock = dashboardProducts.filter((product) => product.stock <= 10).length || products.filter((product) => product.stock <= 10).length;
+  const activeProducts = dashboardProducts.filter((product) => product.active !== false);
+  const chartPoints = buildProfitPoints(dashboardOrders);
+  const deliveredOrders = dashboardOrders.filter((order) => order.orderStatus === "Delivered").length;
+  const cancelledOrders = dashboardOrders.filter((order) => order.orderStatus === "Cancelled").length;
 
   return (
-    <Page eyebrow="Overview" title="Dashboard" subtitle="A focused command center for storefront, fulfilment, and payments.">
-      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(210px,1fr))]">
-        <Metric label="Total Orders" value={dashboardOrders.length} icon={ShoppingCart} />
-        <Metric label="Today Orders" value={todayOrders} icon={PackageCheck} />
-        <Metric label="COD Orders" value={codOrders.length} icon={IndianRupee} />
-        <Metric label="Prepaid Orders" value={prepaidOrders.length} icon={CreditCard} />
-        <Metric label="Pending Dispatch" value={pendingDispatch} icon={Truck} />
-        <Metric label="Total Revenue" value={`Rs.${revenue}`} icon={Wallet} />
-        <Metric label="COD Amount to Collect" value={`Rs.${codOrders.reduce((sum, order) => sum + order.total, 0)}`} icon={IndianRupee} />
-        <Metric label="Delivered Orders" value={dashboardOrders.filter((order) => order.orderStatus === "Delivered").length} icon={CheckCircle2} />
-        <Metric label="Cancelled Orders" value={dashboardOrders.filter((order) => order.orderStatus === "Cancelled").length} icon={Ban} />
-        <Metric label="Low Stock Products" value={lowStock} icon={Boxes} />
+    <Page eyebrow="Dashboard" title="Store Overview" subtitle="Live admin dashboard connected to products, orders, fulfilment, payments, and client support.">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <Metric label="Saved Products" value={`${activeProducts.length}+`} icon={CheckCircle2} />
+        <Metric label="Stock Products" value={`${dashboardProducts.reduce((sum, product) => sum + Number(product.stock || 0), 0)}+`} icon={Boxes} />
+        <Metric label="Sales Products" value={`${dashboardOrders.length}+`} icon={ShoppingCart} />
+        <Metric label="Support Requests" value={`${supportCount}+`} icon={Headphones} />
       </div>
-      <div className="mt-6">
-        <Panel title="Recent Orders">
-          <OrderTable compact rows={dashboardOrders} />
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_0.9fr]">
+        <Panel title="Reports">
+          <ProfitLineChart points={chartPoints} />
+        </Panel>
+        <Panel title="Analytics">
+          <DashboardDonut
+            delivered={deliveredOrders}
+            pending={pendingDispatch}
+            cancelled={cancelledOrders}
+            total={Math.max(dashboardOrders.length, 1)}
+          />
+        </Panel>
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1.25fr_0.95fr]">
+        <OrderTable compact rows={dashboardOrders} />
+        <Panel title="Top Selling Products">
+          <TopSellingProducts products={dashboardProducts} orders={dashboardOrders} />
         </Panel>
       </div>
     </Page>
@@ -460,30 +489,103 @@ function ProfitLineChart({ points }: { points: ProfitPoint[] }) {
   const profitPath = buildSvgPath(points, "profit", maxValue);
 
   return (
-    <div className="rounded-2xl border border-[#211d33]/10 bg-[#fffdf8] p-4">
-      <div className="mb-4 flex flex-wrap items-center gap-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#17172a]/55">
-        <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#b86b2b]" /> Revenue</span>
-        <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-emerald-600" /> Profit</span>
+    <div className="rounded-2xl bg-white">
+      <div className="mb-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-[#8a91ad]">
+        <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#58b8ff]" /> Sales</span>
+        <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#cf6cff]" /> Profit</span>
       </div>
       <svg viewBox="0 0 720 280" className="h-72 w-full overflow-visible" role="img" aria-label="Profit and revenue line chart">
         {[0, 1, 2, 3].map((line) => (
-          <line key={line} x1="44" x2="690" y1={42 + line * 58} y2={42 + line * 58} stroke="#211d33" strokeOpacity="0.08" />
+          <line key={line} x1="44" x2="690" y1={42 + line * 58} y2={42 + line * 58} stroke="#dfe4fb" strokeWidth="1" />
         ))}
-        <path d={revenuePath} fill="none" stroke="#b86b2b" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-        <path d={profitPath} fill="none" stroke="#059669" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+        <defs>
+          <linearGradient id="salesLine" x1="0" x2="1">
+            <stop offset="0%" stopColor="#58b8ff" />
+            <stop offset="100%" stopColor="#5b6cff" />
+          </linearGradient>
+          <linearGradient id="profitLine" x1="0" x2="1">
+            <stop offset="0%" stopColor="#745bff" />
+            <stop offset="100%" stopColor="#e66bff" />
+          </linearGradient>
+        </defs>
+        <path d={revenuePath} fill="none" stroke="url(#salesLine)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={profitPath} fill="none" stroke="url(#profitLine)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((point, index) => {
           const x = chartX(index, points.length);
           const revenueY = chartY(point.revenue, maxValue);
           const profitY = chartY(point.profit, maxValue);
           return (
             <g key={point.label}>
-              <circle cx={x} cy={revenueY} r="5" fill="#b86b2b" />
-              <circle cx={x} cy={profitY} r="5" fill="#059669" />
-              <text x={x} y="262" textAnchor="middle" fontSize="12" fill="#17172a" opacity="0.62">{point.label}</text>
+              <circle cx={x} cy={revenueY} r="6" fill="#fff" stroke="#58b8ff" strokeWidth="3" />
+              <circle cx={x} cy={profitY} r="6" fill="#fff" stroke="#cf6cff" strokeWidth="3" />
+              <text x={x} y="262" textAnchor="middle" fontSize="12" fill="#8a91ad">{point.label}</text>
             </g>
           );
         })}
       </svg>
+    </div>
+  );
+}
+
+function DashboardDonut({ delivered, pending, cancelled, total }: { delivered: number; pending: number; cancelled: number; total: number }) {
+  const deliveredPercent = Math.round((delivered / total) * 100);
+  const pendingPercent = Math.round((pending / total) * 100);
+  const cancelledPercent = Math.max(0, 100 - deliveredPercent - pendingPercent);
+
+  return (
+    <div className="grid place-items-center gap-5 py-2">
+      <div
+        className="relative grid h-52 w-52 place-items-center rounded-full"
+        style={{
+          background: `conic-gradient(#5b8cff 0 ${deliveredPercent}%, #ffd76b ${deliveredPercent}% ${deliveredPercent + pendingPercent}%, #ff8a6b ${deliveredPercent + pendingPercent}% 100%)`
+        }}
+      >
+        <div className="grid h-32 w-32 place-items-center rounded-full bg-white text-center shadow-[inset_0_0_0_1px_rgba(232,236,255,1)]">
+          <div>
+            <p className="text-3xl font-extrabold text-[#23233c]">{deliveredPercent || 0}%</p>
+            <p className="text-xs font-semibold text-[#8a91ad]">Delivered</p>
+          </div>
+        </div>
+      </div>
+      <div className="grid w-full gap-3 text-sm font-semibold text-[#5f6683] sm:grid-cols-3">
+        <span className="inline-flex items-center justify-center gap-2"><span className="h-3 w-3 rounded-full bg-[#5b8cff]" /> Delivered {delivered}</span>
+        <span className="inline-flex items-center justify-center gap-2"><span className="h-3 w-3 rounded-full bg-[#ffd76b]" /> Pending {pending}</span>
+        <span className="inline-flex items-center justify-center gap-2"><span className="h-3 w-3 rounded-full bg-[#ff8a6b]" /> Return {cancelled || cancelledPercent}</span>
+      </div>
+    </div>
+  );
+}
+
+function TopSellingProducts({ products: catalog, orders }: { products: ApiProduct[]; orders: AdminOrder[] }) {
+  const soldCount = new Map<string, number>();
+  orders.forEach((order) => {
+    order.products.forEach((item) => {
+      soldCount.set(item.name, (soldCount.get(item.name) || 0) + item.quantity);
+    });
+  });
+
+  const rows = [...(catalog.length ? catalog : [])]
+    .map((product) => ({ product, sold: soldCount.get(product.title) || 0 }))
+    .sort((left, right) => right.sold - left.sold || Number(right.product.featured) - Number(left.product.featured) || right.product.rating - left.product.rating)
+    .slice(0, 4);
+
+  if (!rows.length) {
+    return <p className="rounded-2xl bg-[#f8faff] p-4 text-sm font-semibold text-[#8a91ad]">Products will appear here after catalog sync.</p>;
+  }
+
+  return (
+    <div className="grid gap-4">
+      {rows.map(({ product, sold }) => (
+        <div key={product._id || product.title} className="flex items-center gap-4 rounded-2xl bg-[#f8faff] p-3">
+          <img src={product.images[0] || "/assets/products/rudraksha-bracelet.png"} alt={product.title} className="h-16 w-16 rounded-2xl object-cover" />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-bold text-[#23233c]">{product.title}</p>
+            <p className="mt-1 text-xs font-semibold text-[#8a91ad]">{product.collection} / {sold} sold</p>
+            <div className="mt-2 flex text-xs text-[#ffc947]">*****</div>
+          </div>
+          <p className="text-lg font-extrabold text-[#23233c]">Rs.{product.price}</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -1827,9 +1929,9 @@ function Page({ eyebrow, title, subtitle, children }: { eyebrow: string; title: 
     <section>
       <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#b86b2b]">{eyebrow}</p>
-          <h2 className="mt-2 text-2xl font-bold text-[#211d33] md:text-3xl">{title}</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#17172a]/60">{subtitle}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8a91ad]">{eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-extrabold text-[#23233c] md:text-3xl">{title}</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#727994]">{subtitle}</p>
         </div>
       </div>
       {children}
@@ -1840,10 +1942,11 @@ function Page({ eyebrow, title, subtitle, children }: { eyebrow: string; title: 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="admin-card overflow-hidden">
-      <div className="border-b border-[#211d33]/10 bg-[#f6e8ce]/60 px-5 py-4">
-        <h3 className="font-semibold text-[#211d33]">{title}</h3>
+      <div className="flex items-center justify-between border-b border-[#edf0ff] px-6 py-5">
+        <h3 className="font-bold text-[#23233c]">{title}</h3>
+        <span className="text-xl font-bold leading-none text-[#c0c6dc]">...</span>
       </div>
-      <div className="p-5">{children}</div>
+      <div className="p-6">{children}</div>
     </div>
   );
 }
@@ -1852,27 +1955,27 @@ function Metric({ label, value, icon: Icon, compact = false }: { label: string; 
   if (compact) {
     return (
       <div className="admin-card relative min-h-[126px] overflow-hidden p-5 transition hover:-translate-y-0.5">
-        <span className="absolute right-4 top-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f6e8ce] text-[#b86b2b]">
+        <span className="absolute right-4 top-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eef1ff] text-[#5b6cff]">
           <Icon size={21} />
         </span>
         <div>
-          <p className="max-w-[7rem] text-[14px] font-semibold leading-5 text-[#17172a]/58">{label}</p>
-          <p className="mt-8 whitespace-nowrap text-[24px] font-bold leading-none tracking-tight text-[#211d33]">{value}</p>
+          <p className="max-w-[7rem] text-[14px] font-semibold leading-5 text-[#727994]">{label}</p>
+          <p className="mt-8 whitespace-nowrap text-[24px] font-extrabold leading-none tracking-tight text-[#23233c]">{value}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="admin-card min-h-[180px] p-5 transition hover:-translate-y-0.5">
-      <div className="flex h-full items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-sm font-medium leading-6 text-[#17172a]/55">{label}</p>
-          <p className="mt-3 break-words text-2xl font-bold leading-tight text-[#211d33]">{value}</p>
-        </div>
-        <span className="shrink-0 rounded-xl bg-[#f6e8ce] p-3 text-[#b86b2b]">
-          <Icon size={20} />
+    <div className="admin-card min-h-[112px] p-5 transition hover:-translate-y-0.5">
+      <div className="flex h-full items-center gap-5">
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#eef1ff] text-[#5b6cff]">
+          <Icon size={22} />
         </span>
+        <div className="min-w-0">
+          <p className="break-words text-2xl font-extrabold leading-tight text-[#23233c]">{value}</p>
+          <p className="mt-1 text-sm font-semibold leading-6 text-[#727994]">{label}</p>
+        </div>
       </div>
     </div>
   );
@@ -1887,5 +1990,5 @@ function ResponsiveTable({ children }: { children: ReactNode }) {
 }
 
 function Badge({ value }: { value: string }) {
-  return <span className="inline-flex w-max rounded-full bg-[#f6e8ce] px-3 py-1 text-xs font-semibold text-[#211d33]">{value}</span>;
+  return <span className="inline-flex w-max rounded-full bg-[#eef1ff] px-3 py-1 text-xs font-semibold text-[#5b6cff]">{value}</span>;
 }
