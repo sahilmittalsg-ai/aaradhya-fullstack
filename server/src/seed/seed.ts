@@ -1,5 +1,8 @@
 import dotenv from "dotenv";
 import { disconnectDb } from "../db/postgres.js";
+import { readFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import slugify from "slugify";
 import { connectDb } from "../config/db.js";
 import { Banner } from "../models/Banner.js";
@@ -18,6 +21,9 @@ import { SupportTicket } from "../models/SupportTicket.js";
 import { User } from "../models/User.js";
 
 dotenv.config();
+
+type SeedProduct = Record<string, any>;
+type SeedCategory = Record<string, any>;
 
 const products = [
   {
@@ -448,6 +454,47 @@ const products = [
   }
 ];
 
+async function readSeedCatalog() {
+  try {
+    const seedPath = resolve(dirname(fileURLToPath(import.meta.url)), "../../data/store.json");
+    const store = JSON.parse(await readFile(seedPath, "utf8")) as {
+      products?: SeedProduct[];
+      categories?: SeedCategory[];
+    };
+
+    const catalogProducts = (store.products || []).map(({ _id, id, slug, createdAt, updatedAt, ...product }) => ({
+      ...product,
+      slug: slug || slugify(String(product.title || ""), { lower: true, strict: true }),
+      active: product.active !== false
+    }));
+
+    const catalogCategories = (store.categories || []).map(({ _id, id, createdAt, updatedAt, ...category }) => ({
+      ...category,
+      slug: category.slug || slugify(String(category.name || ""), { lower: true, strict: true }),
+      active: category.active !== false
+    }));
+
+    if (catalogProducts.length && catalogCategories.length) {
+      return { products: catalogProducts, categories: catalogCategories };
+    }
+  } catch {
+    // Fall back to the inline seed below when the local catalog file is unavailable.
+  }
+
+  const fallbackCategories = ["Rudraksha", "Crystal", "Meditation", "Spiritual Jewellery", "Bracelets", "Malas", "Nepali Rudraksha", "Combos", "Gift Hampers"].map((name) => ({
+    name,
+    slug: slugify(name, { lower: true, strict: true }),
+    description: `${name} products for the storefront menu and filters.`,
+    featured: ["Rudraksha", "Crystal", "Meditation", "Spiritual Jewellery", "Combos", "Gift Hampers"].includes(name),
+    active: true
+  }));
+
+  return {
+    products: products.map((product) => ({ ...product, slug: slugify(product.title, { lower: true, strict: true }), active: true })),
+    categories: fallbackCategories
+  };
+}
+
 async function seed() {
   await connectDb(process.env.DATABASE_URL || "");
   await Promise.all([
@@ -479,18 +526,11 @@ async function seed() {
     }
   ]);
 
-  await Category.create(
-    ["Rudraksha", "Crystal", "Meditation", "Spiritual Jewellery", "Bracelets", "Malas", "Nepali Rudraksha"].map((name) => ({
-      name,
-      slug: slugify(name, { lower: true, strict: true }),
-      description: `${name} products for the storefront menu and filters.`,
-      featured: ["Rudraksha", "Crystal", "Meditation", "Spiritual Jewellery"].includes(name)
-    }))
-  );
+  const seedCatalog = await readSeedCatalog();
 
-  const createdProducts = await Product.create(
-    products.map((product) => ({ ...product, slug: slugify(product.title, { lower: true, strict: true }) }))
-  );
+  await Category.create(seedCatalog.categories);
+
+  const createdProducts = await Product.create(seedCatalog.products);
 
   await SiteSetting.create({
     key: "default",
@@ -504,9 +544,10 @@ async function seed() {
     currency: "INR",
     navLinks: [
       { label: "Rudraksha", href: "/collections?collection=Rudraksha", sortOrder: 1 },
-      { label: "Crystal", href: "/collections?collection=Crystal", sortOrder: 2 },
-      { label: "Meditation", href: "/collections?collection=Meditation", sortOrder: 3 },
-      { label: "Track Order", href: "/track-order", sortOrder: 4 }
+      { label: "Energy Stones", href: "/collections?collection=Energy%20Stones", sortOrder: 2 },
+      { label: "Combos", href: "/collections?collection=Combos", sortOrder: 3 },
+      { label: "Gift Hampers", href: "/collections?collection=Gift%20Hampers", sortOrder: 4 },
+      { label: "Track Order", href: "/track-order", sortOrder: 5 }
     ],
     footerLinks: [
       { label: "About Us", href: "/pages/about-us", sortOrder: 1 },
@@ -562,13 +603,14 @@ async function seed() {
     {
       title: "Shop by intention",
       eyebrow: "Collections",
-      subtitle: "Rudraksha, crystals, malas, bracelets, and meditation products.",
+      subtitle: "Rudraksha, energy stones, combos, gift hampers, malas, and bracelets.",
       type: "collections",
       sortOrder: 2,
       items: [
         { title: "Rudraksha", subtitle: "Grounded daily wear", href: "/collections?collection=Rudraksha" },
-        { title: "Crystal", subtitle: "Energy stone styling", href: "/collections?collection=Crystal" },
-        { title: "Meditation", subtitle: "Japa and mindfulness", href: "/collections?collection=Meditation" }
+        { title: "Energy Stones", subtitle: "Crystal energy styling", href: "/collections?collection=Energy%20Stones" },
+        { title: "Combos", subtitle: "Value sets and bracelet stacks", href: "/collections?collection=Combos" },
+        { title: "Gift Hampers", subtitle: "Ready-to-gift spiritual kits", href: "/collections?collection=Gift%20Hampers" }
       ]
     },
     {

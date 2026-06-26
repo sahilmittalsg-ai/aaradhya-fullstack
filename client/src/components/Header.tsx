@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
-const preferredNavOrder = ["Rudraksha", "Energy Stones", "Karungali", "Spiritual Jewellery", "Gift Hampers"];
+const preferredNavOrder = ["Rudraksha", "Energy Stones", "Karungali", "Combos", "Spiritual Jewellery", "Gift Hampers"];
 const announcements = [
   {
     text: "100% Cashback available upto Rs.500",
@@ -151,7 +151,7 @@ function buildNav() {
     ...preferredNavOrder.map((name) => ({
       label: name,
       href: collectionHref(name),
-      dropdown: ["Rudraksha", "Energy Stones", "Spiritual Jewellery", "Gift Hampers"].includes(name)
+      dropdown: ["Rudraksha", "Energy Stones", "Combos", "Spiritual Jewellery", "Gift Hampers"].includes(name)
     })),
     { label: "Bulk / Wholesale", href: "/pages/bulk-wholesale", dropdown: false },
     { label: "Support", href: "/support", dropdown: true }

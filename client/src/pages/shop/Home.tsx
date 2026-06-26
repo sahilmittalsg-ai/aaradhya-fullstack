@@ -26,7 +26,9 @@ const defaultCategoryOptions = [
   { name: "Sphatik", image: "/assets/categories/sphatik.png" },
   { name: "Tiger Eye", image: "/assets/categories/tiger-eye.png" },
   { name: "Rose Quartz", image: "/assets/categories/rose-quartz.png" },
-  { name: "Amethyst", image: "/assets/categories/amethyst.png" }
+  { name: "Amethyst", image: "/assets/categories/amethyst.png" },
+  { name: "Combos", image: "/assets/products/hero-spiritual-shop.png" },
+  { name: "Gift Hampers", image: "/assets/categories/gift-hampers.png" }
 ];
 
 const collectionShowcaseOptions = [
@@ -71,6 +73,18 @@ const collectionShowcaseOptions = [
     value: "Pyrite",
     href: "/collections?bead=Pyrite",
     image: "/assets/collections/pyrite-wearables.jpg"
+  },
+  {
+    name: "Combo Deals",
+    value: "Combos",
+    href: "/collections?collection=Combos",
+    image: "/assets/products/hero-spiritual-shop.png"
+  },
+  {
+    name: "Gift Hampers",
+    value: "Gift Hampers",
+    href: "/collections?collection=Gift%20Hampers",
+    image: "/assets/categories/gift-hampers.png"
   }
 ];
 

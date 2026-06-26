@@ -1008,7 +1008,7 @@ function LatestTrendingPage() {
 
 function ShopCollectionsPage() {
   const [catalog, setCatalog] = useState<ApiProduct[]>([]);
-  const collections = ["Rudraksha Bracelets", "Rudraksha Malas", "Nepali/Indian Rudraksha", "Spiritual Jewellery", "Karungali Wearables", "Energy Stones", "Pyrite", "Sphatik", "Rose Quartz", "Tiger Eye", "Amethyst"];
+  const collections = ["Rudraksha Bracelets", "Rudraksha Malas", "Nepali/Indian Rudraksha", "Spiritual Jewellery", "Karungali Wearables", "Energy Stones", "Pyrite", "Sphatik", "Rose Quartz", "Tiger Eye", "Amethyst", "Combos", "Gift Hampers"];
 
   useEffect(() => {
     getAdminProducts().then(setCatalog);
@@ -1056,6 +1056,8 @@ function productMatchesCollection(product: ApiProduct, collection: string) {
   if (collection === "Nepali/Indian Rudraksha") return product.collection === "Nepali/Indian Rudraksha" || product.tags.includes("nepali-indian-rudraksha") || product.title.toLowerCase().includes("nepali");
   if (collection === "Karungali Wearables") return product.category === "Karungali";
   if (collection === "Energy Stones") return ["Energy Stones", "Pyrite", "Sphatik", "Tiger Eye", "Rose Quartz", "Amethyst"].includes(product.category);
+  if (collection === "Combos") return product.category === "Combos" || product.collection === "Combos" || product.tags.includes("combo");
+  if (collection === "Gift Hampers") return product.category === "Gift Hampers" || product.collection === "Gift Hampers" || product.tags.includes("gift-hampers");
   return product.collection === collection || product.category === collection;
 }
 
