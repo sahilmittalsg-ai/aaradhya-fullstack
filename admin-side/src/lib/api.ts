@@ -3,9 +3,12 @@ import type { AdminOrder, AdminProduct } from "../data";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const adminTokenKey = "aaradhya-admin-api-token";
+const ADMIN_CATALOG_CACHE_MS = 5_000;
 let adminProductsCache: ApiProduct[] | undefined;
+let adminProductsCacheAt = 0;
 let adminProductsRequest: Promise<ApiProduct[]> | undefined;
 let adminCategoriesCache: ApiCategory[] | undefined;
+let adminCategoriesCacheAt = 0;
 let adminCategoriesRequest: Promise<ApiCategory[]> | undefined;
 let adminOrdersCache: ApiOrder[] | undefined;
 let adminOrdersRequest: Promise<ApiOrder[]> | undefined;
@@ -208,6 +211,7 @@ async function request<T>(path: string, options?: RequestInit, retryAuth = true)
   const token = localStorage.getItem(adminTokenKey);
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -247,6 +251,15 @@ export function clearAdminApiSession() {
   localStorage.removeItem(adminTokenKey);
 }
 
+function clearAdminCatalogCache() {
+  adminProductsCache = undefined;
+  adminProductsCacheAt = 0;
+  adminProductsRequest = undefined;
+  adminCategoriesCache = undefined;
+  adminCategoriesCacheAt = 0;
+  adminCategoriesRequest = undefined;
+}
+
 export async function getAdminHomepage() {
   if (adminHomepageCache) return adminHomepageCache;
   adminHomepageCache = await request<ApiHomepage>("/content/admin/homepage");
@@ -262,17 +275,18 @@ export async function updateAdminHomepage(homepage: ApiHomepage) {
   return updated;
 }
 
-export async function getAdminProducts() {
-  if (adminProductsCache) return adminProductsCache;
+export async function getAdminProducts(force = false) {
+  if (!force && adminProductsCache && Date.now() - adminProductsCacheAt < ADMIN_CATALOG_CACHE_MS) return adminProductsCache;
   if (adminProductsRequest) return adminProductsRequest;
 
   adminProductsRequest = (async () => {
     try {
       adminProductsCache = await request<ApiProduct[]>("/products?all=true");
+      adminProductsCacheAt = Date.now();
     } finally {
       adminProductsRequest = undefined;
     }
-    return adminProductsCache;
+    return adminProductsCache || [];
   })();
 
   return adminProductsRequest;
@@ -283,7 +297,7 @@ export async function createAdminProduct(product: Partial<ApiProduct>) {
     method: "POST",
     body: JSON.stringify(product)
   });
-  adminProductsCache = undefined;
+  clearAdminCatalogCache();
   return created;
 }
 
@@ -292,27 +306,28 @@ export async function updateAdminProduct(id: string, product: Partial<ApiProduct
     method: "PATCH",
     body: JSON.stringify(product)
   });
-  adminProductsCache = undefined;
+  clearAdminCatalogCache();
   return updated;
 }
 
 export async function deleteAdminProduct(id: string) {
   const result = await request<{ message: string }>(`/products/${id}`, { method: "DELETE" });
-  adminProductsCache = undefined;
+  clearAdminCatalogCache();
   return result;
 }
 
-export async function getAdminCategories() {
-  if (adminCategoriesCache) return adminCategoriesCache;
+export async function getAdminCategories(force = false) {
+  if (!force && adminCategoriesCache && Date.now() - adminCategoriesCacheAt < ADMIN_CATALOG_CACHE_MS) return adminCategoriesCache;
   if (adminCategoriesRequest) return adminCategoriesRequest;
 
   adminCategoriesRequest = (async () => {
     try {
       adminCategoriesCache = await request<ApiCategory[]>("/categories?all=true");
+      adminCategoriesCacheAt = Date.now();
     } finally {
       adminCategoriesRequest = undefined;
     }
-    return adminCategoriesCache;
+    return adminCategoriesCache || [];
   })();
 
   return adminCategoriesRequest;
@@ -323,7 +338,7 @@ export async function createAdminCategory(category: Partial<ApiCategory>) {
     method: "POST",
     body: JSON.stringify(category)
   });
-  adminCategoriesCache = undefined;
+  clearAdminCatalogCache();
   return created;
 }
 
@@ -332,13 +347,13 @@ export async function updateAdminCategory(id: string, category: Partial<ApiCateg
     method: "PATCH",
     body: JSON.stringify(category)
   });
-  adminCategoriesCache = undefined;
+  clearAdminCatalogCache();
   return updated;
 }
 
 export async function deleteAdminCategory(id: string) {
   const result = await request<{ message: string }>(`/categories/${id}`, { method: "DELETE" });
-  adminCategoriesCache = undefined;
+  clearAdminCatalogCache();
   return result;
 }
 

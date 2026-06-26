@@ -22,7 +22,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ProductCard } from "../../components/ProductCard";
 import { useCartActions } from "../../context/CartContext";
-import { getProduct, getProductReviews, getProducts, getPublicCoupons } from "../../lib/api";
+import { useLiveProducts } from "../../hooks/useLiveProducts";
+import { getProduct, getProductReviews, getPublicCoupons } from "../../lib/api";
 import type { CartItem, Coupon, Product, ProductReview } from "../../types";
 
 export function ProductDetail() {
@@ -30,7 +31,7 @@ export function ProductDetail() {
   const navigate = useNavigate();
   const { addItem } = useCartActions();
   const [product, setProduct] = useState<Product>();
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const allProducts = useLiveProducts();
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [selectedSize, setSelectedSize] = useState("");
@@ -47,10 +48,14 @@ export function ProductDetail() {
       setQuantity(1);
       setIncludePlan(false);
     });
-    getProducts().then(setAllProducts);
     getProductReviews(slug).then(setReviews);
     getPublicCoupons().then(setCoupons);
   }, [slug]);
+
+  useEffect(() => {
+    const liveProduct = allProducts.find((item) => item.slug === slug);
+    if (liveProduct) setProduct(liveProduct);
+  }, [allProducts, slug]);
 
   const selectedSizeOption = useMemo(
     () => product?.sizeOptions?.find((size) => size.value === selectedSize),

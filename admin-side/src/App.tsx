@@ -331,7 +331,7 @@ function Dashboard() {
   useEffect(() => {
     refreshDashboardOrders();
     const interval = window.setInterval(refreshDashboardOrders, 5000);
-    getAdminProducts().then(setDashboardProducts);
+    getAdminProducts(true).then(setDashboardProducts);
     return () => window.clearInterval(interval);
   }, []);
 
@@ -596,11 +596,20 @@ function ProductsPage() {
   const selectedCategory = searchParams.get("category") || "All";
 
   useEffect(() => {
-    refreshProducts();
+    refreshProducts(true);
+    const refresh = () => {
+      void refreshProducts(true);
+    };
+    window.addEventListener("focus", refresh);
+    const interval = window.setInterval(refresh, 20_000);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.clearInterval(interval);
+    };
   }, []);
 
-  async function refreshProducts() {
-    const [productRows, categoryRows] = await Promise.all([getAdminProducts(), getAdminCategories()]);
+  async function refreshProducts(force = false) {
+    const [productRows, categoryRows] = await Promise.all([getAdminProducts(force), getAdminCategories(force)]);
     setCatalog(productRows);
     setCategories(categoryRows);
   }
@@ -860,11 +869,20 @@ function ProductCategoriesPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    refreshCategories();
+    refreshCategories(true);
+    const refresh = () => {
+      void refreshCategories(true);
+    };
+    window.addEventListener("focus", refresh);
+    const interval = window.setInterval(refresh, 20_000);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.clearInterval(interval);
+    };
   }, []);
 
-  async function refreshCategories() {
-    const [categoryRows, productRows] = await Promise.all([getAdminCategories(), getAdminProducts()]);
+  async function refreshCategories(force = false) {
+    const [categoryRows, productRows] = await Promise.all([getAdminCategories(force), getAdminProducts(force)]);
     setCategories(categoryRows);
     setCatalog(productRows);
   }
@@ -1011,7 +1029,7 @@ function ShopCollectionsPage() {
   const collections = ["Rudraksha Bracelets", "Rudraksha Malas", "Nepali/Indian Rudraksha", "Spiritual Jewellery", "Karungali Wearables", "Energy Stones", "Pyrite", "Sphatik", "Rose Quartz", "Tiger Eye", "Amethyst", "Combos", "Gift Hampers"];
 
   useEffect(() => {
-    getAdminProducts().then(setCatalog);
+    getAdminProducts(true).then(setCatalog);
   }, []);
 
   return (
@@ -1033,7 +1051,7 @@ function ShopPurposePage() {
   const purposes = ["Wealth", "Health", "Love", "Luck", "Protection", "Peace", "Courage", "Balance"];
 
   useEffect(() => {
-    getAdminProducts().then(setCatalog);
+    getAdminProducts(true).then(setCatalog);
   }, []);
 
   return (

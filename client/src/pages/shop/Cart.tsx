@@ -1,14 +1,14 @@
 import { ChevronLeft, ChevronRight, Minus, Plus, Trash2, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import { getProducts } from "../../lib/api";
+import { useLiveProducts } from "../../hooks/useLiveProducts";
 import { calculatePriceSummary } from "../../lib/pricing";
 import type { CartItem, Product } from "../../types";
 
 export function Cart() {
   const { items, subtotal, addItem, updateQuantity, removeItem } = useCart();
-  const [products, setProducts] = useState<Product[]>([]);
+  const products = useLiveProducts();
   const shipping = subtotal >= 1499 || subtotal === 0 ? 0 : 99;
   const summary = calculatePriceSummary(items, shipping);
   const bestseller = products.find((product) => !items.some((item) => item.slug === product.slug));
@@ -16,10 +16,6 @@ export function Cart() {
     .filter((product) => !items.some((item) => item.slug === product.slug))
     .slice(0, 6);
   const hasUnavailableQuantity = items.some((item) => item.quantity > getMaxQuantity(item, products));
-
-  useEffect(() => {
-    getProducts().then(setProducts);
-  }, []);
 
   useEffect(() => {
     if (!products.length) return;

@@ -1,8 +1,8 @@
 import { X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import { getProducts } from "../../lib/api";
+import { useLiveProducts } from "../../hooks/useLiveProducts";
 import { calculatePriceSummary } from "../../lib/pricing";
 import type { CartItem as CartLineItem, Product } from "../../types";
 import { CartItem } from "./CartItem";
@@ -11,7 +11,7 @@ import { CheckoutBar } from "./CheckoutBar";
 
 export function CartDrawer() {
   const { items, subtotal, isCartOpen, closeCart, addItem, updateQuantity, removeItem } = useCart();
-  const [products, setProducts] = useState<Product[]>([]);
+  const products = useLiveProducts();
   const shipping = subtotal >= 1499 || subtotal === 0 ? 0 : 99;
   const summary = calculatePriceSummary(items, shipping);
   const recommendedProducts = useMemo(
@@ -19,10 +19,6 @@ export function CartDrawer() {
     [items, products]
   );
   const hasUnavailableQuantity = items.some((item) => item.quantity > getMaxQuantity(item, products));
-
-  useEffect(() => {
-    getProducts().then(setProducts);
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = isCartOpen ? "hidden" : "";

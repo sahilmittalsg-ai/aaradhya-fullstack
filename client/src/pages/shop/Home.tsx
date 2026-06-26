@@ -8,14 +8,14 @@ import {
   Truck,
   Star
 } from "lucide-react";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CategoryStrip } from "../../components/CategoryStrip";
 import { HeroCarousel } from "../../components/HeroCarousel";
 import { LatestTrendingCarousel } from "../../components/latest-trending/LatestTrendingCarousel";
 import { ProductCard } from "../../components/ProductCard";
 import { TraditionGallery } from "../../components/TraditionGallery";
-import { getProducts } from "../../lib/api";
+import { useLiveProducts } from "../../hooks/useLiveProducts";
 import type { Product } from "../../types";
 
 const defaultCategoryOptions = [
@@ -100,14 +100,10 @@ const purposeShowcaseOptions = [
 ];
 
 export function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const products = useLiveProducts();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedCollection, setSelectedCollection] = useState("All");
   const [selectedPurpose, setSelectedPurpose] = useState("All");
-
-  useEffect(() => {
-    getProducts().then(setProducts);
-  }, []);
 
   const categoryOptions = defaultCategoryOptions;
 

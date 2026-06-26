@@ -54,6 +54,13 @@ app.use(express.json({ limit: "10mb" }));
 app.use(sanitizeInput);
 app.use(morgan("dev"));
 
+app.use("/api", (_req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  next();
+});
+
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/products", productRoutes);

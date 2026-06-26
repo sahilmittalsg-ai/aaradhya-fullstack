@@ -2,7 +2,7 @@ import { Grid2X2, List, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ProductCard } from "../../components/ProductCard";
-import { getProducts } from "../../lib/api";
+import { useLiveProducts } from "../../hooks/useLiveProducts";
 import type { Product } from "../../types";
 
 const priceBands: Array<{ label: string; value: string; test: (price: number) => boolean }> = [
@@ -15,7 +15,7 @@ const priceBands: Array<{ label: string; value: string; test: (price: number) =>
 
 export function Collections() {
   const [params, setParams] = useSearchParams();
-  const [products, setProducts] = useState<Product[]>([]);
+  const products = useLiveProducts();
   const [purpose, setPurpose] = useState("All");
   const [bead, setBead] = useState("All");
   const [mukhi, setMukhi] = useState("All");
@@ -31,10 +31,6 @@ export function Collections() {
   const platingParam = params.get("plating") || "All";
   const audienceParam = params.get("audience") || "All";
   const priceParam = params.get("price") || "all";
-
-  useEffect(() => {
-    getProducts().then(setProducts);
-  }, []);
 
   useEffect(() => {
     setPurpose(purposeParam);

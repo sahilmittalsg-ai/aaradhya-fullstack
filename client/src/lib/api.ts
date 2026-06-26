@@ -2,9 +2,13 @@ import { fallbackOrders, fallbackProducts } from "../data/fallback";
 import type { Address, ClientUser, ContentPage, Coupon, Order, PaymentMethod, Product, ProductReview, SupportTicket } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const PRODUCTS_CACHE_MS = 10_000;
+const HOMEPAGE_CACHE_MS = 15_000;
 let productsCache: Product[] | undefined;
+let productsCacheAt = 0;
 let productsRequest: Promise<Product[]> | undefined;
 let homepageCache: HomepageContent | undefined;
+let homepageCacheAt = 0;
 let homepageRequest: Promise<HomepageContent> | undefined;
 
 export type HomepageHeroSlide = {
@@ -79,6 +83,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   try {
     response = await fetch(`${API_URL}${path}`, {
       ...options,
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -97,19 +102,21 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return response.json();
 }
 
-export async function getProducts(): Promise<Product[]> {
-  if (productsCache) return productsCache;
+export async function getProducts(options: { force?: boolean } = {}): Promise<Product[]> {
+  if (!options.force && productsCache && Date.now() - productsCacheAt < PRODUCTS_CACHE_MS) return productsCache;
   if (productsRequest) return productsRequest;
 
   productsRequest = (async () => {
     try {
       productsCache = await request<Product[]>("/products");
+      productsCacheAt = Date.now();
     } catch {
       productsCache = fallbackProducts;
+      productsCacheAt = Date.now();
     } finally {
       productsRequest = undefined;
     }
-    return productsCache;
+    return productsCache || fallbackProducts;
   })();
 
   return productsRequest;
@@ -117,30 +124,34 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function refreshProducts(): Promise<Product[]> {
   productsCache = undefined;
+  productsCacheAt = 0;
   productsRequest = undefined;
-  return getProducts();
+  return getProducts({ force: true });
 }
 
-export async function getHomepage(): Promise<HomepageContent> {
-  if (homepageCache) return homepageCache;
+export async function getHomepage(options: { force?: boolean } = {}): Promise<HomepageContent> {
+  if (!options.force && homepageCache && Date.now() - homepageCacheAt < HOMEPAGE_CACHE_MS) return homepageCache;
   if (homepageRequest) return homepageRequest;
 
   homepageRequest = (async () => {
     try {
       homepageCache = await request<HomepageContent>("/content/homepage");
+      homepageCacheAt = Date.now();
     } catch {
       homepageCache = fallbackHomepage;
+      homepageCacheAt = Date.now();
     } finally {
       homepageRequest = undefined;
     }
-    return homepageCache;
+    return homepageCache || fallbackHomepage;
   })();
 
   return homepageRequest;
 }
 
 export async function getProduct(slug: string): Promise<Product | undefined> {
-  const cachedProduct = productsCache?.find((product) => product.slug === slug);
+  const cacheFresh = productsCache && Date.now() - productsCacheAt < PRODUCTS_CACHE_MS;
+  const cachedProduct = cacheFresh ? productsCache?.find((product) => product.slug === slug) : undefined;
   if (cachedProduct) return cachedProduct;
 
   try {

@@ -13,7 +13,11 @@ export function HeroCarousel() {
   const [loadedSlideIndexes, setLoadedSlideIndexes] = useState(() => new Set([0]));
 
   useEffect(() => {
-    getHomepage().then((homepage) => {
+    let active = true;
+
+    async function loadHomepage(force = false) {
+      const homepage = await getHomepage({ force });
+      if (!active) return;
       const activeSlides = homepage.hero.slides.filter((slide) => slide.active);
       if (activeSlides.length > 0) {
         setSlides(activeSlides);
@@ -21,7 +25,27 @@ export function HeroCarousel() {
       }
       setAutoplay(homepage.hero.autoplay);
       setIntervalMs(homepage.hero.intervalMs);
-    });
+    }
+
+    void loadHomepage();
+
+    const refresh = () => {
+      void loadHomepage(true);
+    };
+    const refreshWhenVisible = () => {
+      if (!document.hidden) refresh();
+    };
+
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    const interval = window.setInterval(refresh, 45_000);
+
+    return () => {
+      active = false;
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+      window.clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
