@@ -392,7 +392,7 @@ export async function getProfile(): Promise<ClientUser> {
   } catch {
     const saved = localStorage.getItem("user");
     if (saved) return JSON.parse(saved) as ClientUser;
-    throw new Error("Please login with mobile OTP first.");
+    throw new Error("Please login with email OTP first.");
   }
 }
 
@@ -406,7 +406,7 @@ export async function updateProfile(payload: Partial<ClientUser> & { addresses?:
     return user;
   } catch {
     const saved = localStorage.getItem("user");
-    if (!saved) throw new Error("Please login with mobile OTP first.");
+    if (!saved) throw new Error("Please login with email OTP first.");
     const user = { ...(JSON.parse(saved) as ClientUser), ...payload };
     localStorage.setItem("user", JSON.stringify(user));
     return user;

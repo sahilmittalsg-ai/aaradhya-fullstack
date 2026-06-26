@@ -76,7 +76,6 @@ export function Account() {
     setMessage("Generating OTP...");
     try {
       const result = await requestOtp(normalizedEmail);
-      console.log("Visible development OTP:", result.devOtp || "123456");
       setEmail(normalizedEmail);
       setOtpRequested(true);
       setDevOtp(result.devOtp || "123456");
@@ -112,7 +111,6 @@ export function Account() {
         code,
         name: String(form.get("name") || "")
       });
-      console.log("Email OTP login successful:", result.user);
       localStorage.setItem("token", result.token);
       localStorage.setItem("user", JSON.stringify(result.user));
       setUser(result.user);
@@ -131,7 +129,7 @@ export function Account() {
   async function saveAddress(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!user) {
-      setMessage("Please login with mobile OTP before saving an address.");
+      setMessage("Please login with email OTP before saving an address.");
       return;
     }
 
@@ -183,7 +181,6 @@ export function Account() {
     setMessage("Regenerating OTP...");
     try {
       const result = await requestOtp(normalizedEmail);
-      console.log("Visible development OTP:", result.devOtp || "123456");
       setDevOtp(result.devOtp || "123456");
       setMessage(`Use visible development OTP: ${result.devOtp || "123456"}`);
     } catch (error) {
