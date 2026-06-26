@@ -58,8 +58,8 @@ export function Header() {
     <header className="sticky top-0 z-40 bg-[#fbf2e3] text-[#17172a] shadow-sm">
       <AnnouncementBar />
 
-      <div className="container-pad flex h-[92px] items-center justify-between gap-5">
-        <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Aaradhya Beads home">
+      <div className="mx-auto flex h-[92px] w-full max-w-[1680px] items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex shrink-0 items-center gap-3" aria-label="Aaradhya Beads home">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-xl font-black tracking-tight text-[#f6e8ce] shadow-sm">
             जपं
           </span>
@@ -69,7 +69,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-center gap-5 text-[13px] font-medium xl:flex">
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 text-[13px] font-medium 2xl:flex">
           {nav.map((item) => (
             <NavLink key={item.href} to={item.href} className="inline-flex items-center gap-1 whitespace-nowrap hover:text-rudra">
               {item.label}
@@ -78,7 +78,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 xl:flex">
+        <div className="hidden shrink-0 items-center gap-2 2xl:flex">
           <button
             type="button"
             className="rounded-full p-2.5 hover:bg-white/70"
@@ -106,7 +106,7 @@ export function Header() {
           </Link>
         </div>
 
-        <button className="rounded-full border border-[#211d33]/15 bg-white/60 p-3 xl:hidden" onClick={() => setOpen((value) => !value)} aria-label="Menu">
+        <button className="rounded-full border border-[#211d33]/15 bg-white/60 p-3 2xl:hidden" onClick={() => setOpen((value) => !value)} aria-label="Menu">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
@@ -172,7 +172,7 @@ export function Header() {
       )}
 
       {open && (
-        <div className="border-t border-[#211d33]/10 bg-[#fbf2e3] px-4 pb-5 xl:hidden">
+        <div className="border-t border-[#211d33]/10 bg-[#fbf2e3] px-4 pb-5 2xl:hidden">
           <nav className="grid gap-1 text-sm font-medium">
             {nav.map((item) => (
               <NavLink
