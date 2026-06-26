@@ -856,11 +856,11 @@ function PurposeSection({
   purposes: Array<{ name: string; image: string }>;
 }) {
   return (
-    <section className="bg-[#f6e8ce] py-12">
+    <section className="bg-[#f6e8ce] py-8 md:py-10">
       <div className="container-pad">
-        <h2 className="text-center font-heading text-3xl font-bold md:text-4xl">Shop By Purpose</h2>
-        <div className="mt-8 overflow-x-auto pb-2">
-          <div className="flex min-w-max justify-center gap-5 md:gap-8">
+        <h2 className="text-center font-heading text-2xl font-bold md:text-3xl">Shop By Purpose</h2>
+        <div className="mt-7 overflow-x-auto pb-2">
+          <div className="flex min-w-max justify-center gap-7 px-3 md:gap-9">
             {purposes.map((purpose) => {
               const active = selectedPurpose === purpose.name;
 
@@ -869,24 +869,23 @@ function PurposeSection({
                   key={purpose.name}
                   to={`/collections?purpose=${encodeURIComponent(purpose.name)}`}
                   onClick={() => onSelect(purpose.name)}
-                  className={`group flex w-[118px] shrink-0 flex-col items-center gap-3 text-center transition hover:-translate-y-1 ${
-                    active ? "text-rudra" : "text-[#17172a]"
+                  className={`group relative block h-[126px] w-[126px] shrink-0 overflow-hidden bg-[#2d2a39] shadow-sm transition hover:-translate-y-1 hover:shadow-soft md:h-[132px] md:w-[132px] ${
+                    active ? "ring-2 ring-[#211d33] ring-offset-4 ring-offset-[#f6e8ce]" : ""
                   }`}
                 >
-                  <span
-                    className={`flex h-[104px] w-[104px] items-center justify-center overflow-hidden rounded-full border-4 bg-white shadow-sm transition ${
-                      active ? "border-[#211d33]" : "border-transparent"
-                    }`}
-                  >
-                    <img
-                      src={purpose.image}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      className="h-[142%] w-[142%] -translate-y-[15%] object-cover object-top transition duration-300 group-hover:scale-105"
-                    />
+                  <img
+                    src={purpose.image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 flex h-7 items-center justify-between gap-2 bg-[#2d2a39]/95 px-2 text-left">
+                    <span className="truncate text-[15px] font-bold leading-none text-white">{purpose.name}</span>
+                    <span className="flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full border border-white/80 text-[13px] font-bold leading-none text-white">
+                      &rarr;
+                    </span>
                   </span>
-                  <span className="text-sm font-bold leading-5">{purpose.name}</span>
                 </Link>
               );
             })}
