@@ -72,7 +72,7 @@ export type Order = {
     email: string;
     phone: string;
   };
-  status: "placed" | "packed" | "shipped" | "delivered" | "cancelled";
+  status: "placed" | "confirmed" | "packed" | "shipped" | "delivered" | "cancelled";
   paymentStatus: "pending" | "paid" | "failed";
   mrpTotal?: number;
   productDiscount?: number;

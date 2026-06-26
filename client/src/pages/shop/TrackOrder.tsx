@@ -2,7 +2,14 @@ import { FormEvent, useState } from "react";
 import { trackOrder } from "../../lib/api";
 import type { Order } from "../../types";
 
-const steps = ["placed", "packed", "shipped", "delivered"];
+const steps = ["placed", "confirmed", "packed", "shipped", "delivered"];
+const stepLabels: Record<string, string> = {
+  placed: "Placed",
+  confirmed: "Confirmed",
+  packed: "Packed",
+  shipped: "Shipped",
+  delivered: "Delivered"
+};
 
 export function TrackOrder() {
   const [order, setOrder] = useState<Order>();
@@ -53,12 +60,12 @@ export function TrackOrder() {
                 </div>
               </div>
             )}
-            <div className="mt-8 grid gap-3 sm:grid-cols-4">
+            <div className="mt-8 grid gap-3 sm:grid-cols-5">
               {steps.map((step, index) => {
                 const active = steps.indexOf(order.status) >= index;
                 return (
                   <div key={step} className={`rounded-lg p-4 ${active ? "bg-ink text-white" : "bg-sandal text-ink/50"}`}>
-                    <p className="text-sm font-black capitalize">{step}</p>
+                    <p className="text-sm font-black">{stepLabels[step]}</p>
                   </div>
                 );
               })}

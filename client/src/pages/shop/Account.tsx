@@ -441,6 +441,7 @@ function StatusBadge({ value }: { value: string }) {
 function formatOrderStatus(status: Order["status"]) {
   const labels: Record<string, string> = {
     placed: "Confirmed",
+    confirmed: "Confirmed",
     packed: "Packed",
     shipped: "Shipped",
     delivered: "Delivered",

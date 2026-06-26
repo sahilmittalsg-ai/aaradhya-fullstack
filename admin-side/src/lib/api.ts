@@ -93,7 +93,7 @@ export type ApiOrder = {
   paymentStatus: "pending" | "paid" | "failed";
   paymentProvider?: string;
   paymentReference?: string;
-  status: "placed" | "packed" | "shipped" | "delivered" | "cancelled";
+  status: "placed" | "confirmed" | "packed" | "shipped" | "delivered" | "cancelled";
   trackingId?: string;
   courierPartner?: string;
   adminNotes?: string;
@@ -542,6 +542,7 @@ export function adminOrderFromApi(order: ApiOrder): AdminOrder {
 }
 
 export function apiStatusFromAdmin(status: AdminOrder["orderStatus"]): ApiOrder["status"] {
+  if (status === "Confirmed") return "confirmed";
   if (status === "Packed") return "packed";
   if (status === "Shipped" || status === "Out for Delivery") return "shipped";
   if (status === "Delivered") return "delivered";
@@ -575,6 +576,7 @@ function apiOrderFromFallback(order: AdminOrder): ApiOrder {
 }
 
 function apiStatusToAdmin(status: ApiOrder["status"]): AdminOrder["orderStatus"] {
+  if (status === "confirmed") return "Confirmed";
   if (status === "packed") return "Packed";
   if (status === "shipped") return "Shipped";
   if (status === "delivered") return "Delivered";

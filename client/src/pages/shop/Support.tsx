@@ -298,7 +298,7 @@ export function Support() {
 
           <aside className="space-y-4">
             {[
-              ["Track order quickly", "Use your order number to view placed, packed, shipped, and delivered status."],
+              ["Track order quickly", "Use your order number to view placed, confirmed, packed, shipped, and delivered status."],
               ["Returns and exchange", "Share your order number and issue details so support can review faster."],
               ["Product guidance", "Ask about sizing, material, care instructions, or the right product for your intent."]
             ].map(([title, text]) => (
@@ -318,6 +318,7 @@ function shippingSummary(order: Order) {
   if (order.status === "delivered") return "Delivered";
   if (order.status === "shipped") return "Shipped and on the way";
   if (order.status === "packed") return "Packed and waiting for courier pickup";
+  if (order.status === "confirmed") return "Order confirmed. Dispatch preparation has started.";
   if (order.status === "cancelled") return "Order cancelled";
   return "Order placed. Standard delivery usually takes 3-7 days after dispatch.";
 }

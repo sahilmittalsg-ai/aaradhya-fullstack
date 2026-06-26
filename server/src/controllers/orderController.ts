@@ -191,9 +191,11 @@ export async function trackOrder(req: AuthRequest, res: Response) {
 }
 
 export async function updateOrderStatus(req: AuthRequest, res: Response) {
+  const orderId = String(req.params.id);
+
   if (!isDbConnected()) {
     const store = await readStore();
-    const index = store.orders.findIndex((order) => order._id === req.params.id);
+    const index = store.orders.findIndex((order) => order._id === orderId || order.orderNumber === orderId);
     if (index === -1) return res.status(404).json({ message: "Order not found" });
     ["status", "paymentStatus", "trackingId", "courierPartner", "adminNotes"].forEach((field) => {
       if (req.body[field] !== undefined) store.orders[index][field] = req.body[field];
@@ -208,7 +210,8 @@ export async function updateOrderStatus(req: AuthRequest, res: Response) {
     if (req.body[field] !== undefined) patch[field] = req.body[field];
   });
 
-  const order = await Order.findByIdAndUpdate(req.params.id, patch, { new: true });
+  const criteria = [{ orderNumber: orderId }, ...(isObjectId(orderId) ? [{ _id: orderId }] : [])];
+  const order = await Order.findOneAndUpdate({ $or: criteria }, patch, { new: true });
 
   if (!order) return res.status(404).json({ message: "Order not found" });
   return res.json(order);
