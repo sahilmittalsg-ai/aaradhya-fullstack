@@ -2,17 +2,8 @@ import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
-  Clover,
-  Flame,
-  Heart,
-  HeartPulse,
-  IndianRupee,
-  Scale,
-  ShieldCheck,
-  Sparkles,
   Star
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CategoryStrip } from "../../components/CategoryStrip";
@@ -23,18 +14,6 @@ import { TraditionGallery } from "../../components/TraditionGallery";
 import { getProducts } from "../../lib/api";
 import type { Product } from "../../types";
 
-const purposeIcons: Record<string, LucideIcon> = {
-  All: Star,
-  Wealth: IndianRupee,
-  Health: HeartPulse,
-  Love: Heart,
-  Luck: Clover,
-  Protection: ShieldCheck,
-  Peace: Sparkles,
-  Courage: Flame,
-  Balance: Scale
-};
-
 const defaultCategoryOptions = [
   { name: "Rudraksha", image: "/assets/categories/rudraksha.png" },
   { name: "Karungali", image: "/assets/categories/karungali.png" },
@@ -44,6 +23,62 @@ const defaultCategoryOptions = [
   { name: "Tiger Eye", image: "/assets/categories/tiger-eye.png" },
   { name: "Rose Quartz", image: "/assets/categories/rose-quartz.png" },
   { name: "Amethyst", image: "/assets/categories/amethyst.png" }
+];
+
+const collectionShowcaseOptions = [
+  {
+    name: "Rudraksha Bracelets",
+    value: "Rudraksha Bracelets",
+    href: "/collections?collection=Rudraksha%20Bracelets",
+    image: "/assets/collections/rudraksha-bracelets.jpg"
+  },
+  {
+    name: "Rudraksha Malas",
+    value: "Rudraksha Malas",
+    href: "/collections?collection=Rudraksha%20Malas",
+    image: "/assets/collections/rudraksha-malas.jpg"
+  },
+  {
+    name: "Nepali/Indian Rudraksha",
+    value: "Rudraksha",
+    href: "/collections?collection=Rudraksha",
+    image: "/assets/collections/nepali-indian-rudraksha.jpg"
+  },
+  {
+    name: "Spiritual Jewellery",
+    value: "Spiritual Jewellery",
+    href: "/collections?collection=Spiritual%20Jewellery",
+    image: "/assets/collections/spiritual-jewellery.jpg"
+  },
+  {
+    name: "Karungali Wearables",
+    value: "Karungali",
+    href: "/collections?collection=Karungali",
+    image: "/assets/collections/karungali-wearables.jpg"
+  },
+  {
+    name: "Energy Stones",
+    value: "Energy Stones",
+    href: "/collections?collection=Energy%20Stones",
+    image: "/assets/collections/energy-stones.jpg"
+  },
+  {
+    name: "Pyrite Wearables",
+    value: "Pyrite",
+    href: "/collections?bead=Pyrite",
+    image: "/assets/collections/pyrite-wearables.jpg"
+  }
+];
+
+const purposeShowcaseOptions = [
+  { name: "Wealth", image: "/assets/purpose/wealth.jpg" },
+  { name: "Health", image: "/assets/purpose/health.jpg" },
+  { name: "Love", image: "/assets/purpose/love.jpg" },
+  { name: "Luck", image: "/assets/purpose/luck.jpg" },
+  { name: "Protection", image: "/assets/purpose/protection.jpg" },
+  { name: "Peace", image: "/assets/purpose/peace.jpg" },
+  { name: "Courage", image: "/assets/purpose/courage.jpg" },
+  { name: "Balance", image: "/assets/purpose/balance.jpg" }
 ];
 
 export function Home() {
@@ -57,11 +92,6 @@ export function Home() {
   }, []);
 
   const categoryOptions = defaultCategoryOptions;
-  const collectionOptions = useMemo(() => buildFilterOptions(products, "collection"), [products]);
-  const purposeOptions = useMemo(
-    () => ["All", ...Array.from(new Set(products.flatMap((product) => product.purpose || []))).sort((a, b) => a.localeCompare(b))],
-    [products]
-  );
 
   const filteredProducts = useMemo(() => {
     const categoryProducts =
@@ -91,14 +121,14 @@ export function Home() {
     <div className="bg-[#fbf2e3] text-[#17172a]">
       <CategoryStrip selectedCategory={selectedCategory} onSelect={setSelectedCategory} categories={categoryOptions} />
       <HeroCarousel />
+      <CollectionCarousel selectedCategory={selectedCollection} onSelect={setSelectedCollection} categories={collectionShowcaseOptions} />
+      <LatestTrendingCarousel />
+      <PurposeSection selectedPurpose={selectedPurpose} onSelect={setSelectedPurpose} purposes={purposeShowcaseOptions} />
+      <EnergyStonesSection products={products} />
       <BestsellersSection products={products} />
       <TraditionGallery />
-
-      <CollectionCarousel selectedCategory={selectedCollection} onSelect={setSelectedCollection} categories={collectionOptions} />
       <LabTestedShowcase />
-      <PurposeSection selectedPurpose={selectedPurpose} onSelect={setSelectedPurpose} purposes={purposeOptions} />
       <ComboDealsSection products={products} />
-      <LatestTrendingCarousel />
       <StyleShowcase />
       <HappyCustomers />
 
@@ -205,6 +235,67 @@ const BestsellersSection = memo(function BestsellersSection({ products }: { prod
 
         <div ref={scrollerRef} className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 md:gap-5">
           {bestsellers.map((product) => (
+            <div key={product.slug} className="min-w-[calc(50vw-26px)] max-w-[220px] snap-start sm:min-w-[210px] lg:min-w-[220px] xl:min-w-[224px]">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const EnergyStonesSection = memo(function EnergyStonesSection({ products }: { products: Product[] }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const energyProducts = useMemo(() => {
+    const stoneTerms = ["Energy Stones", "Pyrite", "Tiger Eye", "Rose Quartz", "Amethyst", "Sphatik", "Citrine", "Aventurine"];
+    const filtered = products.filter((product) =>
+      stoneTerms.some((term) => productMatchesOption(product, term) || product.title.toLowerCase().includes(term.toLowerCase()))
+    );
+    return (filtered.length ? filtered : products).slice(0, 10);
+  }, [products]);
+
+  if (!energyProducts.length) return null;
+
+  function scroll(direction: "left" | "right") {
+    scrollerRef.current?.scrollBy({
+      left: direction === "left" ? -420 : 420,
+      behavior: "smooth"
+    });
+  }
+
+  return (
+    <section className="bg-[#fff7ec] py-10 md:py-12">
+      <div className="container-pad">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <h2 className="font-heading text-2xl font-bold md:text-3xl">Explore Energy Stones</h2>
+          <div className="flex items-center gap-3">
+            <Link to="/collections?collection=Energy%20Stones" className="text-sm font-semibold underline underline-offset-4 hover:text-rudra">
+              View all
+            </Link>
+            <div className="hidden gap-2 md:flex">
+              <button
+                type="button"
+                onClick={() => scroll("left")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll energy stones left"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#211d33] text-white shadow-sm transition hover:bg-rudra"
+                aria-label="Scroll energy stones right"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div ref={scrollerRef} className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 md:gap-5">
+          {energyProducts.map((product) => (
             <div key={product.slug} className="min-w-[calc(50vw-26px)] max-w-[220px] snap-start sm:min-w-[210px] lg:min-w-[220px] xl:min-w-[224px]">
               <ProductCard product={product} />
             </div>
@@ -466,10 +557,18 @@ function CollectionCarousel({
 }: {
   selectedCategory: string;
   onSelect: (category: string) => void;
-  categories: Array<{ name: string; image: string }>;
+  categories: Array<{ name: string; value: string; href: string; image: string }>;
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const options = [{ name: "All Products", value: "All", image: "/assets/home/rudraksha.png" }, ...categories.map((category) => ({ ...category, value: category.name }))];
+  const options = [
+    {
+      name: "All",
+      value: "All",
+      href: "/collections",
+      image: "/assets/home/rudraksha.png"
+    },
+    ...categories
+  ];
 
   function scroll(direction: "left" | "right") {
     scrollerRef.current?.scrollBy({
@@ -504,18 +603,18 @@ function CollectionCarousel({
           </div>
         </div>
 
-        <div ref={scrollerRef} className="flex gap-6 overflow-x-auto scroll-smooth pb-3 md:gap-8">
+        <div ref={scrollerRef} className="flex gap-5 overflow-x-auto scroll-smooth pb-3 md:gap-7">
           {options.map((category) => {
             const active = selectedCategory === category.value;
             return (
               <Link
                 key={category.value}
-                to={category.value === "All" ? "/collections" : `/collections?collection=${encodeURIComponent(category.value)}`}
+                to={category.href}
                 onClick={() => onSelect(category.value)}
-                className="group flex min-w-[136px] flex-col items-center gap-3 text-center md:min-w-[200px]"
+                className="group flex min-w-[148px] flex-col items-center gap-3 text-center md:min-w-[184px]"
               >
                 <span
-                  className={`flex h-[120px] w-[120px] items-center justify-center rounded-full border-4 bg-[#f6e8ce] p-2 shadow-sm transition md:h-[180px] md:w-[180px] ${
+                  className={`flex h-[128px] w-[128px] items-center justify-center rounded-full border-4 bg-[#f6e8ce] p-2 shadow-sm transition md:h-[170px] md:w-[170px] ${
                     active ? "border-[#211d33]" : "border-transparent"
                   }`}
                 >
@@ -525,7 +624,7 @@ function CollectionCarousel({
                       alt=""
                       loading="lazy"
                       decoding="async"
-                      className="h-full w-full object-contain p-2 transition duration-300 group-hover:scale-110"
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
                     />
                   </span>
                 </span>
@@ -548,32 +647,40 @@ function PurposeSection({
 }: {
   selectedPurpose: string;
   onSelect: (purpose: string) => void;
-  purposes: string[];
+  purposes: Array<{ name: string; image: string }>;
 }) {
   return (
     <section className="bg-[#f6e8ce] py-12">
       <div className="container-pad">
         <h2 className="text-center font-heading text-3xl font-bold md:text-4xl">Shop By Purpose</h2>
         <div className="mt-8 overflow-x-auto pb-2">
-          <div className="flex min-w-max justify-center gap-4">
+          <div className="flex min-w-max justify-center gap-5 md:gap-8">
             {purposes.map((purpose) => {
-              const Icon = purposeIcons[purpose] || Sparkles;
-              const active = selectedPurpose === purpose;
+              const active = selectedPurpose === purpose.name;
 
               return (
                 <Link
-                  key={purpose}
-                  to={purpose === "All" ? "/collections" : `/collections?purpose=${encodeURIComponent(purpose)}`}
-                  onClick={() => onSelect(purpose)}
-                  className={`relative h-[120px] w-[120px] shrink-0 overflow-hidden rounded-md border-2 bg-gradient-to-b from-[#c8222c] to-[#17172a] p-4 text-left text-white shadow-sm transition hover:scale-105 ${
-                    active ? "border-white ring-2 ring-[#211d33]" : "border-transparent"
+                  key={purpose.name}
+                  to={`/collections?purpose=${encodeURIComponent(purpose.name)}`}
+                  onClick={() => onSelect(purpose.name)}
+                  className={`group flex w-[118px] shrink-0 flex-col items-center gap-3 text-center transition hover:-translate-y-1 ${
+                    active ? "text-rudra" : "text-[#17172a]"
                   }`}
                 >
-                  <Icon size={34} strokeWidth={1.8} className="text-white" />
-                  <span className="absolute bottom-3 left-3 max-w-20 text-sm font-semibold leading-4">{purpose}</span>
-                  <span className="absolute bottom-3 right-3 flex h-6 w-6 items-center justify-center rounded-full border border-white/60">
-                    <ArrowUpRight size={14} />
+                  <span
+                    className={`flex h-[104px] w-[104px] items-center justify-center overflow-hidden rounded-full border-4 bg-white shadow-sm transition ${
+                      active ? "border-[#211d33]" : "border-transparent"
+                    }`}
+                  >
+                    <img
+                      src={purpose.image}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                    />
                   </span>
+                  <span className="text-sm font-bold leading-5">{purpose.name}</span>
                 </Link>
               );
             })}
@@ -582,22 +689,6 @@ function PurposeSection({
       </div>
     </section>
   );
-}
-
-function buildFilterOptions(products: Product[], key: "category" | "collection") {
-  const seen = new Set<string>();
-
-  return products.reduce<Array<{ name: string; image: string }>>((options, product) => {
-    const name = product[key];
-    if (!name || seen.has(name)) return options;
-
-    seen.add(name);
-    options.push({
-      name,
-      image: product.images[0] || "/assets/products/rudraksha-bracelet.png"
-    });
-    return options;
-  }, []);
 }
 
 function productMatchesOption(product: Product, option: string) {
