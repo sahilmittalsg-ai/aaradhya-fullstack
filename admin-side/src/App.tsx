@@ -68,6 +68,7 @@ import {
   getAdminSupportTickets,
   updateAdminSupportTicket,
   loginAdminApi,
+  prefetchAdminRoute,
   updateAdminCategory,
   updateAdminCoupon,
   updateAdminHomepage,
@@ -302,6 +303,8 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
               <NavLink
                 key={link.href}
                 to={link.href}
+                onMouseEnter={() => prefetchAdminRoute(link.href)}
+                onFocus={() => prefetchAdminRoute(link.href)}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `group flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold transition ${
@@ -356,14 +359,14 @@ function Dashboard() {
 
   useEffect(() => {
     refreshDashboardOrders();
-    const interval = window.setInterval(refreshDashboardOrders, 5000);
-    getAdminProducts(true).then(setDashboardProducts);
+    const interval = window.setInterval(() => refreshDashboardOrders(true), 5000);
+    getAdminProducts().then(setDashboardProducts);
     getAdminSupportTickets().then((tickets) => setSupportCount(tickets.length)).catch(() => setSupportCount(0));
     return () => window.clearInterval(interval);
   }, []);
 
-  async function refreshDashboardOrders() {
-    const rows = await getAdminOrders(true);
+  async function refreshDashboardOrders(force = false) {
+    const rows = await getAdminOrders(force);
     setDashboardOrders(rows.map(adminOrderFromApi));
   }
 
@@ -438,7 +441,7 @@ function AnalyticsPage() {
   const [syncError, setSyncError] = useState("");
 
   useEffect(() => {
-    refreshAnalytics(true);
+    refreshAnalytics();
     const interval = window.setInterval(() => refreshAnalytics(true), 10_000);
     return () => window.clearInterval(interval);
   }, []);
@@ -798,7 +801,7 @@ function ProductsPage() {
   const selectedCategory = searchParams.get("category") || "All";
 
   useEffect(() => {
-    refreshProducts(true);
+    refreshProducts();
     const refresh = () => {
       void refreshProducts(true);
     };
@@ -1071,7 +1074,7 @@ function ProductCategoriesPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    refreshCategories(true);
+    refreshCategories();
     const refresh = () => {
       void refreshCategories(true);
     };
@@ -1455,7 +1458,7 @@ function ShopCollectionsPage() {
   const collections = ["Rudraksha Bracelets", "Rudraksha Malas", "Nepali/Indian Rudraksha", "Spiritual Jewellery", "Karungali Wearables", "Energy Stones", "Pyrite", "Sphatik", "Rose Quartz", "Tiger Eye", "Amethyst", "Combos", "Gift Hampers"];
 
   useEffect(() => {
-    getAdminProducts(true).then(setCatalog);
+    getAdminProducts().then(setCatalog);
   }, []);
 
   return (
@@ -1477,7 +1480,7 @@ function ShopPurposePage() {
   const purposes = ["Wealth", "Health", "Love", "Luck", "Protection", "Peace", "Courage", "Balance"];
 
   useEffect(() => {
-    getAdminProducts(true).then(setCatalog);
+    getAdminProducts().then(setCatalog);
   }, []);
 
   return (
@@ -1511,7 +1514,7 @@ function OrdersPage() {
   const [syncError, setSyncError] = useState("");
 
   useEffect(() => {
-    refreshOrders(true);
+    refreshOrders();
     const interval = window.setInterval(() => refreshOrders(true), 5000);
     return () => window.clearInterval(interval);
   }, []);
@@ -1557,7 +1560,7 @@ function OrderListPage({ type }: { type: "COD" | "Prepaid" }) {
   const [syncError, setSyncError] = useState("");
 
   useEffect(() => {
-    refreshOrders(true);
+    refreshOrders();
     const interval = window.setInterval(() => refreshOrders(true), 5000);
     return () => window.clearInterval(interval);
   }, [type]);

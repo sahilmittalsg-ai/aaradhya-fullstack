@@ -12,7 +12,9 @@ function getApiUrl() {
 
 const API_URL = getApiUrl();
 const adminTokenKey = "aaradhya-admin-api-token";
-const ADMIN_CATALOG_CACHE_MS = 5_000;
+const ADMIN_CATALOG_CACHE_MS = 60_000;
+const ADMIN_ORDERS_CACHE_MS = 15_000;
+const ADMIN_GENERAL_CACHE_MS = 45_000;
 let adminProductsCache: ApiProduct[] | undefined;
 let adminProductsCacheAt = 0;
 let adminProductsRequest: Promise<ApiProduct[]> | undefined;
@@ -20,8 +22,21 @@ let adminCategoriesCache: ApiCategory[] | undefined;
 let adminCategoriesCacheAt = 0;
 let adminCategoriesRequest: Promise<ApiCategory[]> | undefined;
 let adminOrdersCache: ApiOrder[] | undefined;
+let adminOrdersCacheAt = 0;
 let adminOrdersRequest: Promise<ApiOrder[]> | undefined;
 let adminHomepageCache: ApiHomepage | undefined;
+let adminCustomersCache: ApiCustomer[] | undefined;
+let adminCustomersCacheAt = 0;
+let adminCustomersRequest: Promise<ApiCustomer[]> | undefined;
+let adminCouponsCache: ApiCoupon[] | undefined;
+let adminCouponsCacheAt = 0;
+let adminCouponsRequest: Promise<ApiCoupon[]> | undefined;
+let adminSupportCache: ApiSupportTicket[] | undefined;
+let adminSupportCacheAt = 0;
+let adminSupportRequest: Promise<ApiSupportTicket[]> | undefined;
+let adminSiteSettingsCache: ApiSiteSettings | undefined;
+let adminSiteSettingsCacheAt = 0;
+let adminSiteSettingsRequest: Promise<ApiSiteSettings> | undefined;
 
 export type ApiProduct = {
   _id?: string;
@@ -523,39 +538,60 @@ export async function deleteAdminCategory(id: string) {
 }
 
 export async function getAdminCoupons() {
-  return request<ApiCoupon[]>("/coupons");
+  if (adminCouponsCache && Date.now() - adminCouponsCacheAt < ADMIN_GENERAL_CACHE_MS) return adminCouponsCache;
+  if (adminCouponsRequest) return adminCouponsRequest;
+
+  adminCouponsRequest = (async () => {
+    try {
+      adminCouponsCache = await request<ApiCoupon[]>("/coupons");
+      adminCouponsCacheAt = Date.now();
+    } finally {
+      adminCouponsRequest = undefined;
+    }
+    return adminCouponsCache || [];
+  })();
+
+  return adminCouponsRequest;
 }
 
 export async function createAdminCoupon(coupon: Partial<ApiCoupon>) {
-  return request<ApiCoupon>("/coupons", {
+  const created = await request<ApiCoupon>("/coupons", {
     method: "POST",
     body: JSON.stringify(coupon)
   });
+  adminCouponsCache = undefined;
+  return created;
 }
 
 export async function updateAdminCoupon(id: string, coupon: Partial<ApiCoupon>) {
-  return request<ApiCoupon>(`/coupons/${id}`, {
+  const updated = await request<ApiCoupon>(`/coupons/${id}`, {
     method: "PATCH",
     body: JSON.stringify(coupon)
   });
+  adminCouponsCache = undefined;
+  return updated;
 }
 
 export async function deleteAdminCoupon(id: string) {
-  return request<{ message: string }>(`/coupons/${id}`, { method: "DELETE" });
+  const result = await request<{ message: string }>(`/coupons/${id}`, { method: "DELETE" });
+  adminCouponsCache = undefined;
+  return result;
 }
 
 export async function getAdminOrders(force = false) {
   if (force) {
     adminOrdersCache = undefined;
+    adminOrdersCacheAt = 0;
     adminOrdersRequest = undefined;
   }
 
-  if (adminOrdersCache) return adminOrdersCache;
+  if (!force && adminOrdersCache && Date.now() - adminOrdersCacheAt < ADMIN_ORDERS_CACHE_MS) return adminOrdersCache;
   if (adminOrdersRequest) return adminOrdersRequest;
 
   adminOrdersRequest = (async () => {
     try {
       adminOrdersCache = await request<ApiOrder[]>("/orders");
+      adminOrdersCacheAt = Date.now();
       return adminOrdersCache;
     } finally {
       adminOrdersRequest = undefined;
@@ -571,33 +607,93 @@ export async function updateAdminOrder(id: string, order: Partial<ApiOrder>) {
     body: JSON.stringify(order)
   });
   adminOrdersCache = undefined;
+  adminOrdersCacheAt = 0;
   return updated;
 }
 
 export async function getAdminSupportTickets(): Promise<ApiSupportTicket[]> {
-  return request<ApiSupportTicket[]>("/users/support");
+  if (adminSupportCache && Date.now() - adminSupportCacheAt < ADMIN_GENERAL_CACHE_MS) return adminSupportCache;
+  if (adminSupportRequest) return adminSupportRequest;
+
+  adminSupportRequest = (async () => {
+    try {
+      adminSupportCache = await request<ApiSupportTicket[]>("/users/support");
+      adminSupportCacheAt = Date.now();
+    } finally {
+      adminSupportRequest = undefined;
+    }
+    return adminSupportCache || [];
+  })();
+
+  return adminSupportRequest;
 }
 
 export async function updateAdminSupportTicket(id: string, payload: Partial<ApiSupportTicket> & { reply?: string }): Promise<ApiSupportTicket> {
-  return request<ApiSupportTicket>(`/users/support/${id}`, {
+  const updated = await request<ApiSupportTicket>(`/users/support/${id}`, {
     method: "PATCH",
     body: JSON.stringify(payload)
   });
+  adminSupportCache = undefined;
+  return updated;
 }
 
 export async function getAdminSiteSettings(): Promise<ApiSiteSettings> {
-  return (await request<ApiSiteSettings | null>("/content/admin/settings")) || {};
+  if (adminSiteSettingsCache && Date.now() - adminSiteSettingsCacheAt < ADMIN_GENERAL_CACHE_MS) return adminSiteSettingsCache;
+  if (adminSiteSettingsRequest) return adminSiteSettingsRequest;
+
+  adminSiteSettingsRequest = (async () => {
+    try {
+      adminSiteSettingsCache = (await request<ApiSiteSettings | null>("/content/admin/settings")) || {};
+      adminSiteSettingsCacheAt = Date.now();
+    } finally {
+      adminSiteSettingsRequest = undefined;
+    }
+    return adminSiteSettingsCache || {};
+  })();
+
+  return adminSiteSettingsRequest;
 }
 
 export async function updateAdminSiteSettings(settings: Partial<ApiSiteSettings>): Promise<ApiSiteSettings> {
-  return request<ApiSiteSettings>("/content/admin/settings", {
+  const updated = await request<ApiSiteSettings>("/content/admin/settings", {
     method: "PATCH",
     body: JSON.stringify(settings)
   });
+  adminSiteSettingsCache = updated;
+  adminSiteSettingsCacheAt = Date.now();
+  return updated;
 }
 
 export async function getAdminCustomers(): Promise<ApiCustomer[]> {
-  return request<ApiCustomer[]>("/admin/customers");
+  if (adminCustomersCache && Date.now() - adminCustomersCacheAt < ADMIN_GENERAL_CACHE_MS) return adminCustomersCache;
+  if (adminCustomersRequest) return adminCustomersRequest;
+
+  adminCustomersRequest = (async () => {
+    try {
+      adminCustomersCache = await request<ApiCustomer[]>("/admin/customers");
+      adminCustomersCacheAt = Date.now();
+    } finally {
+      adminCustomersRequest = undefined;
+    }
+    return adminCustomersCache || [];
+  })();
+
+  return adminCustomersRequest;
+}
+
+export function prefetchAdminRoute(href: string) {
+  if (href.includes("/admin/products") || href.includes("/admin/product-categories") || href.includes("/admin/shop-collections") || href.includes("/admin/shop-purpose")) {
+    void getAdminProducts();
+    void getAdminCategories();
+  }
+  if (href.includes("/admin/orders") || href.includes("/admin/cod-orders") || href.includes("/admin/prepaid-orders") || href.includes("/admin/dashboard") || href.includes("/admin/analytics")) {
+    void getAdminOrders();
+  }
+  if (href.includes("/admin/customers")) void getAdminCustomers();
+  if (href.includes("/admin/coupons")) void getAdminCoupons();
+  if (href.includes("/admin/support") || href.includes("/admin/dashboard") || href.includes("/admin/analytics")) void getAdminSupportTickets();
+  if (href.includes("/admin/homepage") || href.includes("/admin/hero-slider") || href.includes("/admin/latest-trending") || href.includes("/admin/website-settings")) void getAdminHomepage();
+  if (href.includes("/admin/shipping-settings") || href.includes("/admin/website-settings")) void getAdminSiteSettings();
 }
 
 export function adminProductFromApi(product: ApiProduct): AdminProduct {

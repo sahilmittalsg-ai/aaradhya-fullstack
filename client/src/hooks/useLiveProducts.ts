@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { getProducts, refreshProducts } from "../lib/api";
+import { getProducts, getProductsSnapshot, refreshProducts } from "../lib/api";
 import type { Product } from "../types";
 
 const LIVE_PRODUCTS_REFRESH_MS = 120_000;
 const FOCUS_REFRESH_MIN_MS = 45_000;
 
 export function useLiveProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(() => getProductsSnapshot());
   const signatureRef = useRef("");
   const lastRefreshRef = useRef(0);
 

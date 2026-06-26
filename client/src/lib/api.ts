@@ -11,14 +11,18 @@ function getApiUrl() {
 }
 
 const API_URL = getApiUrl();
-const PRODUCTS_CACHE_MS = 60_000;
-const HOMEPAGE_CACHE_MS = 60_000;
+const PRODUCTS_CACHE_MS = 300_000;
+const HOMEPAGE_CACHE_MS = 300_000;
+const PRODUCTS_STORAGE_KEY = "aaradhya-products-cache";
+const HOMEPAGE_STORAGE_KEY = "aaradhya-homepage-cache";
 let productsCache: Product[] | undefined;
 let productsCacheAt = 0;
 let productsRequest: Promise<Product[]> | undefined;
 let homepageCache: HomepageContent | undefined;
 let homepageCacheAt = 0;
 let homepageRequest: Promise<HomepageContent> | undefined;
+
+hydrateRuntimeCaches();
 
 export type HomepageHeroSlide = {
   id: string;
@@ -216,6 +220,40 @@ export const fallbackHomepage: HomepageContent = {
   }
 };
 
+function hydrateRuntimeCaches() {
+  if (typeof window === "undefined") return;
+
+  const products = readStoredCache<Product[]>(PRODUCTS_STORAGE_KEY);
+  if (products && Date.now() - products.at < PRODUCTS_CACHE_MS) {
+    productsCache = products.value;
+    productsCacheAt = products.at;
+  }
+
+  const homepage = readStoredCache<HomepageContent>(HOMEPAGE_STORAGE_KEY);
+  if (homepage && Date.now() - homepage.at < HOMEPAGE_CACHE_MS) {
+    homepageCache = homepage.value;
+    homepageCacheAt = homepage.at;
+  }
+}
+
+function readStoredCache<T>(key: string) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return undefined;
+    return JSON.parse(raw) as { value: T; at: number };
+  } catch {
+    return undefined;
+  }
+}
+
+function writeStoredCache<T>(key: string, value: T, at: number) {
+  try {
+    sessionStorage.setItem(key, JSON.stringify({ value, at }));
+  } catch {
+    // Ignore storage quota and privacy-mode failures; memory cache still works.
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const token = localStorage.getItem("token");
   let response: Response;
@@ -250,6 +288,7 @@ export async function getProducts(options: { force?: boolean } = {}): Promise<Pr
     try {
       productsCache = await request<Product[]>("/products");
       productsCacheAt = Date.now();
+      writeStoredCache(PRODUCTS_STORAGE_KEY, productsCache, productsCacheAt);
     } catch {
       productsCache = fallbackProducts;
       productsCacheAt = Date.now();
@@ -260,6 +299,10 @@ export async function getProducts(options: { force?: boolean } = {}): Promise<Pr
   })();
 
   return productsRequest;
+}
+
+export function getProductsSnapshot(): Product[] {
+  return productsCache || fallbackProducts;
 }
 
 export async function refreshProducts(): Promise<Product[]> {
@@ -277,6 +320,7 @@ export async function getHomepage(options: { force?: boolean } = {}): Promise<Ho
     try {
       homepageCache = await request<HomepageContent>("/content/homepage");
       homepageCacheAt = Date.now();
+      writeStoredCache(HOMEPAGE_STORAGE_KEY, homepageCache, homepageCacheAt);
     } catch {
       homepageCache = fallbackHomepage;
       homepageCacheAt = Date.now();
@@ -287,6 +331,11 @@ export async function getHomepage(options: { force?: boolean } = {}): Promise<Ho
   })();
 
   return homepageRequest;
+}
+
+export function prefetchStorefrontData() {
+  void getHomepage();
+  void getProducts();
 }
 
 export async function getProduct(slug: string): Promise<Product | undefined> {
