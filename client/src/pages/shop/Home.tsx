@@ -141,19 +141,19 @@ export function Home() {
 
 const labMarkers = [
   {
-    label: "Shop Energy Stones",
-    href: "/collections?collection=Energy%20Stones",
-    className: "left-[28%] top-[72%]"
+    title: "BTR Card",
+    description: "We send samples for lab testing and provide Batch Test Reports.",
+    className: "left-[29%] top-[68%]"
   },
   {
-    label: "Shop Karungali",
-    href: "/collections?collection=Karungali",
-    className: "left-[60%] top-[43%]"
+    title: "Quality Packaging",
+    description: "We focus heavily on customer experience and delight.",
+    className: "left-[60%] top-[32%]"
   },
   {
-    label: "Shop Rudraksha",
-    href: "/collections?collection=Rudraksha",
-    className: "left-[75%] top-[68%]"
+    title: "Fit & Finish",
+    description: "We put a lot of effort into ensuring our high quality standards.",
+    className: "left-[74%] top-[64%]"
   }
 ];
 
@@ -223,30 +223,36 @@ const LabTestedShowcase = memo(function LabTestedShowcase() {
           <div className="px-6 py-9 md:px-10">
             <h2 className="font-heading text-2xl font-bold md:text-3xl">Asli Wearables - Lab Tested</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-[#17172a]">
-              We follow a careful batch-check process so you always get original, genuine beads and stones with
-              trusted product details.
+              We follow our proprietary system of BTR (Batch Test Reports) to ensure you always get original and
+              genuine beads and stones.
             </p>
           </div>
 
-          <div className="relative h-[420px] overflow-hidden bg-[#d9b86c] md:h-[680px]">
+          <div className="relative overflow-hidden bg-[#d9b86c]">
             <img
-              src="/assets/products/hero-spiritual-shop.png"
-              alt="Lab tested spiritual wearables and gift-ready products"
+              src="/assets/home/btr-testing.jpg"
+              alt="Batch test report lab testing for spiritual wearables"
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover object-right"
+              className="mx-auto block w-full object-cover"
             />
-            <span className="absolute inset-0 bg-[#f1d99d]/15" />
             {labMarkers.map((marker) => (
-              <Link
-                key={marker.label}
-                to={marker.href}
-                aria-label={marker.label}
-                title={marker.label}
-                className={`absolute ${marker.className} flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black text-2xl font-light leading-none text-white shadow-lg ring-2 ring-white/40 transition hover:scale-110 hover:bg-rudra`}
+              <div
+                key={marker.title}
+                className={`group absolute ${marker.className} -translate-x-1/2 -translate-y-1/2`}
               >
-                +
-              </Link>
+                <button
+                  type="button"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-[#070707] text-2xl font-light leading-none text-white shadow-xl ring-2 ring-white/50 transition hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/80"
+                  aria-label={`View details for ${marker.title}`}
+                >
+                  +
+                </button>
+                <div className="pointer-events-none absolute left-1/2 top-12 w-64 -translate-x-1/2 rounded-lg bg-white p-4 text-left opacity-0 shadow-2xl ring-1 ring-[#211d33]/10 transition duration-200 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100">
+                  <h3 className="text-sm font-black text-[#211d33]">{marker.title}</h3>
+                  <p className="mt-2 text-xs leading-5 text-[#17172a]/70">{marker.description}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
