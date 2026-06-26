@@ -59,17 +59,19 @@ import {
   deleteAdminCoupon,
   deleteAdminProduct,
   getAdminCategories,
+  getAdminCustomers,
   getAdminCoupons,
   getAdminOrders,
   getAdminProducts,
   getAdminSupportTickets,
+  updateAdminSupportTicket,
   loginAdminApi,
   updateAdminCategory,
   updateAdminCoupon,
   updateAdminOrder,
   updateAdminProduct
 } from "./lib/api";
-import type { ApiCategory, ApiCoupon, ApiOrder, ApiProduct, ApiSupportTicket } from "./lib/api";
+import type { ApiCategory, ApiCoupon, ApiCustomer, ApiOrder, ApiProduct, ApiSupportTicket } from "./lib/api";
 
 const navLinks = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -99,8 +101,13 @@ const defaultAdminCredentials = {
   username: import.meta.env.VITE_ADMIN_USERNAME || "admin",
   password: import.meta.env.VITE_ADMIN_PASSWORD || "admin123"
 };
+const hasEnvAdminCredentials = Boolean(import.meta.env.VITE_ADMIN_USERNAME || import.meta.env.VITE_ADMIN_PASSWORD);
 
 function getAdminCredentials() {
+  if (hasEnvAdminCredentials) {
+    return defaultAdminCredentials;
+  }
+
   const storedCredentials = localStorage.getItem(adminCredentialsKey);
 
   if (!storedCredentials) {
@@ -156,9 +163,12 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
 
     try {
       await loginAdminApi();
-    } catch {
+    } catch (loginError) {
       clearAdminApiSession();
-      setSyncNote("Admin opened in demo mode. Start backend and seed database for live client sync.");
+      setError(loginError instanceof Error ? loginError.message : "Backend login failed. Start API and try again.");
+      setSyncNote("Admin panel requires live backend sync before opening.");
+      setSigningIn(false);
+      return;
     }
 
     sessionStorage.setItem(adminSessionKey, "active");
@@ -212,7 +222,9 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
         <button disabled={signingIn} className="mt-6 w-full rounded-lg bg-[#211d33] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#b86b2b] disabled:opacity-60">
           {signingIn ? "Opening..." : "Login to Admin Panel"}
         </button>
-        <p className="mt-4 text-center text-xs text-[#17172a]/45">Default demo login: admin / admin123</p>
+        <p className="mt-4 text-center text-xs text-[#17172a]/45">
+          Admin login: {defaultAdminCredentials.username} / {defaultAdminCredentials.password}
+        </p>
       </form>
     </div>
   );
@@ -317,9 +329,16 @@ function Dashboard() {
   const [dashboardProducts, setDashboardProducts] = useState<ApiProduct[]>([]);
 
   useEffect(() => {
-    getAdminOrders(true).then((rows) => setDashboardOrders(rows.map(adminOrderFromApi)));
+    refreshDashboardOrders();
+    const interval = window.setInterval(refreshDashboardOrders, 5000);
     getAdminProducts().then(setDashboardProducts);
+    return () => window.clearInterval(interval);
   }, []);
+
+  async function refreshDashboardOrders() {
+    const rows = await getAdminOrders(true);
+    setDashboardOrders(rows.map(adminOrderFromApi));
+  }
 
   const today = new Date().toLocaleDateString("en-IN");
   const todayOrders = dashboardOrders.filter((order) => order.createdAt === today).length;
@@ -331,7 +350,7 @@ function Dashboard() {
 
   return (
     <Page eyebrow="Overview" title="Dashboard" subtitle="A focused command center for storefront, fulfilment, and payments.">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(210px,1fr))]">
         <Metric label="Total Orders" value={dashboardOrders.length} icon={ShoppingCart} />
         <Metric label="Today Orders" value={todayOrders} icon={PackageCheck} />
         <Metric label="COD Orders" value={codOrders.length} icon={IndianRupee} />
@@ -358,28 +377,25 @@ type ProfitPoint = {
   profit: number;
 };
 
+const analyticsBaselineOrders = initialOrders;
+const analyticsBaselineProducts = products;
+
 function AnalyticsPage() {
-  const [analyticsOrders, setAnalyticsOrders] = useState<AdminOrder[]>(initialOrders);
-  const [analyticsProducts, setAnalyticsProducts] = useState<ApiProduct[]>([]);
-
-  useEffect(() => {
-    getAdminOrders(true).then((rows) => setAnalyticsOrders(rows.map(adminOrderFromApi)));
-    getAdminProducts().then(setAnalyticsProducts);
-  }, []);
-
-  const paidOrders = analyticsOrders.filter((order) => order.paymentStatus === "Paid");
-  const refundOrders = analyticsOrders.filter((order) => ["Refunded"].includes(order.paymentStatus) || ["Cancelled", "Returned"].includes(order.orderStatus));
+  const reportOrders = analyticsBaselineOrders;
+  const reportProducts = analyticsBaselineProducts;
+  const paidOrders = reportOrders.filter((order) => order.paymentStatus === "Paid");
+  const refundOrders = reportOrders.filter((order) => ["Refunded"].includes(order.paymentStatus) || ["Cancelled", "Returned"].includes(order.orderStatus));
   const revenue = paidOrders.reduce((sum, order) => sum + order.total, 0);
-  const pendingCod = analyticsOrders.filter((order) => order.paymentType === "COD" && order.paymentStatus === "Pending").reduce((sum, order) => sum + order.total, 0);
+  const pendingCod = reportOrders.filter((order) => order.paymentType === "COD" && order.paymentStatus === "Pending").reduce((sum, order) => sum + order.total, 0);
   const productCost = Math.round(revenue * 0.55);
-  const shippingCost = Math.round(revenue * 0.08 + analyticsOrders.length * 70);
+  const shippingCost = Math.round(revenue * 0.08 + reportOrders.length * 70);
   const paymentCost = Math.round(revenue * 0.03);
   const refundLoss = refundOrders.reduce((sum, order) => sum + order.total, 0);
   const totalCost = productCost + shippingCost + paymentCost + refundLoss;
   const netProfit = revenue - totalCost;
   const profitMargin = revenue ? Math.round((netProfit / revenue) * 100) : 0;
-  const lowStock = analyticsProducts.filter((product) => product.stock <= 10).length || products.filter((product) => product.stock <= 10).length;
-  const chartPoints = buildProfitPoints(analyticsOrders);
+  const lowStock = reportProducts.filter((product) => product.stock <= 10).length;
+  const chartPoints = buildProfitPoints(reportOrders);
 
   return (
     <Page
@@ -387,12 +403,12 @@ function AnalyticsPage() {
       title="Profit & Loss"
       subtitle="Track company revenue flow, estimated expenses, net profit, pending COD, and loss from cancelled or returned orders."
     >
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <Metric label="Paid Revenue" value={formatAdminMoney(revenue)} icon={Wallet} />
-        <Metric label="Estimated Cost" value={formatAdminMoney(totalCost)} icon={CreditCard} />
-        <Metric label={netProfit >= 0 ? "Net Profit" : "Net Loss"} value={formatAdminMoney(Math.abs(netProfit))} icon={ChartLine} />
-        <Metric label="Pending COD" value={formatAdminMoney(pendingCod)} icon={IndianRupee} />
-        <Metric label="Low Stock Risk" value={lowStock} icon={Boxes} />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
+        <Metric compact label="Paid Revenue" value={formatAdminMoney(revenue)} icon={Wallet} />
+        <Metric compact label="Estimated Cost" value={formatAdminMoney(totalCost)} icon={CreditCard} />
+        <Metric compact label={netProfit >= 0 ? "Net Profit" : "Net Loss"} value={formatAdminMoney(Math.abs(netProfit))} icon={ChartLine} />
+        <Metric compact label="Pending COD" value={formatAdminMoney(pendingCod)} icon={IndianRupee} />
+        <Metric compact label="Low Stock Risk" value={lowStock} icon={Boxes} />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
@@ -405,7 +421,7 @@ function AnalyticsPage() {
             </div>
             <div className="rounded-xl bg-[#fff7ec] p-4">
               <p className="font-semibold text-[#211d33]">Orders counted</p>
-              <p className="mt-2 text-2xl font-bold text-[#211d33]">{analyticsOrders.length}</p>
+              <p className="mt-2 text-2xl font-bold text-[#211d33]">{reportOrders.length}</p>
             </div>
             <div className="rounded-xl bg-[#fff7ec] p-4">
               <p className="font-semibold text-[#211d33]">Status</p>
@@ -416,7 +432,7 @@ function AnalyticsPage() {
 
         <Panel title="Company Money Flow Chart">
           <div className="grid gap-3">
-            <FlowNode label="Customer Orders" value={`${analyticsOrders.length} orders`} tone="dark" />
+            <FlowNode label="Customer Orders" value={`${reportOrders.length} orders`} tone="dark" />
             <FlowConnector />
             <FlowNode label="Paid Revenue" value={formatAdminMoney(revenue)} tone="green" />
             <FlowConnector />
@@ -1046,6 +1062,7 @@ function productMatchesCollection(product: ApiProduct, collection: string) {
 function OrdersPage() {
   const [orders, setOrders] = useState(initialOrders);
   const [apiOrders, setApiOrders] = useState<ApiOrder[]>([]);
+  const [syncError, setSyncError] = useState("");
 
   useEffect(() => {
     refreshOrders(true);
@@ -1054,9 +1071,14 @@ function OrdersPage() {
   }, []);
 
   async function refreshOrders(force = false) {
-    const rows = await getAdminOrders(force);
-    setApiOrders(rows);
-    setOrders(rows.map(adminOrderFromApi));
+    try {
+      const rows = await getAdminOrders(force);
+      setSyncError("");
+      setApiOrders(rows);
+      setOrders(rows.map(adminOrderFromApi));
+    } catch (error) {
+      setSyncError(error instanceof Error ? error.message : "Could not sync live orders.");
+    }
   }
 
   async function updateLiveOrder(orderId: string, patch: Partial<ApiOrder>) {
@@ -1075,6 +1097,7 @@ function OrdersPage() {
           Refresh Orders
         </button>
       </div>
+      {syncError && <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{syncError}</p>}
       <div className="mt-6">
         <OrderTable rows={orders} onStatusChange={setOrders} onLiveUpdate={updateLiveOrder} />
       </div>
@@ -1085,6 +1108,7 @@ function OrdersPage() {
 function OrderListPage({ type }: { type: "COD" | "Prepaid" }) {
   const [orders, setOrders] = useState(initialOrders.filter((order) => order.paymentType === type));
   const [apiOrders, setApiOrders] = useState<ApiOrder[]>([]);
+  const [syncError, setSyncError] = useState("");
 
   useEffect(() => {
     refreshOrders(true);
@@ -1093,9 +1117,14 @@ function OrderListPage({ type }: { type: "COD" | "Prepaid" }) {
   }, [type]);
 
   async function refreshOrders(force = false) {
-    const rows = await getAdminOrders(force);
-    setApiOrders(rows);
-    setOrders(rows.map(adminOrderFromApi).filter((order) => order.paymentType === type));
+    try {
+      const rows = await getAdminOrders(force);
+      setSyncError("");
+      setApiOrders(rows);
+      setOrders(rows.map(adminOrderFromApi).filter((order) => order.paymentType === type));
+    } catch (error) {
+      setSyncError(error instanceof Error ? error.message : "Could not sync live orders.");
+    }
   }
 
   async function updateLiveOrder(orderId: string, patch: Partial<ApiOrder>) {
@@ -1118,6 +1147,7 @@ function OrderListPage({ type }: { type: "COD" | "Prepaid" }) {
           Refresh Orders
         </button>
       </div>
+      {syncError && <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{syncError}</p>}
       <div className="mt-6">
         <OrderTable rows={orders} onStatusChange={setOrders} onLiveUpdate={updateLiveOrder} />
       </div>
@@ -1126,19 +1156,46 @@ function OrderListPage({ type }: { type: "COD" | "Prepaid" }) {
 }
 
 function CustomersPage() {
+  const [customerRows, setCustomerRows] = useState<ApiCustomer[]>(
+    customers.map((customer) => ({ ...customer, id: String(customer.id) }))
+  );
+  const [syncError, setSyncError] = useState("");
+
+  useEffect(() => {
+    refreshCustomers();
+    const interval = window.setInterval(refreshCustomers, 5000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  async function refreshCustomers() {
+    try {
+      const rows = await getAdminCustomers();
+      setSyncError("");
+      setCustomerRows(rows);
+    } catch (error) {
+      setSyncError(error instanceof Error ? error.message : "Could not sync live customers.");
+    }
+  }
+
   return (
     <Page eyebrow="CRM" title="Customers" subtitle="Customer profiles, order counts, spending, and buyer segment.">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        {syncError ? <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{syncError}</p> : <span />}
+        <button type="button" onClick={refreshCustomers} className="admin-button">
+          Refresh Customers
+        </button>
+      </div>
       <Panel title="Customer Directory">
         <div className="grid gap-3">
-          {customers.map((customer) => (
-            <div key={customer.id} className="grid gap-3 rounded-xl border border-[#211d33]/10 bg-white p-4 md:grid-cols-[1fr_130px_130px_140px] md:items-center">
+          {customerRows.map((customer) => (
+            <div key={customer._id || customer.id || customer.email} className="grid gap-3 rounded-xl border border-[#211d33]/10 bg-white p-4 md:grid-cols-[1fr_130px_130px_140px] md:items-center">
               <div>
                 <p className="font-semibold text-[#211d33]">{customer.name}</p>
                 <p className="text-sm text-[#17172a]/55">{customer.email} | {customer.phone}</p>
               </div>
-              <p className="text-sm font-semibold">{customer.orders} orders</p>
-              <p className="text-sm font-semibold">Rs.{customer.spent}</p>
-              <Badge value={customer.segment} />
+              <p className="text-sm font-semibold">{customer.orders || 0} orders</p>
+              <p className="text-sm font-semibold">Rs.{customer.spent || 0}</p>
+              <Badge value={customer.segment || "New"} />
             </div>
           ))}
         </div>
@@ -1389,7 +1446,7 @@ function AdminCredentialSettings() {
           </div>
 
           <p className="mt-5 rounded-xl bg-[#f6e8ce] px-4 py-3 text-xs font-semibold leading-5 text-[#211d33]">
-            Default first login: admin / admin123
+            Active login: {defaultAdminCredentials.username} / {defaultAdminCredentials.password}
           </p>
         </aside>
 
@@ -1469,10 +1526,28 @@ function AdminCredentialSettings() {
 
 function SupportPage() {
   const [supportTickets, setSupportTickets] = useState<ApiSupportTicket[]>([]);
+  const [supportMessage, setSupportMessage] = useState("");
 
   useEffect(() => {
-    getAdminSupportTickets().then(setSupportTickets);
+    refreshSupportTickets();
   }, []);
+
+  async function refreshSupportTickets() {
+    setSupportTickets(await getAdminSupportTickets());
+  }
+
+  async function updateTicket(ticket: ApiSupportTicket, payload: Partial<ApiSupportTicket> & { reply?: string }) {
+    if (!ticket._id) return;
+    const updated = await updateAdminSupportTicket(ticket._id, payload);
+    setSupportTickets((current) => current.map((item) => (item._id === updated._id ? updated : item)));
+    setSupportMessage("Ticket updated. Client panel will show the latest status/reply.");
+  }
+
+  async function replyToTicket(ticket: ApiSupportTicket) {
+    const reply = window.prompt("Reply for client", "");
+    if (!reply?.trim()) return;
+    await updateTicket(ticket, { status: "in-progress", reply: reply.trim() });
+  }
 
   return (
     <Page
@@ -1480,6 +1555,12 @@ function SupportPage() {
       title="Support"
       subtitle="Support inbox for order tracking, returns, product questions, wholesale enquiries, and payment issues."
     >
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        {supportMessage ? <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{supportMessage}</p> : <span />}
+        <button type="button" onClick={refreshSupportTickets} className="admin-button">
+          Refresh Support
+        </button>
+      </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {supportTickets.map((ticket) => (
           <div key={ticket._id || ticket.subject} className="admin-card p-5">
@@ -1497,9 +1578,32 @@ function SupportPage() {
               <Badge value={(ticket.priority || "normal").toUpperCase()} />
             </div>
             <p className="mt-4 whitespace-pre-line text-sm leading-6 text-[#17172a]/65">{ticket.message}</p>
+            {!!ticket.replies?.length && (
+              <div className="mt-4 rounded-xl bg-[#fff7ec] p-3">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#b86b2b]">Replies</p>
+                <div className="mt-3 grid gap-2">
+                  {ticket.replies.map((reply, index) => (
+                    <p key={`${ticket._id}-reply-${index}`} className="text-sm leading-6 text-[#17172a]/65">
+                      <b className="capitalize text-[#211d33]">{reply.authorRole}:</b> {reply.message}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="mt-4 border-t border-[#211d33]/10 pt-4 text-xs font-semibold text-[#17172a]/45">
               <p>{ticket.email}</p>
               {ticket.orderNumber && <p className="mt-1">{ticket.orderNumber}</p>}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button type="button" onClick={() => replyToTicket(ticket)} className="mini-button">
+                Reply
+              </button>
+              <button type="button" onClick={() => updateTicket(ticket, { status: "in-progress" })} className="mini-button">
+                In Progress
+              </button>
+              <button type="button" onClick={() => updateTicket(ticket, { status: "resolved" })} className="mini-button">
+                Resolve
+              </button>
             </div>
           </div>
         ))}
@@ -1724,15 +1828,29 @@ function Panel({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function Metric({ label, value, icon: Icon }: { label: string; value: string | number; icon: typeof LayoutDashboard }) {
-  return (
-    <div className="admin-card p-5 transition hover:-translate-y-0.5">
-      <div className="flex items-start justify-between gap-4">
+function Metric({ label, value, icon: Icon, compact = false }: { label: string; value: string | number; icon: typeof LayoutDashboard; compact?: boolean }) {
+  if (compact) {
+    return (
+      <div className="admin-card relative min-h-[126px] overflow-hidden p-5 transition hover:-translate-y-0.5">
+        <span className="absolute right-4 top-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f6e8ce] text-[#b86b2b]">
+          <Icon size={21} />
+        </span>
         <div>
-          <p className="text-sm font-medium text-[#17172a]/55">{label}</p>
-          <p className="mt-3 text-2xl font-bold text-[#211d33]">{value}</p>
+          <p className="max-w-[7rem] text-[14px] font-semibold leading-5 text-[#17172a]/58">{label}</p>
+          <p className="mt-8 whitespace-nowrap text-[24px] font-bold leading-none tracking-tight text-[#211d33]">{value}</p>
         </div>
-        <span className="rounded-xl bg-[#f6e8ce] p-3 text-[#b86b2b]">
+      </div>
+    );
+  }
+
+  return (
+    <div className="admin-card min-h-[180px] p-5 transition hover:-translate-y-0.5">
+      <div className="flex h-full items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm font-medium leading-6 text-[#17172a]/55">{label}</p>
+          <p className="mt-3 break-words text-2xl font-bold leading-tight text-[#211d33]">{value}</p>
+        </div>
+        <span className="shrink-0 rounded-xl bg-[#f6e8ce] p-3 text-[#b86b2b]">
           <Icon size={20} />
         </span>
       </div>

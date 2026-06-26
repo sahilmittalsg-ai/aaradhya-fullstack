@@ -74,14 +74,20 @@ export const fallbackHomepage: HomepageContent = {
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const token = localStorage.getItem("token");
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options?.headers
-    }
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options?.headers
+      }
+    });
+  } catch {
+    throw new Error(`Backend API is not reachable at ${API_URL}. Please start the server and try again.`);
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: "Request failed" }));
@@ -355,14 +361,14 @@ export async function login(email: string, password: string) {
   });
 }
 
-export async function requestOtp(phone: string) {
-  return request<{ message: string; phone: string; expiresInSeconds: number; devOtp?: string }>("/auth/otp/request", {
+export async function requestOtp(email: string) {
+  return request<{ message: string; email?: string; phone?: string; expiresInSeconds: number; smsSent?: boolean; devOtp?: string }>("/auth/otp/request", {
     method: "POST",
-    body: JSON.stringify({ phone })
+    body: JSON.stringify({ email })
   });
 }
 
-export async function verifyOtp(payload: { phone: string; code: string; name?: string }) {
+export async function verifyOtp(payload: { email: string; code: string; name?: string }) {
   return request<{ token: string; user: ClientUser }>("/auth/otp/verify", {
     method: "POST",
     body: JSON.stringify(payload)
@@ -460,25 +466,40 @@ export async function getAssistantOrders(phone: string): Promise<Order[]> {
   }
 }
 
+async function getOrdersBySavedAccount(): Promise<Order[] | undefined> {
+  const saved = localStorage.getItem("user");
+  if (!saved) return [];
+
+  const user = JSON.parse(saved) as Partial<ClientUser>;
+  const email = String(user.email || "").trim().toLowerCase();
+  const phone = String(user.phone || "").trim();
+  if (!email && !phone) return [];
+
+  try {
+    return await request<Order[]>("/users/assistant/orders", {
+      method: "POST",
+      body: JSON.stringify({ email, phone })
+    });
+  } catch {
+    return undefined;
+  }
+}
+
 export async function getMySupportTickets(): Promise<SupportTicket[]> {
   try {
     return await request<SupportTicket[]>("/users/support/my");
   } catch {
-    return [
-      {
-        _id: "ticket-1",
-        name: "Client User",
-        email: "client@demo.com",
-        phone: "8888888888",
-        orderNumber: "ORD-24062001",
-        category: "order-tracking",
-        subject: "Need delivery update",
-        message: "Please share the expected delivery date for my order.",
-        status: "open",
-        priority: "normal",
-        createdAt: "2026-06-22T09:00:00.000Z"
-      }
-    ];
+    return [];
+  }
+}
+
+export async function getMyOrders(): Promise<Order[]> {
+  try {
+    return await request<Order[]>("/users/me/orders");
+  } catch (error) {
+    const savedAccountOrders = await getOrdersBySavedAccount();
+    if (savedAccountOrders) return savedAccountOrders;
+    throw error;
   }
 }
 

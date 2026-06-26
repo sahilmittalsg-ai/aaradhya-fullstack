@@ -9,6 +9,8 @@ export function HeroCarousel() {
   const [intervalMs, setIntervalMs] = useState(fallbackHomepage.hero.intervalMs);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [pageVisible, setPageVisible] = useState(() => !document.hidden);
+  const [loadedSlideIndexes, setLoadedSlideIndexes] = useState(() => new Set([0]));
 
   useEffect(() => {
     getHomepage().then((homepage) => {
@@ -23,14 +25,32 @@ export function HeroCarousel() {
   }, []);
 
   useEffect(() => {
-    if (paused || !autoplay || slides.length <= 1) return;
+    function updatePageVisible() {
+      setPageVisible(!document.hidden);
+    }
+
+    document.addEventListener("visibilitychange", updatePageVisible);
+    return () => document.removeEventListener("visibilitychange", updatePageVisible);
+  }, []);
+
+  useEffect(() => {
+    if (paused || !pageVisible || !autoplay || slides.length <= 1) return;
 
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, intervalMs);
 
     return () => clearInterval(timer);
-  }, [autoplay, intervalMs, paused, slides.length]);
+  }, [autoplay, intervalMs, pageVisible, paused, slides.length]);
+
+  useEffect(() => {
+    setLoadedSlideIndexes((current) => {
+      const next = new Set(current);
+      next.add(currentSlide);
+      if (slides.length > 1) next.add((currentSlide + 1) % slides.length);
+      return next;
+    });
+  }, [currentSlide, slides.length]);
 
   function previous() {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
@@ -54,7 +74,15 @@ export function HeroCarousel() {
           }`}
           aria-hidden={currentSlide !== index}
         >
-          <img src={slide.image} alt={slide.heading} className="h-full w-full object-cover" />
+          {loadedSlideIndexes.has(index) && (
+            <img
+              src={slide.image}
+              alt={slide.heading}
+              loading={index === 0 ? "eager" : "lazy"}
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-[#17172a]/30" />
           <div className="container-pad absolute inset-x-0 top-1/2 -translate-y-1/2">
             <div className="max-w-xl text-white">

@@ -1,17 +1,17 @@
-# Spiritual Commerce MERN
+# Spiritual Commerce
 
-A MERN stack ecommerce starter inspired by a premium spiritual wearables storefront. It includes a customer shop, client account area, admin dashboard, Express API, MongoDB models, and seed data.
+An ecommerce starter inspired by a premium spiritual wearables storefront. It includes a customer shop, client account area, admin dashboard, Express API, PostgreSQL-backed models, and seed data.
 
 ## Stack
 
 - Frontend: React, TypeScript, Vite, Tailwind CSS
-- Backend: Node, Express, TypeScript, Mongoose
-- Database: MongoDB
+- Backend: Node, Express, TypeScript
+- Database: PostgreSQL
 - Auth: JWT-ready API with seeded admin/client users
 
 ## Run Locally
 
-Node/npm are required. They are not currently available on this machine's PATH.
+Node/npm are required.
 
 ```bash
 npm install

@@ -7,7 +7,7 @@ export function Footer() {
         <div>
           <h2 className="text-2xl font-black">Aaradhya Beads</h2>
           <p className="mt-4 max-w-md text-sm leading-7 text-sandal/70">
-            A complete MERN ecommerce build for spiritual bracelets, malas, crystals, orders, and admin operations.
+            A complete ecommerce build for spiritual bracelets, malas, crystals, orders, and admin operations.
           </p>
         </div>
         <div>

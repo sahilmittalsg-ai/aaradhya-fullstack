@@ -37,7 +37,9 @@ export function CategoryStrip({
                   <img
                     src={category.image}
                     alt={category.name}
-                    className="h-[50px] w-[50px] object-contain transition duration-300 group-hover:scale-110 md:h-[60px] md:w-[60px]"
+                    loading="lazy"
+                    decoding="async"
+                    className="h-[50px] w-[50px] object-contain p-1 transition duration-300 group-hover:scale-105 md:h-[60px] md:w-[60px]"
                   />
                 </span>
                 <span className={`mt-1 text-xs leading-4 text-[#17172a] ${active ? "font-bold" : "font-medium"}`}>

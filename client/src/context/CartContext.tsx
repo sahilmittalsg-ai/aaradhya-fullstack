@@ -1,10 +1,13 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import type { CartItem, Product } from "../types";
 
-type CartContextValue = {
+type CartStateValue = {
   items: CartItem[];
   subtotal: number;
   isCartOpen: boolean;
+};
+
+type CartActionsValue = {
   addItem: (product: Product | CartItem, quantity?: number, openDrawer?: boolean) => void;
   removeItem: (key: string) => void;
   updateQuantity: (key: string, quantity: number) => void;
@@ -13,7 +16,12 @@ type CartContextValue = {
   closeCart: () => void;
 };
 
-const CartContext = createContext<CartContextValue | undefined>(undefined);
+const CartStateContext = createContext<CartStateValue | undefined>(undefined);
+const CartActionsContext = createContext<CartActionsValue | undefined>(undefined);
+
+function saveCart(nextItems: CartItem[]) {
+  localStorage.setItem("cart", JSON.stringify(nextItems));
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
@@ -22,12 +30,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  function persist(nextItems: CartItem[]) {
-    setItems(nextItems);
-    localStorage.setItem("cart", JSON.stringify(nextItems));
-  }
-
-  function addItem(product: Product | CartItem, quantity = 1, openDrawer = true) {
+  const addItem = useCallback((product: Product | CartItem, quantity = 1, openDrawer = true) => {
     const selectedSize =
       "selectedSize" in product && product.selectedSize
         ? product.sizeOptions?.find((size) => size.value === product.selectedSize)
@@ -39,39 +42,53 @@ export function CartProvider({ children }: { children: ReactNode }) {
         : `${product.slug}-${"selectedSize" in product ? product.selectedSize || "default" : "default"}-${
             "selectedAddOns" in product && product.selectedAddOns?.length ? product.selectedAddOns.map((item) => item.code).join("-") : "no-plan"
           }`;
-    const existing = items.find((item) => (item.cartKey || item.slug) === cartKey);
-    const nextItems = existing
-      ? items.map((item) =>
-          (item.cartKey || item.slug) === cartKey ? { ...item, quantity: Math.min(item.quantity + quantity, maxQuantity) } : item
-        )
-      : [...items, { ...product, cartKey, quantity: Math.min(quantity, maxQuantity) } as CartItem].filter((item) => item.quantity > 0);
-    persist(nextItems);
+
+    setItems((current) => {
+      const existing = current.find((item) => (item.cartKey || item.slug) === cartKey);
+      const nextItems = existing
+        ? current.map((item) =>
+            (item.cartKey || item.slug) === cartKey ? { ...item, quantity: Math.min(item.quantity + quantity, maxQuantity) } : item
+          )
+        : [...current, { ...product, cartKey, quantity: Math.min(quantity, maxQuantity) } as CartItem].filter((item) => item.quantity > 0);
+
+      saveCart(nextItems);
+      return nextItems;
+    });
+
     if (openDrawer) setIsCartOpen(true);
-  }
+  }, []);
 
-  function removeItem(key: string) {
-    persist(items.filter((item) => (item.cartKey || item.slug) !== key));
-  }
+  const removeItem = useCallback((key: string) => {
+    setItems((current) => {
+      const nextItems = current.filter((item) => (item.cartKey || item.slug) !== key);
+      saveCart(nextItems);
+      return nextItems;
+    });
+  }, []);
 
-  function updateQuantity(key: string, quantity: number) {
-    persist(
-      items
+  const updateQuantity = useCallback((key: string, quantity: number) => {
+    setItems((current) => {
+      const nextItems = current
         .map((item) => ((item.cartKey || item.slug) === key ? { ...item, quantity } : item))
-        .filter((item) => item.quantity > 0)
-    );
-  }
+        .filter((item) => item.quantity > 0);
 
-  function clearCart() {
-    persist([]);
-  }
+      saveCart(nextItems);
+      return nextItems;
+    });
+  }, []);
 
-  function openCart() {
+  const clearCart = useCallback(() => {
+    saveCart([]);
+    setItems([]);
+  }, []);
+
+  const openCart = useCallback(() => {
     setIsCartOpen(true);
-  }
+  }, []);
 
-  function closeCart() {
+  const closeCart = useCallback(() => {
     setIsCartOpen(false);
-  }
+  }, []);
 
   const subtotal = useMemo(
     () =>
@@ -82,16 +99,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
       ),
     [items]
   );
+  const stateValue = useMemo(() => ({ items, subtotal, isCartOpen }), [items, subtotal, isCartOpen]);
+  const actionsValue = useMemo(
+    () => ({ addItem, removeItem, updateQuantity, clearCart, openCart, closeCart }),
+    [addItem, removeItem, updateQuantity, clearCart, openCart, closeCart]
+  );
 
   return (
-    <CartContext.Provider value={{ items, subtotal, isCartOpen, addItem, removeItem, updateQuantity, clearCart, openCart, closeCart }}>
-      {children}
-    </CartContext.Provider>
+    <CartActionsContext.Provider value={actionsValue}>
+      <CartStateContext.Provider value={stateValue}>{children}</CartStateContext.Provider>
+    </CartActionsContext.Provider>
   );
 }
 
 export function useCart() {
-  const value = useContext(CartContext);
-  if (!value) throw new Error("useCart must be used inside CartProvider");
-  return value;
+  const state = useContext(CartStateContext);
+  const actions = useContext(CartActionsContext);
+  if (!state || !actions) throw new Error("useCart must be used inside CartProvider");
+  return { ...state, ...actions };
+}
+
+export function useCartActions() {
+  const actions = useContext(CartActionsContext);
+  if (!actions) throw new Error("useCartActions must be used inside CartProvider");
+  return actions;
 }

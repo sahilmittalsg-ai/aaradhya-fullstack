@@ -76,6 +76,8 @@ function GalleryLink({ item }: { item: { image: string; label: string; href: str
       <img
         src={item.image}
         alt={item.label}
+        loading="lazy"
+        decoding="async"
         className="h-[260px] w-full object-cover transition duration-500 group-hover:scale-105"
       />
       <span className="absolute inset-0 bg-[#17172a]/0 transition group-hover:bg-[#17172a]/25" />

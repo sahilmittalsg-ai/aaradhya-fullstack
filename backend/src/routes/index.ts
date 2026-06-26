@@ -346,7 +346,7 @@ router.post(
     });
 
     const reviews = await Review.find({ product: product._id, approved: true });
-    const rating = reviews.reduce((sum, item) => sum + item.rating, 0) / reviews.length;
+    const rating = reviews.reduce((sum: number, item: any) => sum + item.rating, 0) / reviews.length;
     await Product.findByIdAndUpdate(product._id, { rating: Number(rating.toFixed(1)) });
 
     return res.status(201).json(review);
@@ -440,7 +440,7 @@ router.get(
       User.find({ role: "client" }),
       SupportTicket.find({ status: { $ne: "resolved" } })
     ]);
-    const revenue = orders.reduce((sum, order: any) => sum + order.total, 0);
+    const revenue = orders.reduce((sum: number, order: any) => sum + order.total, 0);
     return res.json({
       revenue,
       orders: orders.length,

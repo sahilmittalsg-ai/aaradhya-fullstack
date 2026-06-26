@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import { memo } from "react";
 import type { TrendingProduct } from "../../data/latestTrending";
 
-export function ProductCard({ product }: { product: TrendingProduct }) {
+export const ProductCard = memo(function ProductCard({ product }: { product: TrendingProduct }) {
   return (
     <Link
       to={`/products/${product.slug}`}
@@ -19,6 +20,8 @@ export function ProductCard({ product }: { product: TrendingProduct }) {
         <img
           src={product.image}
           alt={product.name}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
         />
       </div>
@@ -34,4 +37,4 @@ export function ProductCard({ product }: { product: TrendingProduct }) {
       </div>
     </Link>
   );
-}
+});

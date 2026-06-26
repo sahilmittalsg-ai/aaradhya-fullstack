@@ -7,7 +7,7 @@ export function LatestTrendingCarousel() {
   const products = useMemo(() => latestTrendingProducts.filter((product) => product.enabled), []);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoSlide, setAutoSlide] = useState(true);
-  const [slideInterval] = useState(4000);
+  const [pageVisible, setPageVisible] = useState(() => !document.hidden);
   const [visibleCount, setVisibleCount] = useState(4);
 
   useEffect(() => {
@@ -27,14 +27,23 @@ export function LatestTrendingCarousel() {
   }, []);
 
   useEffect(() => {
-    if (!autoSlide || products.length === 0) return;
+    function updatePageVisible() {
+      setPageVisible(!document.hidden);
+    }
+
+    document.addEventListener("visibilitychange", updatePageVisible);
+    return () => document.removeEventListener("visibilitychange", updatePageVisible);
+  }, []);
+
+  useEffect(() => {
+    if (!autoSlide || !pageVisible || products.length === 0) return;
 
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev === products.length - 1 ? 0 : prev + 1));
-    }, slideInterval);
+    }, 4000);
 
     return () => clearInterval(timer);
-  }, [autoSlide, products.length, slideInterval]);
+  }, [autoSlide, pageVisible, products.length]);
 
   function previous() {
     setCurrentIndex((prev) => (prev === 0 ? products.length - 1 : prev - 1));

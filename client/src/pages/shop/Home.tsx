@@ -13,7 +13,7 @@ import {
   Star
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CategoryStrip } from "../../components/CategoryStrip";
 import { HeroCarousel } from "../../components/HeroCarousel";
@@ -35,6 +35,14 @@ const purposeIcons: Record<string, LucideIcon> = {
   Balance: Scale
 };
 
+const defaultCategoryOptions = [
+  { name: "Rudraksha", image: "/assets/categories/rudraksha.png" },
+  { name: "Energy Stones", image: "/assets/categories/pyrite.png" },
+  { name: "Karungali", image: "/assets/categories/karungali.png" },
+  { name: "Spiritual Jewellery", image: "/assets/products/meditation-mala.png" },
+  { name: "Gift Hampers", image: "/assets/categories/gift-hampers-v2.png" }
+];
+
 export function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -45,7 +53,7 @@ export function Home() {
     getProducts().then(setProducts);
   }, []);
 
-  const categoryOptions = useMemo(() => buildFilterOptions(products, "category"), [products]);
+  const categoryOptions = defaultCategoryOptions;
   const collectionOptions = useMemo(() => buildFilterOptions(products, "collection"), [products]);
   const purposeOptions = useMemo(
     () => ["All", ...Array.from(new Set(products.flatMap((product) => product.purpose || []))).sort((a, b) => a.localeCompare(b))],
@@ -54,11 +62,13 @@ export function Home() {
 
   const filteredProducts = useMemo(() => {
     const categoryProducts =
-      selectedCategory === "All" ? products : products.filter((product) => product.category === selectedCategory);
+      selectedCategory === "All"
+        ? products
+        : products.filter((product) => productMatchesOption(product, selectedCategory));
     const collectionProducts =
       selectedCollection === "All"
         ? categoryProducts
-        : categoryProducts.filter((product) => product.collection === selectedCollection || product.category === selectedCollection);
+        : categoryProducts.filter((product) => productMatchesOption(product, selectedCollection));
 
     return selectedPurpose === "All"
       ? collectionProducts
@@ -143,7 +153,7 @@ const labMarkers = [
   }
 ];
 
-function LabTestedShowcase() {
+const LabTestedShowcase = memo(function LabTestedShowcase() {
   return (
     <section className="bg-[#fbf2e3] py-10 md:py-14">
       <div className="container-pad">
@@ -160,6 +170,8 @@ function LabTestedShowcase() {
             <img
               src="/assets/products/hero-spiritual-shop.png"
               alt="Lab tested spiritual wearables and gift-ready products"
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover object-right"
             />
             <span className="absolute inset-0 bg-[#f1d99d]/15" />
@@ -179,9 +191,9 @@ function LabTestedShowcase() {
       </div>
     </section>
   );
-}
+});
 
-function ComboDealsSection({ products }: { products: Product[] }) {
+const ComboDealsSection = memo(function ComboDealsSection({ products }: { products: Product[] }) {
   const combos = products
     .filter((product) => product.collection === "Combos" || product.category === "Combos" || product.title.toLowerCase().includes("combo"))
     .slice(0, 5);
@@ -215,6 +227,8 @@ function ComboDealsSection({ products }: { products: Product[] }) {
                   <img
                     src={product.images[0]}
                     alt={product.title}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
                 </div>
@@ -242,7 +256,7 @@ function ComboDealsSection({ products }: { products: Product[] }) {
       </div>
     </section>
   );
-}
+});
 
 const styleTiles = [
   {
@@ -295,7 +309,7 @@ const customerReviews = [
   }
 ];
 
-function StyleShowcase() {
+const StyleShowcase = memo(function StyleShowcase() {
   return (
     <section className="bg-[#fbf2e3] py-12">
       <div className="container-pad">
@@ -311,6 +325,8 @@ function StyleShowcase() {
               <img
                 src={tile.image}
                 alt={tile.title}
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <span className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/10 to-black/5" />
@@ -326,9 +342,9 @@ function StyleShowcase() {
       </div>
     </section>
   );
-}
+});
 
-function HappyCustomers() {
+const HappyCustomers = memo(function HappyCustomers() {
   return (
     <section className="bg-[#fbf2e3] py-12">
       <div className="container-pad">
@@ -347,6 +363,8 @@ function HappyCustomers() {
               <img
                 src={review.image}
                 alt={`${review.name} reviewed product`}
+                loading="lazy"
+                decoding="async"
                 className="h-64 w-full bg-sandal object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="px-6 py-8 text-center">
@@ -371,7 +389,7 @@ function HappyCustomers() {
       </div>
     </section>
   );
-}
+});
 
 function CollectionCarousel({
   selectedCategory,
@@ -437,7 +455,9 @@ function CollectionCarousel({
                     <img
                       src={category.image}
                       alt=""
-                      className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-contain p-2 transition duration-300 group-hover:scale-110"
                     />
                   </span>
                 </span>
@@ -510,4 +530,12 @@ function buildFilterOptions(products: Product[], key: "category" | "collection")
     });
     return options;
   }, []);
+}
+
+function productMatchesOption(product: Product, option: string) {
+  return (
+    product.category === option ||
+    product.collection === option ||
+    product.tags?.includes(option.toLowerCase())
+  );
 }

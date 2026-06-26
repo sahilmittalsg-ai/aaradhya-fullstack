@@ -1,4 +1,4 @@
-import { CheckCircle2, CreditCard, Home, Landmark, PackageCheck, ShieldCheck, Truck, Wallet } from "lucide-react";
+import { CheckCircle2, CreditCard, Landmark, PackageCheck, Tag, Truck, Wallet } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -254,41 +254,26 @@ export function Checkout() {
   }
 
   return (
-    <section className="container-pad py-10">
-      <div className="mb-8">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-saffron">Secure Checkout</p>
-        <h1 className="mt-2 text-4xl font-black">Complete your order</h1>
-      </div>
-
-      <div className="mb-8 grid gap-3 md:grid-cols-3">
-        {[
-          { key: "address", label: "Address", icon: Home },
-          { key: "payment", label: "Payment", icon: ShieldCheck },
-          { key: "review", label: "Review", icon: CheckCircle2 }
-        ].map((item, index) => {
-          const activeIndex = ["address", "payment", "review"].indexOf(step);
-          const done = activeIndex > index;
-          const active = step === item.key;
-          return (
-            <div
-              key={item.key}
-              className={`rounded-lg border p-4 ${
-                active || done ? "border-rudra bg-white shadow-sm" : "border-rudra/10 bg-white/70 text-ink/45"
-              }`}
-            >
-              <item.icon className={active || done ? "text-saffron" : ""} />
-              <p className="mt-3 font-black">{index + 1}. {item.label}</p>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-        <div className="rounded-lg border border-rudra/10 bg-white p-5 shadow-sm">
+    <section className="bg-[#f4f4f2] py-10">
+      <div className="container-pad">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,620px)_380px] xl:justify-center">
+        <div className="rounded-lg border border-[#e6e2dc] bg-white p-5 shadow-sm md:p-6">
+          <div className="mb-7 flex items-center gap-2 text-xs font-bold">
+            <button type="button" onClick={() => setStep("address")} className={step === "address" ? "text-rudra" : "text-ink/45"}>
+              Cart
+            </button>
+            <span className="text-ink/25">›</span>
+            <button type="button" onClick={() => setStep("address")} className={step === "address" ? "text-rudra" : "text-ink/45"}>
+              Shipping
+            </button>
+            <span className="text-ink/25">›</span>
+            <button type="button" onClick={() => step !== "address" && setStep("payment")} className={step === "payment" || step === "review" ? "text-rudra" : "text-ink/45"}>
+              Payment
+            </button>
+          </div>
           {step === "address" && (
-            <form onSubmit={submitAddress}>
-              <h2 className="text-2xl font-black">Delivery details</h2>
-              <p className="mt-2 text-sm text-ink/55">Fill customer and address details before payment selection.</p>
+            <form id="checkout-address-form" onSubmit={submitAddress}>
+              <h2 className="text-xl font-black">Shipping Address</h2>
               {user?.addresses?.length ? (
                 <div className="mt-5 grid gap-3 md:grid-cols-2">
                   {user.addresses.map((address, index) => (
@@ -324,20 +309,22 @@ export function Checkout() {
                 </div>
               ) : null}
               <div className="mt-6 grid gap-4 md:grid-cols-2">
-                <input className="input" value={form.name} onChange={(e) => updateField("name", e.target.value)} placeholder="Full name" required />
-                <input className="input" type="email" value={form.email} onChange={(e) => updateField("email", e.target.value)} placeholder="Email" required />
-                <input className="input" value={form.phone} onChange={(e) => updateField("phone", e.target.value)} placeholder="Phone" required />
-                <input className="input md:col-span-2" value={form.line1} onChange={(e) => updateField("line1", e.target.value)} placeholder="House no, street, area" required />
-                <input className="input md:col-span-2" value={form.line2} onChange={(e) => updateField("line2", e.target.value)} placeholder="Landmark or apartment, optional" />
-                <input className="input" value={form.city} onChange={(e) => updateField("city", e.target.value)} placeholder="City" required />
-                <input className="input" value={form.state} onChange={(e) => updateField("state", e.target.value)} placeholder="State" required />
-                <input className="input" value={form.pincode} onChange={(e) => updateField("pincode", e.target.value)} placeholder="Pincode" required />
-                <div className="flex gap-2">
-                  <input className="input" value={form.couponCode} onChange={(e) => updateField("couponCode", e.target.value)} placeholder="Coupon code" />
-                  <button type="button" onClick={applyCoupon} className="btn-secondary whitespace-nowrap px-4 py-2">
-                    Apply
-                  </button>
-                </div>
+                <Field label="Full Name*" value={form.name} onChange={(value) => updateField("name", value)} placeholder="Your name" required />
+                <Field label="Email*" type="email" value={form.email} onChange={(value) => updateField("email", value)} placeholder="name@example.com" required />
+                <Field label="Phone number*" value={form.phone} onChange={(value) => updateField("phone", value)} placeholder="+91 00000 00000" required />
+                <Field label="City*" value={form.city} onChange={(value) => updateField("city", value)} placeholder="City" required />
+                <Field label="State*" value={form.state} onChange={(value) => updateField("state", value)} placeholder="State" required />
+                <Field label="Zip Code*" value={form.pincode} onChange={(value) => updateField("pincode", value)} placeholder="Pincode" required />
+                <Field className="md:col-span-2" label="Address line*" value={form.line1} onChange={(value) => updateField("line1", value)} placeholder="House no, street, area" required />
+                <label className="md:col-span-2">
+                  <span className="text-xs font-bold text-ink/70">Description</span>
+                  <textarea
+                    className="mt-2 min-h-24 w-full rounded-md border border-[#dedbd5] bg-white px-3 py-3 text-sm outline-none transition focus:border-rudra focus:ring-2 focus:ring-rudra/10"
+                    value={form.line2}
+                    onChange={(event) => updateField("line2", event.target.value)}
+                    placeholder="Landmark, apartment, or delivery note..."
+                  />
+                </label>
               </div>
               {user && selectedAddressIndex === "new" && (
                 <label className="mt-4 flex items-center gap-2 text-sm font-semibold text-ink/70">
@@ -347,24 +334,35 @@ export function Checkout() {
               )}
               {couponMessage && <p className="mt-4 rounded-md bg-green-50 px-4 py-3 text-sm font-bold text-green-700">{couponMessage}</p>}
               {error && <p className="mt-4 text-sm font-bold text-red-600">{error}</p>}
+              <h3 className="mt-6 text-lg font-black">Shipping Method</h3>
               <div className="mt-6 grid gap-3 md:grid-cols-2">
                 <button type="button" onClick={() => updateField("shippingMethod", "standard")} className={`rounded-lg border p-4 text-left ${form.shippingMethod === "standard" ? "border-rudra bg-sandal" : "border-rudra/10"}`}>
-                  <Truck className="text-saffron" />
-                  <b className="mt-3 block">Standard Delivery</b>
-                  <span className="text-sm text-ink/55">{subtotal >= 1499 ? "Free" : "Rs.99"} | 4-7 days</span>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="flex gap-3">
+                      <Truck className="mt-0.5 text-saffron" size={18} />
+                      <span><b className="block">Standard Shipping</b><span className="text-sm text-ink/55">4-7 Days</span></span>
+                    </span>
+                    <b>{subtotal >= 1499 ? "Free" : "Rs.99"}</b>
+                  </div>
                 </button>
                 <button type="button" onClick={() => updateField("shippingMethod", "express")} className={`rounded-lg border p-4 text-left ${form.shippingMethod === "express" ? "border-rudra bg-sandal" : "border-rudra/10"}`}>
-                  <PackageCheck className="text-saffron" />
-                  <b className="mt-3 block">Express Delivery</b>
-                  <span className="text-sm text-ink/55">Rs.149 | 2-3 days</span>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="flex gap-3">
+                      <PackageCheck className="mt-0.5 text-saffron" size={18} />
+                      <span><b className="block">Express Shipping</b><span className="text-sm text-ink/55">2-3 Days</span></span>
+                    </span>
+                    <b>Rs.149</b>
+                  </div>
                 </button>
               </div>
-              <button disabled={items.length === 0} className="btn-primary mt-6 disabled:opacity-50">Continue to Payment</button>
+              <button disabled={items.length === 0} className="mt-6 w-full rounded-md bg-black px-5 py-4 text-sm font-black text-white transition hover:bg-ink disabled:opacity-50">
+                Continue to Payment
+              </button>
             </form>
           )}
 
           {step === "payment" && (
-            <form onSubmit={submitPayment}>
+            <form id="checkout-payment-form" onSubmit={submitPayment}>
               <h2 className="text-2xl font-black">Payment method</h2>
               <p className="mt-2 text-sm text-ink/55">Choose how the customer will pay after address details are confirmed.</p>
               <div className="mt-6 grid gap-3">
@@ -454,9 +452,51 @@ export function Checkout() {
           )}
         </div>
 
-        <OrderSummary summary={summary} />
+        <OrderSummary
+          summary={summary}
+          couponCode={form.couponCode}
+          couponMessage={couponMessage}
+          onCouponChange={(value) => updateField("couponCode", value)}
+          onApplyCoupon={applyCoupon}
+          step={step}
+          placing={placing}
+          onConfirmOrder={confirmOrder}
+        />
+      </div>
       </div>
     </section>
+  );
+}
+
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  required = false,
+  className = ""
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  type?: string;
+  required?: boolean;
+  className?: string;
+}) {
+  return (
+    <label className={className}>
+      <span className="text-xs font-bold text-ink/70">{label}</span>
+      <input
+        className="mt-2 w-full rounded-md border border-[#dedbd5] bg-white px-3 py-3 text-sm outline-none transition focus:border-rudra focus:ring-2 focus:ring-rudra/10"
+        type={type}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        required={required}
+      />
+    </label>
   );
 }
 
@@ -490,47 +530,85 @@ function ReviewBox({ title, children }: { title: string; children: ReactNode }) 
 }
 
 function OrderSummary({
-  summary
+  summary,
+  couponCode,
+  couponMessage,
+  onCouponChange,
+  onApplyCoupon,
+  step,
+  placing,
+  onConfirmOrder
 }: {
   summary: ReturnType<typeof calculatePriceSummary>;
+  couponCode: string;
+  couponMessage: string;
+  onCouponChange: (value: string) => void;
+  onApplyCoupon: () => void;
+  step: Step;
+  placing: boolean;
+  onConfirmOrder: () => void;
 }) {
   const { items, subtotal } = useCart();
+  const actionForm = step === "address" ? "checkout-address-form" : step === "payment" ? "checkout-payment-form" : undefined;
+  const actionLabel = step === "address" ? "Continue to Payment" : step === "payment" ? "Review Order" : placing ? "Placing..." : "Place Order";
 
   return (
-    <aside className="h-max rounded-lg border border-rudra/10 bg-white p-5 shadow-sm">
-      <h2 className="text-xl font-black">Order Details</h2>
-      <div className="mt-4 space-y-4">
+    <aside className="h-max rounded-lg border border-[#e6e2dc] bg-white p-5 shadow-sm lg:sticky lg:top-28">
+      <h2 className="text-2xl font-black">Your Cart</h2>
+      <div className="mt-5 space-y-4">
         {items.map((item) => (
           <div key={item.cartKey || item.slug} className="flex gap-3">
-            <img src={item.images[0]} alt={item.title} className="h-16 w-16 rounded-md object-cover" />
-            <div className="flex-1">
-              <p className="text-sm font-black">{item.title}</p>
-              {item.selectedSizeLabel && <p className="text-xs text-rudra">Size: {item.selectedSizeLabel}</p>}
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-sandal">
+              <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1 text-[10px] font-black text-white">
+                {item.quantity}
+              </span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="line-clamp-2 text-sm font-black leading-5">{item.title}</p>
+              {item.selectedSizeLabel && <p className="text-xs text-ink/50">Size: {item.selectedSizeLabel}</p>}
               {(item.selectedAddOns || []).map((addOn) => (
                 <p key={addOn.code} className="text-xs text-green-700">{addOn.title}: Rs.{addOn.price}</p>
               ))}
-              <p className="text-xs text-ink/50">Qty {item.quantity}</p>
             </div>
-            <b className="text-sm">
+            <b className="shrink-0 text-sm">
               Rs.{(item.price + (item.selectedAddOns || []).reduce((sum, addOn) => sum + addOn.price, 0)) * item.quantity}
             </b>
           </div>
         ))}
       </div>
-      <div className="mt-5 space-y-2 border-t border-rudra/10 pt-4 text-sm">
-        <SummaryRow label="MRP Total" value={summary.mrpTotal} />
-        <SummaryRow label="Discount on MRP" value={-summary.productDiscount} highlight />
-        <SummaryRow label="Subtotal" value={subtotal} />
-        <SummaryRow label="Coupon Discount" value={-summary.couponDiscount} highlight />
-        <SummaryRow label="Total Discount" value={-summary.totalDiscount} highlight />
-        <SummaryRow label="Shipping" value={summary.shipping} freeWhenZero />
-        <SummaryRow label="Tax" value={summary.tax} />
-        <SummaryRow label="Payment fee" value={summary.paymentFee} freeWhenZero />
-        <div className="flex justify-between border-t border-rudra/10 pt-3 text-lg"><span>To Pay</span><b>Rs.{summary.total}</b></div>
+
+      <div className="mt-5 flex overflow-hidden rounded-md border border-[#dedbd5]">
+        <span className="flex items-center px-3 text-ink/45"><Tag size={17} /></span>
+        <input
+          className="min-w-0 flex-1 px-2 py-3 text-sm outline-none"
+          value={couponCode}
+          onChange={(event) => onCouponChange(event.target.value)}
+          placeholder="Discount code"
+        />
+        <button type="button" onClick={onApplyCoupon} className="px-4 text-sm font-black">
+          Apply
+        </button>
       </div>
-      <p className="mt-4 rounded-md bg-sandal p-3 text-xs font-semibold leading-5 text-rudra">
-        Checkout is gateway-ready. Replace mock online payment with Razorpay, Cashfree, Stripe, or your selected provider before production.
-      </p>
+      {couponMessage && <p className="mt-2 text-xs font-bold text-green-700">{couponMessage}</p>}
+
+      <div className="mt-5 space-y-2 border-t border-[#dedbd5] pt-4 text-sm">
+        <SummaryRow label="Subtotal" value={subtotal} />
+        <SummaryRow label="Shipping" value={summary.shipping} freeWhenZero />
+        <SummaryRow label="Estimated taxes" value={summary.tax} />
+        <SummaryRow label="Discount" value={-summary.totalDiscount} highlight />
+        <SummaryRow label="Payment fee" value={summary.paymentFee} freeWhenZero />
+        <div className="flex justify-between border-t border-[#dedbd5] pt-3 text-lg"><span>Total</span><b>Rs.{summary.total}</b></div>
+      </div>
+      <button
+        type={step === "review" ? "button" : "submit"}
+        form={actionForm}
+        onClick={step === "review" ? onConfirmOrder : undefined}
+        disabled={!items.length || placing}
+        className="mt-5 w-full rounded-md bg-black px-5 py-4 text-sm font-black text-white transition hover:bg-ink disabled:opacity-50"
+      >
+        {items.length ? actionLabel : "Cart Empty"}
+      </button>
     </aside>
   );
 }

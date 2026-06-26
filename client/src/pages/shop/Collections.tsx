@@ -222,7 +222,13 @@ function ProductListItem({ product }: { product: Product }) {
   return (
     <article className="grid gap-4 rounded-lg border border-rudra/10 bg-white p-4 shadow-sm sm:grid-cols-[180px_1fr]">
       <Link to={`/products/${product.slug}`} className="block overflow-hidden rounded-md bg-sandal">
-        <img src={product.images[0]} alt={product.title} className="aspect-square h-full w-full object-cover" />
+        <img
+          src={product.images[0]}
+          alt={product.title}
+          loading="lazy"
+          decoding="async"
+          className="aspect-square h-full w-full object-cover"
+        />
       </Link>
       <div className="flex flex-col justify-between gap-4">
         <div>

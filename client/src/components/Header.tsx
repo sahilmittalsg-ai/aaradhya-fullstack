@@ -1,22 +1,15 @@
 import { ChevronDown, Menu, Search, ShoppingBag, Sparkles, UserRound, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { getProducts } from "../lib/api";
-import type { Product } from "../types";
 
 const preferredNavOrder = ["Rudraksha", "Energy Stones", "Karungali", "Spiritual Jewellery", "Gift Hampers"];
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
   const { items, openCart } = useCart();
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
-  const nav = useMemo(() => buildNav(products), [products]);
-
-  useEffect(() => {
-    getProducts().then(setProducts);
-  }, []);
+  const nav = useMemo(() => buildNav(), []);
 
   return (
     <header className="sticky top-0 z-40 bg-[#fbf2e3] text-[#17172a] shadow-sm">
@@ -106,18 +99,9 @@ export function Header() {
   );
 }
 
-function buildNav(products: Product[]) {
-  const availableNames = new Set<string>();
-
-  products.forEach((product) => {
-    if (product.category) availableNames.add(product.category);
-    if (product.collection) availableNames.add(product.collection);
-  });
-
-  const names = preferredNavOrder.filter((name) => availableNames.size === 0 || availableNames.has(name));
-
+function buildNav() {
   return [
-    ...names.map((name) => ({
+    ...preferredNavOrder.map((name) => ({
       label: name,
       href: collectionHref(name),
       dropdown: ["Rudraksha", "Energy Stones", "Spiritual Jewellery", "Gift Hampers"].includes(name)

@@ -1,10 +1,11 @@
 import { Star } from "lucide-react";
+import { memo } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../context/CartContext";
+import { useCartActions } from "../context/CartContext";
 import type { Product } from "../types";
 
-export function ProductCard({ product }: { product: Product }) {
-  const { addItem } = useCart();
+export const ProductCard = memo(function ProductCard({ product }: { product: Product }) {
+  const { addItem } = useCartActions();
   const discountPercent = product.compareAtPrice
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
@@ -71,4 +72,4 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
     </article>
   );
-}
+});

@@ -1,8 +1,4 @@
-import {
-  coupons as fallbackCoupons,
-  orders as fallbackOrders,
-  products as fallbackProducts
-} from "../data";
+import { orders as fallbackOrders } from "../data";
 import type { AdminOrder, AdminProduct } from "../data";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -103,6 +99,23 @@ export type ApiSupportTicket = {
   message: string;
   priority?: "low" | "normal" | "high";
   status: "open" | "in-progress" | "resolved";
+  replies?: Array<{
+    message: string;
+    authorRole: "admin" | "client";
+    createdAt?: string;
+  }>;
+  createdAt?: string;
+};
+
+export type ApiCustomer = {
+  _id?: string;
+  id?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  orders?: number;
+  spent?: number;
+  segment?: string;
   createdAt?: string;
 };
 
@@ -191,7 +204,7 @@ export const fallbackHomepage: ApiHomepage = {
   ]
 };
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
+async function request<T>(path: string, options?: RequestInit, retryAuth = true): Promise<T> {
   const token = localStorage.getItem(adminTokenKey);
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -203,6 +216,12 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
+    if ((response.status === 401 || response.status === 403) && retryAuth && path !== "/auth/login") {
+      clearAdminApiSession();
+      await loginAdminApi();
+      return request<T>(path, options, false);
+    }
+
     const error = await response.json().catch(() => ({ message: "Request failed" }));
     throw new Error(error.message || "Request failed");
   }
@@ -230,11 +249,7 @@ export function clearAdminApiSession() {
 
 export async function getAdminHomepage() {
   if (adminHomepageCache) return adminHomepageCache;
-  try {
-    adminHomepageCache = await request<ApiHomepage>("/content/admin/homepage");
-  } catch {
-    adminHomepageCache = fallbackHomepage;
-  }
+  adminHomepageCache = await request<ApiHomepage>("/content/admin/homepage");
   return adminHomepageCache;
 }
 
@@ -254,23 +269,6 @@ export async function getAdminProducts() {
   adminProductsRequest = (async () => {
     try {
       adminProductsCache = await request<ApiProduct[]>("/products?all=true");
-    } catch {
-      adminProductsCache = fallbackProducts.map((product) => ({
-        _id: String(product.id),
-        title: product.name,
-        subtitle: product.category,
-        description: product.name,
-        category: product.category,
-        collection: product.category,
-        price: product.price,
-        compareAtPrice: product.oldPrice,
-        stock: product.stock,
-        rating: 4.8,
-        images: [product.image],
-        tags: [product.category.toLowerCase()],
-        featured: product.status === "Active",
-        active: product.status !== "Draft"
-      }));
     } finally {
       adminProductsRequest = undefined;
     }
@@ -311,14 +309,6 @@ export async function getAdminCategories() {
   adminCategoriesRequest = (async () => {
     try {
       adminCategoriesCache = await request<ApiCategory[]>("/categories?all=true");
-    } catch {
-      adminCategoriesCache = Array.from(new Set(fallbackProducts.map((product) => product.category))).map((name) => ({
-        _id: name,
-        name,
-        description: `${name} storefront category`,
-        featured: true,
-        active: true
-      }));
     } finally {
       adminCategoriesRequest = undefined;
     }
@@ -353,18 +343,7 @@ export async function deleteAdminCategory(id: string) {
 }
 
 export async function getAdminCoupons() {
-  try {
-    return await request<ApiCoupon[]>("/coupons");
-  } catch {
-    return fallbackCoupons.map((coupon) => ({
-      _id: coupon.code,
-      code: coupon.code,
-      type: (coupon.discount.includes("%") ? "percent" : "flat") as ApiCoupon["type"],
-      value: Number(coupon.discount.match(/\d+/)?.[0] || 0),
-      minSubtotal: 0,
-      active: coupon.status === "Active"
-    }));
-  }
+  return request<ApiCoupon[]>("/coupons");
 }
 
 export async function createAdminCoupon(coupon: Partial<ApiCoupon>) {
@@ -397,12 +376,10 @@ export async function getAdminOrders(force = false) {
   adminOrdersRequest = (async () => {
     try {
       adminOrdersCache = await request<ApiOrder[]>("/orders");
-    } catch {
-      adminOrdersCache = fallbackOrders.map(apiOrderFromFallback);
+      return adminOrdersCache;
     } finally {
       adminOrdersRequest = undefined;
     }
-    return adminOrdersCache;
   })();
 
   return adminOrdersRequest;
@@ -418,37 +395,18 @@ export async function updateAdminOrder(id: string, order: Partial<ApiOrder>) {
 }
 
 export async function getAdminSupportTickets(): Promise<ApiSupportTicket[]> {
-  try {
-    return await request<ApiSupportTicket[]>("/users/support");
-  } catch {
-    return [
-      {
-        _id: "ticket-1",
-        name: "Client User",
-        email: "client@demo.com",
-        phone: "8888888888",
-        orderNumber: "ORD-24062001",
-        category: "order-tracking",
-        subject: "Need delivery update",
-        message: "Please share the expected delivery date for my order.",
-        status: "open",
-        priority: "normal",
-        createdAt: "2026-06-22T09:00:00.000Z"
-      },
-      {
-        _id: "ticket-2",
-        name: "Wholesale Buyer",
-        email: "wholesale@example.com",
-        phone: "9876543210",
-        category: "bulk-wholesale",
-        subject: "Wholesale Inquiry - Divine Gifts",
-        message: "Company Name: Divine Gifts\nProduct Requirements: Rudraksha Malas\nQuantity Needed: 101 - 250 pieces\nPhone Number: 9876543210",
-        status: "open",
-        priority: "high",
-        createdAt: "2026-06-24T10:30:00.000Z"
-      }
-    ];
-  }
+  return request<ApiSupportTicket[]>("/users/support");
+}
+
+export async function updateAdminSupportTicket(id: string, payload: Partial<ApiSupportTicket> & { reply?: string }): Promise<ApiSupportTicket> {
+  return request<ApiSupportTicket>(`/users/support/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload)
+  });
+}
+
+export async function getAdminCustomers(): Promise<ApiCustomer[]> {
+  return request<ApiCustomer[]>("/admin/customers");
 }
 
 export function adminProductFromApi(product: ApiProduct): AdminProduct {

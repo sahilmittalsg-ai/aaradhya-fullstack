@@ -26,4 +26,4 @@ Health: `http://localhost:5000/api/health`
 - Admin dashboard APIs
 - CMS pages, banners, footer/site settings
 
-Rotate the MongoDB password after development because it was shared in chat.
+Rotate the PostgreSQL password after development because it was shared in chat.

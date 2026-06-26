@@ -126,7 +126,7 @@ export function Support() {
       setTicketMessage("Support ticket created. Our team will reply during business hours.");
       event.currentTarget.reset();
     } catch {
-      setTicketMessage("Ticket saved in demo mode. Connect backend after Node and MongoDB are running.");
+      setTicketMessage("Ticket saved in demo mode. Connect backend after Node and PostgreSQL are running.");
     }
   }
 
