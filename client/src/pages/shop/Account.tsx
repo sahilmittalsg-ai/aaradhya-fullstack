@@ -201,7 +201,7 @@ export function Account() {
             <div className="mt-6 rounded-md bg-sandal p-4">
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-rudra/60">Logged in</p>
               <p className="mt-2 text-xl font-black text-rudra">{user.name}</p>
-              <p className="mt-1 text-sm font-semibold text-ink/65">{user.email}</p>
+              <p className="mt-1 break-all text-sm font-semibold text-ink/65">{user.email}</p>
               <button type="button" onClick={logout} className="btn-secondary mt-5 w-full">
                 Logout / Change Email
               </button>

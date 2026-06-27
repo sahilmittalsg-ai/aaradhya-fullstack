@@ -51,7 +51,7 @@ export function Cart() {
 
           <div className="flex-1 overflow-y-auto px-4 py-5 md:px-8">
           {items.length === 0 ? (
-            <div className="rounded-2xl border border-[#211d33]/10 bg-[#fff7ec] p-10 text-center">
+            <div className="rounded-2xl border border-[#211d33]/10 bg-[#fff7ec] p-6 text-center sm:p-10">
               <p className="text-xl font-bold text-[#211d33]">Your cart is empty.</p>
               <Link to="/collections" className="btn-primary mt-6">Start Shopping</Link>
             </div>
@@ -229,7 +229,7 @@ function RecommendationBlock({ title, product, onAdd }: { title: string; product
 
 function MiniProduct({ product, onAdd }: { product: Product; onAdd: () => void }) {
   return (
-    <div className="grid grid-cols-[84px_1fr_auto] items-center gap-4 rounded-lg bg-[#f5f4f4] p-4">
+    <div className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-3 rounded-lg bg-[#f5f4f4] p-3 sm:grid-cols-[84px_1fr_auto] sm:gap-4 sm:p-4">
       <Link to={`/products/${product.slug}`} className="overflow-hidden rounded-lg bg-[#f6e8ce]">
         <img src={product.images[0]} alt={product.title} className="aspect-square object-cover" />
       </Link>
@@ -245,7 +245,7 @@ function MiniProduct({ product, onAdd }: { product: Product; onAdd: () => void }
           )}
         </p>
       </div>
-      <button onClick={onAdd} className="rounded-lg border border-[#211d33] px-3 py-2 text-sm font-semibold text-[#211d33] hover:bg-[#211d33] hover:text-white">
+      <button onClick={onAdd} className="col-span-2 w-full rounded-lg border border-[#211d33] px-3 py-2 text-sm font-semibold text-[#211d33] hover:bg-[#211d33] hover:text-white sm:col-auto sm:w-auto">
         ADD
       </button>
     </div>

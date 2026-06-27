@@ -196,7 +196,7 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f6f8ff] px-4 py-10">
-      <form onSubmit={signIn} className="w-full max-w-md rounded-[28px] border border-[#e8ecff] bg-white p-8 shadow-[0_24px_60px_rgba(59,79,166,0.12)]">
+      <form onSubmit={signIn} className="w-full max-w-md rounded-[28px] border border-[#e8ecff] bg-white p-5 shadow-[0_24px_60px_rgba(59,79,166,0.12)] sm:p-8">
         <BrandMark size="lg" />
         <p className="mt-6 text-sm font-bold uppercase tracking-[0.18em] text-[#8a91ad]">Admin access only</p>
         <h1 className="mt-3 text-3xl font-extrabold text-[#23233c]">Aaradhya Commerce Admin</h1>
@@ -253,6 +253,20 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [mobileOpen]);
+
   function logout() {
     localStorage.removeItem(legacyAdminRoleKey);
     clearAdminApiSession();
@@ -274,7 +288,7 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
               <h1 className="text-xl font-bold text-[#23233c]">Aaradhya Admin</h1>
             </div>
           </div>
-          <div className="hidden flex-1 justify-end gap-3 md:flex">
+          <div className="hidden min-w-0 flex-1 justify-end gap-3 lg:flex">
             <label className="relative w-full max-w-sm">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9aa0b8]" size={17} />
               <input className="w-full rounded-2xl border border-[#e0e5ff] bg-[#f8faff] py-3 pl-11 pr-4 text-sm font-medium outline-none transition focus:border-[#5b6cff] focus:bg-white focus:ring-4 focus:ring-[#5b6cff]/10" placeholder="Search orders, products, customers" />
@@ -289,8 +303,17 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
         </div>
       </header>
 
+      {mobileOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 top-20 z-40 bg-[#23233c]/35 backdrop-blur-[1px] lg:hidden"
+          onClick={() => setMobileOpen(false)}
+          aria-label="Close navigation"
+        />
+      )}
+
       <div className="admin-container grid gap-6 py-6 lg:grid-cols-[260px_1fr]">
-        <aside className={`${mobileOpen ? "block" : "hidden"} h-max rounded-[28px] border border-[#e8ecff] bg-white p-4 shadow-[0_24px_60px_rgba(59,79,166,0.10)] lg:sticky lg:top-24 lg:block`}>
+        <aside className={`${mobileOpen ? "fixed" : "hidden"} bottom-4 left-4 right-4 top-24 z-50 overflow-y-auto rounded-[28px] border border-[#e8ecff] bg-white p-4 shadow-[0_24px_60px_rgba(59,79,166,0.18)] sm:left-6 sm:right-auto sm:w-[320px] lg:sticky lg:bottom-auto lg:left-auto lg:right-auto lg:top-24 lg:z-auto lg:block lg:h-max lg:w-auto lg:overflow-visible`}>
           <div className="mb-5 flex items-center gap-3 border-b border-[#edf0ff] pb-5">
             <BrandMark />
             <div>
@@ -298,7 +321,7 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
               <p className="text-xs font-semibold text-[#9aa0b8]">Store command</p>
             </div>
           </div>
-          <nav className="grid max-h-[calc(100vh-210px)] gap-1 overflow-y-auto pr-1">
+          <nav className="grid gap-1 pr-1 lg:max-h-[calc(100vh-210px)] lg:overflow-y-auto">
             {navLinks.map((link) => (
               <NavLink
                 key={link.href}
@@ -320,9 +343,12 @@ function AdminLayout({ onLogout }: { onLogout: () => void }) {
               </NavLink>
             ))}
           </nav>
+          <button onClick={logout} className="mt-4 w-full rounded-xl border border-[#e0e5ff] bg-white px-4 py-3 text-sm font-semibold text-[#23233c] transition hover:border-[#5b6cff] hover:text-[#5b6cff] lg:hidden">
+            Logout
+          </button>
         </aside>
 
-        <main>
+        <main className="min-w-0">
           <Routes>
             <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
@@ -2473,11 +2499,11 @@ function Page({ eyebrow, title, subtitle, children }: { eyebrow: string; title: 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="admin-card overflow-hidden">
-      <div className="flex items-center justify-between border-b border-[#edf0ff] px-6 py-5">
+      <div className="flex items-center justify-between border-b border-[#edf0ff] px-4 py-4 sm:px-6 sm:py-5">
         <h3 className="font-bold text-[#23233c]">{title}</h3>
         <span className="text-xl font-bold leading-none text-[#c0c6dc]">...</span>
       </div>
-      <div className="p-6">{children}</div>
+      <div className="p-4 sm:p-6">{children}</div>
     </div>
   );
 }
@@ -2491,7 +2517,7 @@ function Metric({ label, value, icon: Icon, compact = false }: { label: string; 
         </span>
         <div>
           <p className="max-w-[7rem] text-[14px] font-semibold leading-5 text-[#727994]">{label}</p>
-          <p className="mt-8 whitespace-nowrap text-[24px] font-extrabold leading-none tracking-tight text-[#23233c]">{value}</p>
+          <p className="mt-8 break-words text-xl font-extrabold leading-tight tracking-tight text-[#23233c] sm:text-[24px]">{value}</p>
         </div>
       </div>
     );
@@ -2514,7 +2540,7 @@ function Metric({ label, value, icon: Icon, compact = false }: { label: string; 
 
 function ResponsiveTable({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-x-auto">
+    <div className="max-w-full overflow-x-auto overscroll-x-contain">
       <table className="w-full min-w-[980px] text-left text-sm">{children}</table>
     </div>
   );

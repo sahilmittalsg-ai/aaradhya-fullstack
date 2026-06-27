@@ -21,7 +21,7 @@ export function CartRecommendations({ title, product, onAdd }: CartRecommendatio
         </div>
       </div>
 
-      <div className="grid grid-cols-[84px_1fr_auto] items-center gap-4 rounded-lg bg-[#f5f5f5] p-4">
+      <div className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-3 rounded-lg bg-[#f5f5f5] p-3 sm:grid-cols-[84px_1fr_auto] sm:gap-4 sm:p-4">
         <Link to={`/products/${product.slug}`} className="overflow-hidden rounded-lg bg-[#f6e8ce]">
           <img src={product.images[0]} alt={product.title} className="aspect-square h-full w-full object-cover" />
         </Link>
@@ -39,7 +39,7 @@ export function CartRecommendations({ title, product, onAdd }: CartRecommendatio
         <button
           type="button"
           onClick={() => onAdd(product)}
-          className="rounded-lg border border-[#211d33] px-3 py-2 text-xs font-semibold text-[#211d33] transition hover:bg-[#211d33] hover:text-white"
+          className="col-span-2 w-full rounded-lg border border-[#211d33] px-3 py-2 text-xs font-semibold text-[#211d33] transition hover:bg-[#211d33] hover:text-white sm:col-auto sm:w-auto"
         >
           ADD
         </button>

@@ -396,13 +396,13 @@ export function Collections() {
                 {searchParam ? "Showing products matching your search" : hasFilters ? "Filtered by selected spiritual details" : "Showing featured and latest products"}
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <form onSubmit={submitSearch} className="flex min-w-0 overflow-hidden rounded-md border border-[#dedbd5] bg-white">
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+              <form onSubmit={submitSearch} className="flex w-full min-w-0 overflow-hidden rounded-md border border-[#dedbd5] bg-white sm:w-auto">
                 <label className="relative min-w-0 flex-1">
                   <span className="sr-only">Search products</span>
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/45" size={16} />
                   <input
-                    className="w-full min-w-48 px-9 py-2 text-sm outline-none"
+                    className="w-full min-w-0 px-9 py-2 text-sm outline-none sm:min-w-48"
                     value={searchText}
                     onChange={(event) => setSearchText(event.target.value)}
                     placeholder="Search products"
@@ -425,7 +425,7 @@ export function Collections() {
                 )}
                 <button className="bg-ink px-4 text-sm font-black text-white">Go</button>
               </form>
-              <select value={sort} onChange={(event) => setSort(event.target.value)} className="input min-w-44 py-2">
+              <select value={sort} onChange={(event) => setSort(event.target.value)} className="input min-w-0 flex-1 py-2 sm:min-w-44 sm:flex-none">
                 <option value="featured">Featured first</option>
                 <option value="price-low">Price: low to high</option>
                 <option value="price-high">Price: high to low</option>

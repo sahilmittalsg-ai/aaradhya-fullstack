@@ -12,7 +12,7 @@ export function Footer() {
 
   return (
     <footer className="mt-20 bg-ink text-sandal">
-      <div className="container-pad grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="container-pad grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Link to="/" className="flex items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#211d33] font-heading text-xl font-black tracking-tight text-[#f6e8ce] shadow-[0_12px_28px_rgba(33,29,51,0.22)]" aria-hidden="true">

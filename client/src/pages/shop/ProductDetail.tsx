@@ -313,8 +313,8 @@ export function ProductDetail() {
       )}
 
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#211d33]/10 bg-white/95 p-3 shadow-2xl backdrop-blur lg:left-auto lg:right-6 lg:w-[500px] lg:rounded-t-2xl lg:border">
-        <div className="flex items-center gap-3">
-          <img src={product.images[0]} alt="" decoding="async" className="h-16 w-16 rounded-xl object-cover" />
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:gap-3">
+          <img src={product.images[0]} alt="" decoding="async" className="hidden h-16 w-16 rounded-xl object-cover sm:block" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold">{product.title}</p>
             <p className="font-heading text-xl font-bold">Rs.{linePrice} <span className="text-sm font-medium text-[#17172a]/45 line-through">Rs.{product.compareAtPrice}</span></p>
@@ -324,7 +324,7 @@ export function ProductDetail() {
             <span className="px-2 text-sm font-bold">{quantity}</span>
             <button className="px-2 py-2" onClick={() => setQuantity((value) => Math.min(value + 1, maxQuantity))}><Plus size={15} /></button>
           </div>
-          <button onClick={orderNow} className="rounded-lg bg-[#211d33] px-4 py-3 text-sm font-bold text-white">ORDER NOW</button>
+          <button onClick={orderNow} className="col-span-2 w-full rounded-lg bg-[#211d33] px-4 py-3 text-sm font-bold text-white sm:w-auto">ORDER NOW</button>
         </div>
       </div>
 

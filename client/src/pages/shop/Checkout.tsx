@@ -323,7 +323,7 @@ export function Checkout() {
   if (orderNumber) {
     return (
       <section className="container-pad py-16">
-        <div className="mx-auto max-w-xl rounded-lg border border-rudra/10 bg-white p-8 text-center shadow-soft">
+        <div className="mx-auto max-w-xl rounded-lg border border-rudra/10 bg-white p-5 text-center shadow-soft sm:p-8">
           <CheckCircle2 className="mx-auto text-green-600" size={52} />
           <p className="mt-5 text-sm font-bold uppercase tracking-[0.2em] text-saffron">Order Placed</p>
           <h1 className="mt-3 text-3xl font-black">Thank you for your order.</h1>
