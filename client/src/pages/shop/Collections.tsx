@@ -56,6 +56,20 @@ export function Collections() {
     setSearchText(searchParam);
   }, [audienceParam, beadParam, inStockParam, maxPriceParam, minPriceParam, mukhiParam, platingParam, priceParam, purposeParam, searchParam]);
 
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFiltersOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [filtersOpen]);
+
   const purposeOptions = useMemo(() => uniqueOptions(products.flatMap((product) => product.purpose || [])), [products]);
   const beadOptions = useMemo(() => uniqueOptions(products.map((product) => product.bead)), [products]);
   const mukhiOptions = useMemo(() => uniqueOptions(products.map((product) => product.mukhi)), [products]);
@@ -213,11 +227,22 @@ export function Collections() {
         </button>
       </div>
 
-      <div className={`grid gap-8 ${filtersOpen ? "lg:grid-cols-[280px_1fr]" : ""}`}>
+      <div>
         {filtersOpen && (
-        <aside id="product-filters" className="h-max rounded-lg border border-rudra/10 bg-white p-5 shadow-sm">
+        <div
+          className="fixed inset-0 z-[80] flex justify-end bg-black/40 backdrop-blur-[2px]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="product-filters-title"
+          onClick={() => setFiltersOpen(false)}
+        >
+        <aside
+          id="product-filters"
+          className="h-full w-full max-w-sm overflow-y-auto border-l border-rudra/10 bg-white p-5 shadow-2xl sm:p-6"
+          onClick={(event) => event.stopPropagation()}
+        >
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold">Filters</h2>
+            <h2 id="product-filters-title" className="text-xl font-semibold">Filters</h2>
             <div className="flex items-center gap-3">
               {hasFilters && (
                 <button onClick={clearFilters} className="text-xs font-bold text-rudra">
@@ -348,6 +373,7 @@ export function Collections() {
             </button>
           </div>
         </aside>
+        </div>
         )}
 
         <div>
@@ -420,7 +446,7 @@ export function Collections() {
               </button>
             </div>
           ) : view === "grid" ? (
-            <div className={`grid gap-6 sm:grid-cols-2 ${filtersOpen ? "xl:grid-cols-3" : "lg:grid-cols-3 xl:grid-cols-4"}`}>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {visibleProducts.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
