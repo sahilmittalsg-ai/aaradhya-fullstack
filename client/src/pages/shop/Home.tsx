@@ -872,8 +872,7 @@ function PurposeSection({
     <section className="bg-[#f6e8ce] py-8 md:py-10">
       <div className="container-pad">
         <h2 className="text-center font-heading text-2xl font-bold md:text-3xl">Shop By Purpose</h2>
-        <div className="mt-7 overflow-x-auto pb-2">
-          <div className="flex min-w-max justify-center gap-7 px-3 md:gap-9">
+        <div className="mx-auto mt-7 grid max-w-[1040px] grid-cols-4 gap-3 sm:gap-4 lg:grid-cols-8">
             {purposes.map((purpose) => {
               const value = purpose.value || purpose.name;
               const active = selectedPurpose === value;
@@ -883,7 +882,8 @@ function PurposeSection({
                   key={value}
                   to={`/collections?purpose=${encodeURIComponent(value)}`}
                   onClick={() => onSelect(value)}
-                  className={`group relative block h-[126px] w-[126px] shrink-0 overflow-hidden bg-[#2d2a39] shadow-sm transition hover:-translate-y-1 hover:shadow-soft md:h-[132px] md:w-[132px] ${
+                  aria-label={`Shop ${purpose.name} products`}
+                  className={`group relative block aspect-square w-full max-w-[116px] justify-self-center overflow-hidden bg-[#2d2a39] shadow-sm transition hover:-translate-y-1 hover:shadow-soft ${
                     active ? "ring-2 ring-[#211d33] ring-offset-4 ring-offset-[#f6e8ce]" : ""
                   }`}
                 >
@@ -894,16 +894,15 @@ function PurposeSection({
                     decoding="async"
                     className="h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
                   />
-                  <span className="absolute inset-x-0 bottom-0 flex h-7 items-center justify-between gap-2 bg-[#2d2a39]/95 px-2 text-left">
-                    <span className="truncate text-[15px] font-bold leading-none text-white">{purpose.name}</span>
-                    <span className="flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full border border-white/80 text-[13px] font-bold leading-none text-white">
+                  <span className="absolute inset-x-0 bottom-0 flex h-7 items-center justify-between gap-1 bg-[#2d2a39]/95 px-1.5 text-left sm:px-2">
+                    <span className="truncate text-[10px] font-bold leading-none text-white sm:text-xs lg:text-[13px]">{purpose.name}</span>
+                    <span className="hidden h-4 w-4 shrink-0 items-center justify-center rounded-full border border-white/80 text-[11px] font-bold leading-none text-white sm:flex">
                       &rarr;
                     </span>
                   </span>
                 </Link>
               );
             })}
-          </div>
         </div>
       </div>
     </section>
