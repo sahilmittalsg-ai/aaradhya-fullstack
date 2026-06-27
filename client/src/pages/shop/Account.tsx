@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import { usePincodeLookup } from "../../hooks/usePincodeLookup";
 import { getMyOrders, getMySupportTickets, getProfile, requestOtp, updateProfile, verifyOtp } from "../../lib/api";
 import type { Address, ClientUser, Order, SupportTicket } from "../../types";
 
@@ -26,12 +27,22 @@ export function Account() {
   const [devOtp, setDevOtp] = useState("");
   const [sendingOtp, setSendingOtp] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const pincodeLookup = usePincodeLookup(address.pincode);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       loadAccountData();
     }
   }, []);
+
+  useEffect(() => {
+    const location = pincodeLookup.location;
+    if (!location) return;
+    setAddress((current) => {
+      if (current.pincode !== location.pincode) return current;
+      return { ...current, city: location.city, state: location.state };
+    });
+  }, [pincodeLookup.location]);
 
   async function loadAccountData() {
     setLoadingAccount(true);
@@ -132,6 +143,10 @@ export function Account() {
       setMessage("Please login with email OTP before saving an address.");
       return;
     }
+    if (!/^\d{6}$/.test(address.pincode)) {
+      setMessage("Please enter a valid 6 digit PIN code.");
+      return;
+    }
 
     const nextAddress = {
       ...address,
@@ -168,6 +183,16 @@ export function Account() {
 
   function updateAddress(field: keyof Address, value: string) {
     setAddress((current) => ({ ...current, [field]: value }));
+  }
+
+  function updateAddressPincode(value: string) {
+    const digits = value.replace(/\D/g, "").slice(0, 6);
+    setAddress((current) => ({
+      ...current,
+      pincode: digits,
+      city: current.pincode === digits ? current.city : "",
+      state: current.pincode === digits ? current.state : ""
+    }));
   }
 
   async function resendOtp() {
@@ -385,9 +410,13 @@ export function Account() {
               <input className="input md:col-span-2" value={address.phone || ""} onChange={(e) => updateAddress("phone", e.target.value)} placeholder="Phone number for this address" required />
               <input className="input md:col-span-2" value={address.line1} onChange={(e) => updateAddress("line1", e.target.value)} placeholder="House no, street, area" required />
               <input className="input md:col-span-2" value={address.line2 || ""} onChange={(e) => updateAddress("line2", e.target.value)} placeholder="Landmark or apartment, optional" />
-              <input className="input" value={address.city} onChange={(e) => updateAddress("city", e.target.value)} placeholder="City" required />
-              <input className="input" value={address.state} onChange={(e) => updateAddress("state", e.target.value)} placeholder="State" required />
-              <input className="input" value={address.pincode} onChange={(e) => updateAddress("pincode", e.target.value)} placeholder="Pincode" required />
+              <input className="input md:col-span-2" value={address.pincode} onChange={(e) => updateAddressPincode(e.target.value)} placeholder="6 digit PIN code" inputMode="numeric" autoComplete="postal-code" pattern="[0-9]{6}" maxLength={6} required />
+              {address.pincode.length > 0 && address.pincode.length < 6 && <p className="text-xs font-semibold text-ink/55 md:col-span-2">Enter {6 - address.pincode.length} more digit{6 - address.pincode.length === 1 ? "" : "s"}.</p>}
+              {pincodeLookup.status === "loading" && <p className="text-xs font-bold text-rudra md:col-span-2">Finding city and state...</p>}
+              {pincodeLookup.status === "error" && <p className="text-xs font-bold text-red-600 md:col-span-2">{pincodeLookup.message}</p>}
+              {pincodeLookup.status === "success" && <p className="text-xs font-bold text-green-700 md:col-span-2">PIN verified: {pincodeLookup.location?.city}, {pincodeLookup.location?.state}</p>}
+              <input className="input" value={address.city} onChange={(e) => updateAddress("city", e.target.value)} placeholder="Auto-filled city" required />
+              <input className="input" value={address.state} onChange={(e) => updateAddress("state", e.target.value)} placeholder="Auto-filled state" required />
               <button className="btn-primary md:col-span-2">Add New Address</button>
             </form>
           </div>

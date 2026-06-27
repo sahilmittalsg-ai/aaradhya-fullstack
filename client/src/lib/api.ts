@@ -338,6 +338,20 @@ export function prefetchStorefrontData() {
   void getProducts();
 }
 
+export type PincodeLocation = {
+  pincode: string;
+  city: string;
+  district: string;
+  state: string;
+  postOffice: string;
+};
+
+export async function lookupPincode(pincode: string): Promise<PincodeLocation> {
+  const digits = pincode.replace(/\D/g, "");
+  if (!/^\d{6}$/.test(digits)) throw new Error("Enter a valid 6 digit PIN code.");
+  return request<PincodeLocation>(`/content/pincode/${digits}`);
+}
+
 export async function getProduct(slug: string): Promise<Product | undefined> {
   const cacheFresh = productsCache && Date.now() - productsCacheAt < PRODUCTS_CACHE_MS;
   const cachedProduct = cacheFresh ? productsCache?.find((product) => product.slug === slug) : undefined;

@@ -341,13 +341,15 @@ async function ensureOrderCustomer(req: AuthRequest, customer: any, shippingAddr
 
 function normalizeAddress(address: any, fallbackPhone = "") {
   if (!address?.line1 || !address?.city || !address?.state || !address?.pincode) return null;
+  const pincode = String(address.pincode).trim();
+  if (!/^\d{6}$/.test(pincode)) return null;
 
   return {
     line1: String(address.line1).trim(),
     line2: String(address.line2 || "").trim(),
     city: String(address.city).trim(),
     state: String(address.state).trim(),
-    pincode: String(address.pincode).trim(),
+    pincode,
     phone: normalizePhone(address.phone || fallbackPhone)
   };
 }

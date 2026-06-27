@@ -4,6 +4,7 @@ import {
   createHomeSection,
   createPage,
   getHomepage,
+  getPincodeLocation,
   getPage,
   getSettings,
   getStorefront,
@@ -24,6 +25,7 @@ export const contentRoutes = Router();
 
 contentRoutes.get("/storefront", getStorefront);
 contentRoutes.get("/homepage", getHomepage);
+contentRoutes.get("/pincode/:pincode", getPincodeLocation);
 contentRoutes.get("/pages/:slug", getPage);
 contentRoutes.post("/newsletter", subscribeNewsletter);
 

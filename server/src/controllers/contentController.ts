@@ -9,6 +9,70 @@ import { Page } from "../models/Page.js";
 import { Product } from "../models/Product.js";
 import { SiteSetting } from "../models/SiteSetting.js";
 
+type PincodeLocation = {
+  pincode: string;
+  city: string;
+  district: string;
+  state: string;
+  postOffice: string;
+};
+
+type PostalApiOffice = {
+  Name?: string;
+  Block?: string;
+  District?: string;
+  State?: string;
+  Pincode?: string;
+};
+
+type PostalApiResult = {
+  Status?: string;
+  PostOffice?: PostalApiOffice[] | null;
+};
+
+const pincodeCache = new Map<string, { value: PincodeLocation; expiresAt: number }>();
+const PINCODE_CACHE_MS = 24 * 60 * 60 * 1000;
+
+export async function getPincodeLocation(req: Request, res: Response) {
+  const pincode = String(req.params.pincode || "").replace(/\D/g, "");
+  if (!/^\d{6}$/.test(pincode)) return res.status(400).json({ message: "Enter a valid 6 digit PIN code." });
+
+  const cached = pincodeCache.get(pincode);
+  if (cached && cached.expiresAt > Date.now()) {
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    return res.json(cached.value);
+  }
+
+  try {
+    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(6000)
+    });
+    if (!response.ok) throw new Error(`Postal lookup failed with ${response.status}`);
+
+    const payload = (await response.json()) as PostalApiResult[];
+    const office = payload[0]?.PostOffice?.[0];
+    if (payload[0]?.Status !== "Success" || !office?.State || !office?.District) {
+      return res.status(404).json({ message: "PIN code not found. Check all 6 digits." });
+    }
+
+    const block = office.Block && office.Block !== "NA" ? office.Block : "";
+    const value: PincodeLocation = {
+      pincode,
+      city: block || office.District,
+      district: office.District,
+      state: office.State,
+      postOffice: office.Name || ""
+    };
+    pincodeCache.set(pincode, { value, expiresAt: Date.now() + PINCODE_CACHE_MS });
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    return res.json(value);
+  } catch (error) {
+    console.warn("PIN code lookup unavailable:", error instanceof Error ? error.message : error);
+    return res.status(502).json({ message: "PIN lookup is temporarily unavailable. Please try again." });
+  }
+}
+
 export async function getHomepage(_req: Request, res: Response) {
   const store = await readStore();
   return res.json(store.homepage);

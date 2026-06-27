@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { usePincodeLookup } from "../../hooks/usePincodeLookup";
 import { createMockPayment, getPaymentMethods, getProfile, getPublicCoupons, placeOrder, updateProfile, validateCoupon } from "../../lib/api";
 import { calculatePriceSummary } from "../../lib/pricing";
 import type { Address, ClientUser, Coupon, PaymentApp, PaymentMethod } from "../../types";
@@ -116,6 +117,7 @@ export function Checkout() {
   const [saveAddress, setSaveAddress] = useState(true);
   const checkoutPanelRef = useRef<HTMLDivElement>(null);
   const checkoutMountedRef = useRef(false);
+  const pincodeLookup = usePincodeLookup(form.pincode);
 
   useEffect(() => {
     getPaymentMethods().then((methods) => {
@@ -149,6 +151,16 @@ export function Checkout() {
     window.requestAnimationFrame(() => checkoutPanelRef.current?.scrollIntoView({ block: "start" }));
   }, [step]);
 
+  useEffect(() => {
+    const location = pincodeLookup.location;
+    if (!location) return;
+    setForm((current) => {
+      if (current.pincode !== location.pincode) return current;
+      if (current.city === location.city && current.state === location.state) return current;
+      return { ...current, city: location.city, state: location.state };
+    });
+  }, [pincodeLookup.location]);
+
   const selectedPayment = useMemo(
     () => paymentMethods.find((method) => method.code === form.paymentMethod),
     [form.paymentMethod, paymentMethods]
@@ -169,6 +181,16 @@ export function Checkout() {
       setCouponDiscount(0);
       setCouponMessage("");
     }
+  }
+
+  function updatePincode(value: string) {
+    const digits = value.replace(/\D/g, "").slice(0, 6);
+    setForm((current) => ({
+      ...current,
+      pincode: digits,
+      city: current.pincode === digits ? current.city : "",
+      state: current.pincode === digits ? current.state : ""
+    }));
   }
 
   function applySavedAddress(address: Address, index: number) {
@@ -231,6 +253,10 @@ export function Checkout() {
   async function submitAddress(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    if (!/^\d{6}$/.test(form.pincode)) {
+      setError("Please enter a valid 6 digit PIN code.");
+      return;
+    }
     try {
       await saveCurrentAddressToProfile();
     } catch {
@@ -408,9 +434,23 @@ export function Checkout() {
                 <Field label="Full Name*" value={form.name} onChange={(value) => updateField("name", value)} placeholder="Your name" required />
                 <Field label="Email*" type="email" value={form.email} onChange={(value) => updateField("email", value)} placeholder="name@example.com" required />
                 <Field label="Phone number*" value={form.phone} onChange={(value) => updateField("phone", value)} placeholder="+91 00000 00000" required />
-                <Field label="City*" value={form.city} onChange={(value) => updateField("city", value)} placeholder="City" required />
-                <Field label="State*" value={form.state} onChange={(value) => updateField("state", value)} placeholder="State" required />
-                <Field label="Zip Code*" value={form.pincode} onChange={(value) => updateField("pincode", value)} placeholder="Pincode" required />
+                <label>
+                  <span className="text-xs font-bold text-ink/70">PIN Code*</span>
+                  <input
+                    className="mt-2 w-full rounded-md border border-[#dedbd5] bg-white px-3 py-3 text-sm outline-none transition focus:border-rudra focus:ring-2 focus:ring-rudra/10"
+                    value={form.pincode}
+                    onChange={(event) => updatePincode(event.target.value)}
+                    placeholder="6 digit PIN code"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
+                    pattern="[0-9]{6}"
+                    maxLength={6}
+                    required
+                  />
+                </label>
+                <Field label="City*" value={form.city} onChange={(value) => updateField("city", value)} placeholder="Auto-filled city" required />
+                <Field label="State*" value={form.state} onChange={(value) => updateField("state", value)} placeholder="Auto-filled state" required />
+                <PincodeLookupMessage pincode={form.pincode} status={pincodeLookup.status} message={pincodeLookup.message} city={pincodeLookup.location?.city} state={pincodeLookup.location?.state} />
                 <Field className="md:col-span-2" label="Address line*" value={form.line1} onChange={(value) => updateField("line1", value)} placeholder="House no, street, area" required />
                 <label className="md:col-span-2">
                   <span className="text-xs font-bold text-ink/70">Description</span>
@@ -718,6 +758,28 @@ function ReviewBox({ title, children }: { title: string; children: ReactNode }) 
       <div className="break-words text-ink/65 [overflow-wrap:anywhere]">{children}</div>
     </div>
   );
+}
+
+function PincodeLookupMessage({
+  pincode,
+  status,
+  message,
+  city,
+  state
+}: {
+  pincode: string;
+  status: "idle" | "loading" | "success" | "error";
+  message?: string;
+  city?: string;
+  state?: string;
+}) {
+  if (pincode.length > 0 && pincode.length < 6) {
+    return <p className="text-xs font-semibold text-ink/55 md:col-span-2">Enter {6 - pincode.length} more digit{6 - pincode.length === 1 ? "" : "s"}.</p>;
+  }
+  if (status === "loading") return <p className="text-xs font-bold text-rudra md:col-span-2">Finding city and state...</p>;
+  if (status === "error") return <p className="text-xs font-bold text-red-600 md:col-span-2">{message}</p>;
+  if (status === "success") return <p className="text-xs font-bold text-green-700 md:col-span-2">PIN verified: {city}, {state}</p>;
+  return null;
 }
 
 function OrderSummary({
