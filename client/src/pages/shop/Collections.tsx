@@ -29,6 +29,7 @@ export function Collections() {
   const [searchText, setSearchText] = useState("");
   const [sort, setSort] = useState("featured");
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PAGE_SIZE);
   const active = params.get("collection") || "All";
   const searchParam = (params.get("search") || "").trim();
@@ -192,37 +193,41 @@ export function Collections() {
         )}
       </div>
 
-      <div className="my-8 flex flex-wrap gap-2">
-        {["All", ...categoryOptions].map((category) => (
-          <button
-            key={category}
-            onClick={() => {
-              setPurpose("All");
-              setBead("All");
-              setMukhi("All");
-              setPlating("All");
-              setAudience("All");
-              setPriceBand("all");
-              category === "All" ? setParams({}) : setParams({ collection: category });
-            }}
-            className={`rounded-full px-4 py-2 text-sm font-bold transition ${
-              active === category ? "bg-ink text-white" : "border border-rudra/10 bg-white text-ink hover:border-rudra/40"
-            }`}
-          >
-            {category}
-          </button>
-        ))}
+      <div className="my-8 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((open) => !open)}
+          aria-expanded={filtersOpen}
+          aria-controls="product-filters"
+          className={`inline-flex items-center gap-2 rounded-md border px-5 py-3 text-sm font-bold transition ${
+            filtersOpen ? "border-ink bg-ink text-white" : "border-rudra/15 bg-white text-ink hover:border-rudra/40"
+          }`}
+        >
+          <SlidersHorizontal size={17} />
+          Filters
+          {activeFilters.length > 0 && (
+            <span className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] ${filtersOpen ? "bg-white text-ink" : "bg-ink text-white"}`}>
+              {activeFilters.length}
+            </span>
+          )}
+        </button>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
-        <aside className="h-max rounded-lg border border-rudra/10 bg-white p-5 shadow-sm">
+      <div className={`grid gap-8 ${filtersOpen ? "lg:grid-cols-[280px_1fr]" : ""}`}>
+        {filtersOpen && (
+        <aside id="product-filters" className="h-max rounded-lg border border-rudra/10 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">Filters</h2>
-            {hasFilters && (
-              <button onClick={clearFilters} className="inline-flex items-center gap-1 text-xs font-bold text-rudra">
-                <X size={14} /> Clear
+            <div className="flex items-center gap-3">
+              {hasFilters && (
+                <button onClick={clearFilters} className="text-xs font-bold text-rudra">
+                  Clear all
+                </button>
+              )}
+              <button type="button" onClick={() => setFiltersOpen(false)} className="rounded-full p-1 text-ink/55 transition hover:bg-sandal hover:text-ink" aria-label="Close filters">
+                <X size={18} />
               </button>
-            )}
+            </div>
           </div>
 
           {activeFilters.length > 0 && (
@@ -343,6 +348,7 @@ export function Collections() {
             </button>
           </div>
         </aside>
+        )}
 
         <div>
           <div className="mb-5 flex flex-col justify-between gap-3 rounded-lg border border-rudra/10 bg-white p-4 sm:flex-row sm:items-center">
@@ -414,7 +420,7 @@ export function Collections() {
               </button>
             </div>
           ) : view === "grid" ? (
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className={`grid gap-6 sm:grid-cols-2 ${filtersOpen ? "xl:grid-cols-3" : "lg:grid-cols-3 xl:grid-cols-4"}`}>
               {visibleProducts.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
