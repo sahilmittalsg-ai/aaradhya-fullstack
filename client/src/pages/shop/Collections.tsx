@@ -238,10 +238,10 @@ export function Collections() {
         >
         <aside
           id="product-filters"
-          className="h-full w-full max-w-sm overflow-y-auto border-l border-rudra/10 bg-white p-5 shadow-2xl sm:p-6"
+          className="flex h-[100dvh] w-full max-w-sm flex-col overflow-hidden border-l border-rudra/10 bg-white shadow-2xl"
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-rudra/10 px-5 py-4 sm:px-6">
             <h2 id="product-filters-title" className="text-xl font-semibold">Filters</h2>
             <div className="flex items-center gap-3">
               {hasFilters && (
@@ -255,6 +255,7 @@ export function Collections() {
             </div>
           </div>
 
+          <div className="min-h-0 flex-1 touch-pan-y overflow-y-scroll overscroll-contain px-5 pb-6 sm:px-6 [scrollbar-gutter:stable]">
           {activeFilters.length > 0 && (
             <div className="mt-5 border-t border-rudra/10 pt-5">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-rudra/60">{activeFilters.length} Applied Filter{activeFilters.length > 1 ? "s" : ""}</p>
@@ -370,6 +371,17 @@ export function Collections() {
                 In stock only
               </span>
               <span className="text-xs text-ink/45">({countProducts(products, (product) => Number(product.stock || 0) > 0)})</span>
+            </button>
+          </div>
+          </div>
+
+          <div className="shrink-0 border-t border-rudra/10 bg-white p-4 sm:px-6">
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(false)}
+              className="btn-primary w-full"
+            >
+              Apply Filters · Show {filtered.length} Products
             </button>
           </div>
         </aside>
