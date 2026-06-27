@@ -1,5 +1,5 @@
 import { CheckCircle2, CreditCard, Landmark, PackageCheck, Tag, Truck, Wallet } from "lucide-react";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
@@ -114,6 +114,8 @@ export function Checkout() {
   const [user, setUser] = useState<ClientUser | null>(null);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<number | "new">("new");
   const [saveAddress, setSaveAddress] = useState(true);
+  const checkoutPanelRef = useRef<HTMLDivElement>(null);
+  const checkoutMountedRef = useRef(false);
 
   useEffect(() => {
     getPaymentMethods().then((methods) => {
@@ -138,6 +140,14 @@ export function Checkout() {
         .catch(() => undefined);
     }
   }, []);
+
+  useEffect(() => {
+    if (!checkoutMountedRef.current) {
+      checkoutMountedRef.current = true;
+      return;
+    }
+    window.requestAnimationFrame(() => checkoutPanelRef.current?.scrollIntoView({ block: "start" }));
+  }, [step]);
 
   const selectedPayment = useMemo(
     () => paymentMethods.find((method) => method.code === form.paymentMethod),
@@ -339,10 +349,10 @@ export function Checkout() {
   }
 
   return (
-    <section className="bg-[#f4f4f2] py-10">
+    <section className="bg-[#f4f4f2] py-6 sm:py-10">
       <div className="container-pad">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,620px)_380px] xl:justify-center">
-        <div className="rounded-lg border border-[#e6e2dc] bg-white p-5 shadow-sm md:p-6">
+        <div ref={checkoutPanelRef} className="min-w-0 scroll-mt-36 rounded-lg border border-[#e6e2dc] bg-white p-4 shadow-sm sm:p-5 md:p-6">
           <div className="mb-7 flex items-center gap-2 text-xs font-bold">
             <button type="button" onClick={() => setStep("address")} className={step === "address" ? "text-rudra" : "text-ink/45"}>
               Cart
@@ -622,9 +632,9 @@ export function Checkout() {
                   {selectedPayment?.type === "online" ? "Payment will be captured by gateway." : "Payment pending until delivery."}
                 </ReviewBox>
               </div>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button type="button" onClick={() => setStep("payment")} className="btn-secondary">Back</button>
-                <button onClick={confirmOrder} disabled={placing || items.length === 0} className="btn-primary disabled:opacity-50">
+              <div className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+                <button type="button" onClick={() => setStep("payment")} className="btn-secondary w-full sm:w-auto">Back</button>
+                <button onClick={confirmOrder} disabled={placing || items.length === 0} className="btn-primary w-full disabled:opacity-50 sm:w-auto">
                   {placing ? "Placing..." : "Place Order"}
                 </button>
               </div>
@@ -703,9 +713,9 @@ function PaymentAppTile({ app, active, onClick }: { app: PaymentApp; active: boo
 
 function ReviewBox({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded-lg bg-sandal p-4 text-sm leading-7">
+    <div className="min-w-0 overflow-hidden rounded-lg bg-sandal p-4 text-sm leading-7">
       <p className="mb-2 font-black text-ink">{title}</p>
-      <div className="text-ink/65">{children}</div>
+      <div className="break-words text-ink/65 [overflow-wrap:anywhere]">{children}</div>
     </div>
   );
 }
@@ -736,12 +746,12 @@ function OrderSummary({
   const actionLabel = step === "address" ? "Continue to Payment" : step === "payment" ? "Review Order" : placing ? "Placing..." : "Place Order";
 
   return (
-    <aside className="h-max rounded-lg border border-[#e6e2dc] bg-white p-5 shadow-sm lg:sticky lg:top-28">
+    <aside className="h-max min-w-0 overflow-hidden rounded-lg border border-[#e6e2dc] bg-white p-4 shadow-sm sm:p-5 lg:sticky lg:top-28">
       <h2 className="text-2xl font-black">Your Cart</h2>
       <div className="mt-5 space-y-4">
         {items.map((item) => (
-          <div key={item.cartKey || item.slug} className="flex gap-3">
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-sandal">
+          <div key={item.cartKey || item.slug} className="grid grid-cols-[48px_minmax(0,1fr)] gap-3 sm:flex">
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-sandal sm:h-14 sm:w-14">
               <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
               <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1 text-[10px] font-black text-white">
                 {item.quantity}
@@ -754,7 +764,7 @@ function OrderSummary({
                 <p key={addOn.code} className="text-xs text-green-700">{addOn.title}: Rs.{addOn.price}</p>
               ))}
             </div>
-            <b className="shrink-0 text-sm">
+            <b className="col-start-2 shrink-0 text-sm sm:col-auto">
               Rs.{(item.price + (item.selectedAddOns || []).reduce((sum, addOn) => sum + addOn.price, 0)) * item.quantity}
             </b>
           </div>
@@ -788,7 +798,7 @@ function OrderSummary({
                   eligible ? "border-green-300 bg-green-50 hover:bg-green-100" : "border-[#dedbd5] bg-sandal text-ink/55"
                 }`}
               >
-                <span className="flex items-center justify-between gap-3">
+                <span className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                   <span className="text-xs font-black uppercase tracking-[0.12em]">{coupon.code}</span>
                   <span className={`rounded-full px-2 py-1 text-[10px] font-black ${eligible ? "bg-white text-green-700" : "bg-white text-ink/55"}`}>
                     {eligible ? "Available" : `Add Rs.${Math.ceil(coupon.minSubtotal - subtotal)} more`}

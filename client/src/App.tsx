@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { Home } from "./pages/shop/Home";
 
+const Home = lazy(() => import("./pages/shop/Home").then((module) => ({ default: module.Home })));
 const Account = lazy(() => import("./pages/shop/Account").then((module) => ({ default: module.Account })));
 const Cart = lazy(() => import("./pages/shop/Cart").then((module) => ({ default: module.Cart })));
 const Checkout = lazy(() => import("./pages/shop/Checkout").then((module) => ({ default: module.Checkout })));

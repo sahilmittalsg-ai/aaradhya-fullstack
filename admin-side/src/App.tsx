@@ -385,7 +385,7 @@ function Dashboard() {
 
   useEffect(() => {
     refreshDashboardOrders();
-    const interval = window.setInterval(() => refreshDashboardOrders(true), 30_000);
+    const interval = window.setInterval(() => !document.hidden && refreshDashboardOrders(true), 30_000);
     getAdminProducts().then(setDashboardProducts);
     getAdminSupportTickets().then((tickets) => setSupportCount(tickets.length)).catch(() => setSupportCount(0));
     return () => window.clearInterval(interval);
@@ -468,7 +468,7 @@ function AnalyticsPage() {
 
   useEffect(() => {
     refreshAnalytics();
-    const interval = window.setInterval(() => refreshAnalytics(true), 10_000);
+    const interval = window.setInterval(() => !document.hidden && refreshAnalytics(true), 30_000);
     return () => window.clearInterval(interval);
   }, []);
 
@@ -832,7 +832,7 @@ function ProductsPage() {
       void refreshProducts(true);
     };
     window.addEventListener("focus", refresh);
-    const interval = window.setInterval(refresh, 20_000);
+    const interval = window.setInterval(() => !document.hidden && refresh(), 60_000);
     return () => {
       window.removeEventListener("focus", refresh);
       window.clearInterval(interval);
@@ -1105,7 +1105,7 @@ function ProductCategoriesPage() {
       void refreshCategories(true);
     };
     window.addEventListener("focus", refresh);
-    const interval = window.setInterval(refresh, 20_000);
+    const interval = window.setInterval(() => !document.hidden && refresh(), 60_000);
     return () => {
       window.removeEventListener("focus", refresh);
       window.clearInterval(interval);
@@ -1543,7 +1543,7 @@ function OrdersPage() {
 
   useEffect(() => {
     refreshOrders();
-    const interval = window.setInterval(() => refreshOrders(true), 5000);
+    const interval = window.setInterval(() => !document.hidden && refreshOrders(true), 30_000);
     return () => window.clearInterval(interval);
   }, []);
 
@@ -1589,7 +1589,7 @@ function OrderListPage({ type }: { type: "COD" | "Prepaid" }) {
 
   useEffect(() => {
     refreshOrders();
-    const interval = window.setInterval(() => refreshOrders(true), 5000);
+    const interval = window.setInterval(() => !document.hidden && refreshOrders(true), 30_000);
     return () => window.clearInterval(interval);
   }, [type]);
 
@@ -1640,7 +1640,7 @@ function CustomersPage() {
 
   useEffect(() => {
     refreshCustomers();
-    const interval = window.setInterval(refreshCustomers, 5000);
+    const interval = window.setInterval(() => !document.hidden && refreshCustomers(), 30_000);
     return () => window.clearInterval(interval);
   }, []);
 
