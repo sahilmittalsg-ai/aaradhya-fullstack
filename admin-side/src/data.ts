@@ -66,9 +66,9 @@ export type TrendingProduct = {
 };
 
 export const products: AdminProduct[] = [
-  { id: 1, name: "5 Mukhi Rudraksha Mala", category: "Rudraksha", price: 899, oldPrice: 1299, stock: 42, status: "Active", image: "/assets/products/meditation-mala.png" },
+  { id: 1, name: "5 Mukhi Rudraksha Mala", category: "Rudraksha", price: 899, oldPrice: 1299, stock: 42, status: "Active", image: "/assets/products/meditation-mala.jpg" },
   { id: 2, name: "Karungali Protection Bracelet", category: "Karungali", price: 699, oldPrice: 999, stock: 18, status: "Active", image: "/assets/home/karungali.png" },
-  { id: 3, name: "Pyrite Prosperity Bracelet", category: "Pyrite", price: 799, oldPrice: 1199, stock: 6, status: "Low Stock", image: "/assets/products/pyrite-tiger-eye.png" },
+  { id: 3, name: "Pyrite Prosperity Bracelet", category: "Pyrite", price: 799, oldPrice: 1199, stock: 6, status: "Low Stock", image: "/assets/products/pyrite-tiger-eye.jpg" },
   { id: 4, name: "Rose Quartz Love Band", category: "Rose Quartz", price: 749, oldPrice: 1099, stock: 26, status: "Active", image: "/assets/home/rose-quartz.png" },
   { id: 5, name: "Sphatik Health Mala", category: "Sphatik", price: 999, oldPrice: 1499, stock: 12, status: "Active", image: "/assets/home/sphatik.png" },
   { id: 6, name: "Tiger Eye Courage Bracelet", category: "Tiger Eye", price: 849, oldPrice: 1299, stock: 5, status: "Low Stock", image: "/assets/home/tiger-eye.png" }
@@ -82,7 +82,7 @@ export const orders: AdminOrder[] = [
     email: "asha@example.com",
     address: "Bani Park, Jaipur, Rajasthan 302016",
     products: [
-      { id: 1, name: "5 Mukhi Rudraksha Mala", image: "/assets/products/meditation-mala.png", quantity: 1, size: "108+1 beads", price: 899 },
+      { id: 1, name: "5 Mukhi Rudraksha Mala", image: "/assets/products/meditation-mala.jpg", quantity: 1, size: "108+1 beads", price: 899 },
       { id: 2, name: "Karungali Protection Bracelet", image: "/assets/home/karungali.png", quantity: 1, size: "Medium - 7 inch", price: 699 }
     ],
     total: 1598,
@@ -101,7 +101,7 @@ export const orders: AdminOrder[] = [
     email: "rahul@example.com",
     address: "Andheri West, Mumbai, Maharashtra 400053",
     products: [
-      { id: 3, name: "Pyrite Prosperity Bracelet", image: "/assets/products/pyrite-tiger-eye.png", quantity: 1, size: "Large - 7.5 inch", price: 799 }
+      { id: 3, name: "Pyrite Prosperity Bracelet", image: "/assets/products/pyrite-tiger-eye.jpg", quantity: 1, size: "Large - 7.5 inch", price: 799 }
     ],
     total: 799,
     paymentType: "Prepaid",
@@ -160,7 +160,7 @@ export const orders: AdminOrder[] = [
     email: "pooja@example.com",
     address: "Kakkanad, Kochi, Kerala 682030",
     products: [
-      { id: 1, name: "5 Mukhi Rudraksha Mala", image: "/assets/products/meditation-mala.png", quantity: 1, size: "Long", price: 899 }
+      { id: 1, name: "5 Mukhi Rudraksha Mala", image: "/assets/products/meditation-mala.jpg", quantity: 1, size: "Long", price: 899 }
     ],
     total: 899,
     paymentType: "Prepaid",
@@ -221,8 +221,8 @@ export const homepageControls = [
 ];
 
 export const trendingProducts: TrendingProduct[] = [
-  { id: 1, image: "/assets/products/rudraksha-bracelet.png", name: "Gold Plated Modern Rudraksha Bracelet", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Protection", enabled: true },
-  { id: 2, image: "/assets/products/meditation-mala.png", name: "Brown Rudraksha Mala - 108+1 Beads", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Peace", enabled: true },
-  { id: 3, image: "/assets/products/pyrite-tiger-eye.png", name: "Pyrite Money Magnet Bracelet", price: 999, oldPrice: 1599, discount: "38% OFF", badge: "New arrival", category: "Pyrite", purpose: "Wealth", enabled: true },
+  { id: 1, image: "/assets/products/rudraksha-bracelet.jpg", name: "Gold Plated Modern Rudraksha Bracelet", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Protection", enabled: true },
+  { id: 2, image: "/assets/products/meditation-mala.jpg", name: "Brown Rudraksha Mala - 108+1 Beads", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Peace", enabled: true },
+  { id: 3, image: "/assets/products/pyrite-tiger-eye.jpg", name: "Pyrite Money Magnet Bracelet", price: 999, oldPrice: 1599, discount: "38% OFF", badge: "New arrival", category: "Pyrite", purpose: "Wealth", enabled: true },
   { id: 4, image: "/assets/home/rose-quartz.png", name: "Rose Quartz Rudraksha Nazar Raksha Band", price: 699, oldPrice: 1099, discount: "36% OFF", badge: "New arrival", category: "Rose Quartz", purpose: "Love", enabled: true }
 ];

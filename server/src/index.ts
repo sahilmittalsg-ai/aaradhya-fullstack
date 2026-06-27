@@ -56,10 +56,14 @@ app.use(express.json({ limit: "10mb" }));
 app.use(sanitizeInput);
 app.use(morgan("dev"));
 
-app.use("/api", (_req, res, next) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
+const cacheablePublicRoute = /^\/(products|categories)(\/|$)|^\/content\/homepage$|^\/coupons\/public$|^\/reviews(\/|$)/;
+
+app.use("/api", (req, res, next) => {
+  if (req.method === "GET" && !req.headers.authorization && cacheablePublicRoute.test(req.path)) {
+    res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+  } else {
+    res.setHeader("Cache-Control", "private, no-store");
+  }
   next();
 });
 

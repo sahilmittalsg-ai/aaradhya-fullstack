@@ -6,7 +6,7 @@ import type { ApiHomepage, ApiTrendingProduct } from "../lib/api";
 const blankProduct: ApiTrendingProduct = {
   id: 0,
   slug: "",
-  image: "/assets/products/rudraksha-bracelet.png",
+  image: "/assets/products/rudraksha-bracelet.jpg",
   name: "",
   price: 0,
   oldPrice: 0,
@@ -137,7 +137,7 @@ export function AdminTrendingManager() {
           <label className="grid gap-1 text-sm font-semibold">
             Product Image
             <div className="flex items-center gap-3">
-              <img src={draft.image} alt="" className="h-16 w-16 rounded-md bg-sand object-cover" />
+              <img src={draft.image} alt="" loading="lazy" decoding="async" className="h-16 w-16 rounded-md bg-sand object-cover" />
               <label className="admin-button cursor-pointer gap-2">
                 <ImagePlus size={17} /> Upload
                 <input type="file" accept="image/*" className="hidden" onChange={uploadImage} />
@@ -194,7 +194,7 @@ export function AdminTrendingManager() {
           <div className="grid gap-3 p-5">
             {items.map((item) => (
               <div key={item.id} className="grid gap-3 rounded-md border border-admin/10 p-3 md:grid-cols-[72px_1fr_auto] md:items-center">
-                <img src={item.image} alt={item.name} className="h-16 w-16 rounded-md bg-sand object-cover" />
+                <img src={item.image} alt={item.name} loading="lazy" decoding="async" className="h-16 w-16 rounded-md bg-sand object-cover" />
                 <div>
                   <p className="font-bold">{item.name}</p>
                   <p className="text-sm text-ink/55">

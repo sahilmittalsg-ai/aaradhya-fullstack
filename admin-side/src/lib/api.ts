@@ -278,8 +278,8 @@ export const fallbackHomepage: ApiHomepage = {
       { name: "Tiger Eye", value: "Tiger Eye", image: "/assets/categories/tiger-eye.png", active: true },
       { name: "Rose Quartz", value: "Rose Quartz", image: "/assets/categories/rose-quartz.png", active: true },
       { name: "Amethyst", value: "Amethyst", image: "/assets/categories/amethyst.png", active: true },
-      { name: "Combos", value: "Combos", image: "/assets/products/hero-spiritual-shop.png", active: true },
-      { name: "Gift Hampers", value: "Gift Hampers", image: "/assets/categories/gift-hampers.png", active: true }
+      { name: "Combos", value: "Combos", image: "/assets/products/hero-spiritual-shop.jpg", active: true },
+      { name: "Gift Hampers", value: "Gift Hampers", image: "/assets/categories/gift-hampers.jpg", active: true }
     ],
     collectionCircles: [
       { name: "Rudraksha Bracelets", value: "Rudraksha Bracelets", href: "/collections?collection=Rudraksha%20Bracelets", image: "/assets/collections/rudraksha-bracelets.jpg", active: true },
@@ -289,8 +289,8 @@ export const fallbackHomepage: ApiHomepage = {
       { name: "Karungali Wearables", value: "Karungali", href: "/collections?collection=Karungali", image: "/assets/collections/karungali-wearables.jpg", active: true },
       { name: "Energy Stones", value: "Energy Stones", href: "/collections?collection=Energy%20Stones", image: "/assets/collections/energy-stones.jpg", active: true },
       { name: "Pyrite Wearables", value: "Pyrite", href: "/collections?bead=Pyrite", image: "/assets/collections/pyrite-wearables.jpg", active: true },
-      { name: "Combo Deals", value: "Combos", href: "/collections?collection=Combos", image: "/assets/products/hero-spiritual-shop.png", active: true },
-      { name: "Gift Hampers", value: "Gift Hampers", href: "/collections?collection=Gift%20Hampers", image: "/assets/categories/gift-hampers.png", active: true }
+      { name: "Combo Deals", value: "Combos", href: "/collections?collection=Combos", image: "/assets/products/hero-spiritual-shop.jpg", active: true },
+      { name: "Gift Hampers", value: "Gift Hampers", href: "/collections?collection=Gift%20Hampers", image: "/assets/categories/gift-hampers.jpg", active: true }
     ],
     purposeCards: [
       { name: "Wealth", value: "Wealth", image: "/assets/purpose/wealth.jpg", active: true },
@@ -351,9 +351,9 @@ export const fallbackHomepage: ApiHomepage = {
     autoplay: true,
     intervalMs: 4000,
     products: [
-      { id: 1, slug: "gold-plated-modern-rudraksha-bracelet", image: "/assets/products/rudraksha-bracelet.png", name: "Gold Plated Modern Rudraksha Bracelet", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Protection", enabled: true },
-      { id: 2, slug: "brown-rudraksha-mala-108-1-beads", image: "/assets/products/meditation-mala.png", name: "Brown Rudraksha Mala - 108+1 Beads", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Peace", enabled: true },
-      { id: 3, slug: "pyrite-money-magnet-bracelet", image: "/assets/products/pyrite-tiger-eye.png", name: "Pyrite Money Magnet Bracelet", price: 999, oldPrice: 1599, discount: "38% OFF", badge: "New arrival", category: "Pyrite", purpose: "Wealth", enabled: true },
+      { id: 1, slug: "gold-plated-modern-rudraksha-bracelet", image: "/assets/products/rudraksha-bracelet.jpg", name: "Gold Plated Modern Rudraksha Bracelet", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Protection", enabled: true },
+      { id: 2, slug: "brown-rudraksha-mala-108-1-beads", image: "/assets/products/meditation-mala.jpg", name: "Brown Rudraksha Mala - 108+1 Beads", price: 599, oldPrice: 999, discount: "40% OFF", badge: "New arrival", category: "Rudraksha", purpose: "Peace", enabled: true },
+      { id: 3, slug: "pyrite-money-magnet-bracelet", image: "/assets/products/pyrite-tiger-eye.jpg", name: "Pyrite Money Magnet Bracelet", price: 999, oldPrice: 1599, discount: "38% OFF", badge: "New arrival", category: "Pyrite", purpose: "Wealth", enabled: true },
       { id: 4, slug: "rose-quartz-rudraksha-nazar-raksha-band", image: "/assets/home/rose-quartz.png", name: "Rose Quartz Rudraksha Nazar Raksha Band", price: 699, oldPrice: 1099, discount: "36% OFF", badge: "New arrival", category: "Rose Quartz", purpose: "Love", enabled: true },
       { id: 5, slug: "healing-sphatik-health-mala", image: "/assets/home/sphatik.png", name: "Healing Sphatik Health Mala", price: 899, oldPrice: 1399, discount: "36% OFF", badge: "New arrival", category: "Sphatik", purpose: "Health", enabled: true },
       { id: 6, slug: "tiger-eye-courage-bracelet", image: "/assets/home/tiger-eye.png", name: "Tiger Eye Courage Bracelet", price: 849, oldPrice: 1299, discount: "35% OFF", badge: "New arrival", category: "Tiger Eye", purpose: "Courage", enabled: true }
@@ -391,7 +391,7 @@ async function request<T>(path: string, options?: RequestInit, retryAuth = true)
   const token = localStorage.getItem(adminTokenKey);
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
-    cache: "no-store",
+    cache: options?.method && options.method !== "GET" ? "no-store" : "default",
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -707,7 +707,7 @@ export function adminProductFromApi(product: ApiProduct): AdminProduct {
     oldPrice: product.compareAtPrice,
     stock: product.stock,
     status,
-    image: product.images[0] || "/assets/products/rudraksha-bracelet.png"
+    image: product.images[0] || "/assets/products/rudraksha-bracelet.jpg"
   };
 }
 

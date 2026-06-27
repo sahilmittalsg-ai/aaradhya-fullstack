@@ -264,7 +264,7 @@ Create order body:
     {
       "product": "<productId>",
       "title": "Rudraksha Aura Bracelet",
-      "image": "/assets/products/rudraksha-bracelet.png",
+      "image": "/assets/products/rudraksha-bracelet.jpg",
       "price": 899,
       "compareAtPrice": 1299,
       "selectedSize": "medium-7",

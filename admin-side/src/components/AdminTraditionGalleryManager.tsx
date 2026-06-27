@@ -99,7 +99,7 @@ export function AdminTraditionGalleryManager() {
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           {items.map((item, index) => (
             <div key={`${item.label}-${index}`} className="rounded-md border border-admin/10 p-3">
-              <img src={item.image} alt="" className="h-36 w-full rounded-md bg-sand object-cover" />
+              <img src={item.image} alt="" loading="lazy" decoding="async" className="h-36 w-full rounded-md bg-sand object-cover" />
               <div className="mt-3 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold">{item.label}</p>

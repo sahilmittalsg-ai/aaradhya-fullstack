@@ -359,7 +359,7 @@ function Dashboard() {
 
   useEffect(() => {
     refreshDashboardOrders();
-    const interval = window.setInterval(() => refreshDashboardOrders(true), 5000);
+    const interval = window.setInterval(() => refreshDashboardOrders(true), 30_000);
     getAdminProducts().then(setDashboardProducts);
     getAdminSupportTickets().then((tickets) => setSupportCount(tickets.length)).catch(() => setSupportCount(0));
     return () => window.clearInterval(interval);
@@ -648,7 +648,7 @@ function TopSellingProducts({ products: catalog, orders }: { products: ApiProduc
     <div className="grid gap-4">
       {rows.map(({ product, sold }) => (
         <div key={product._id || product.title} className="flex items-center gap-4 rounded-2xl bg-[#f8faff] p-3">
-          <img src={product.images[0] || "/assets/products/rudraksha-bracelet.png"} alt={product.title} className="h-16 w-16 rounded-2xl object-cover" />
+          <img src={product.images[0] || "/assets/products/rudraksha-bracelet.jpg"} alt={product.title} loading="lazy" decoding="async" className="h-16 w-16 rounded-2xl object-cover" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold text-[#23233c]">{product.title}</p>
             <p className="mt-1 text-xs font-semibold text-[#8a91ad]">{product.collection} / {sold} sold</p>
@@ -784,7 +784,7 @@ function ProductsPage() {
     compareAtPrice: 999,
     stock: 10,
     rating: 4.8,
-    images: ["/assets/products/rudraksha-bracelet.png"],
+    images: ["/assets/products/rudraksha-bracelet.jpg"],
     tags: ["rudraksha"],
     purpose: ["Peace"],
     featured: true,
@@ -850,7 +850,7 @@ function ProductsPage() {
       title: form.title?.trim(),
       subtitle: form.subtitle || form.title,
       description: form.description || form.title,
-      images: form.images?.length ? form.images : ["/assets/products/rudraksha-bracelet.png"],
+      images: form.images?.length ? form.images : ["/assets/products/rudraksha-bracelet.jpg"],
       tags: form.tags?.length ? form.tags : [String(form.category || "").toLowerCase()],
       purpose: form.purpose?.length ? form.purpose : ["Peace"]
     };
@@ -1004,7 +1004,7 @@ function ProductsPage() {
                 <tr key={product._id || product.slug} className={isHidden ? "bg-[#fff7ec] opacity-70" : ""}>
                   <td>
                     <div className="flex items-center gap-3">
-                      <img src={product.images[0]} alt={product.title} className={`h-14 w-14 rounded-lg object-cover ${isHidden ? "grayscale" : ""}`} />
+                      <img src={product.images[0]} alt={product.title} loading="lazy" decoding="async" className={`h-14 w-14 rounded-lg object-cover ${isHidden ? "grayscale" : ""}`} />
                       <div>
                         <p className={`font-semibold ${isHidden ? "text-[#211d33]/45 line-through" : "text-[#211d33]"}`}>{product.title}</p>
                         <p className="text-xs text-[#17172a]/45">{isHidden ? "Hidden from client storefront" : product.slug || product._id}</p>
@@ -2267,7 +2267,7 @@ function OrderTable({
                 <div className="grid gap-2">
                   {order.products.map((item) => (
                     <div key={`${order.id}-${item.id}`} className="flex items-center gap-2">
-                      <img src={item.image} alt={item.name} className="h-11 w-11 rounded-lg object-cover" />
+                      <img src={item.image} alt={item.name} loading="lazy" decoding="async" className="h-11 w-11 rounded-lg object-cover" />
                       <div>
                         <p className="max-w-48 font-semibold text-[#211d33]">{item.name}</p>
                         <p className="text-xs text-[#17172a]/50">Qty {item.quantity} {item.size ? `| ${item.size}` : ""}</p>
@@ -2390,7 +2390,7 @@ function HomepageCardList({
     <div className="mt-4 grid gap-4">
       {rows.map((item, index) => (
         <div key={`${item.name}-${index}`} className="grid gap-4 rounded-xl border border-[#211d33]/10 p-4 xl:grid-cols-[96px_1fr_auto] xl:items-end">
-          <img src={item.image} alt="" className="h-24 w-24 rounded-xl bg-[#f6e8ce] object-cover" />
+          <img src={item.image} alt="" loading="lazy" decoding="async" className="h-24 w-24 rounded-xl bg-[#f6e8ce] object-cover" />
           <div className={`grid gap-3 ${showLink ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-2 xl:grid-cols-3"}`}>
             <Field label="Client Display Name">
               <input className="admin-input" value={item.name} onChange={(event) => onChange(index, { name: event.target.value })} />

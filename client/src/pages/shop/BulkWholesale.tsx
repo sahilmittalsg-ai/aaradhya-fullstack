@@ -57,7 +57,7 @@ export function BulkWholesale() {
           <h1 className="text-center text-lg font-black text-[#d23a3a]">Wholesale Inquiry</h1>
 
           <img
-            src="/assets/products/hero-spiritual-shop.png"
+            src="/assets/products/hero-spiritual-shop.jpg"
             alt="Aaradhya Beads bulk and wholesale spiritual products"
             className="mt-5 h-[206px] w-full rounded-sm object-cover object-right"
           />

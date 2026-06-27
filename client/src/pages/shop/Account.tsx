@@ -495,5 +495,5 @@ function formatDate(value?: string) {
 }
 
 function orderItemImage(item: Order["items"][number]) {
-  return item.images?.[0] || (item as unknown as { image?: string }).image || "/assets/products/rudraksha-bracelet.png";
+  return item.images?.[0] || (item as unknown as { image?: string }).image || "/assets/products/rudraksha-bracelet.jpg";
 }

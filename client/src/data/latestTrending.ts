@@ -16,7 +16,7 @@ export const latestTrendingProducts: TrendingProduct[] = [
   {
     id: 1,
     slug: "gold-plated-modern-rudraksha-bracelet",
-    image: "/assets/products/rudraksha-bracelet.png",
+    image: "/assets/products/rudraksha-bracelet.jpg",
     name: "Gold Plated Modern Rudraksha Bracelet",
     price: 599,
     oldPrice: 999,
@@ -29,7 +29,7 @@ export const latestTrendingProducts: TrendingProduct[] = [
   {
     id: 2,
     slug: "brown-rudraksha-mala-108-1-beads",
-    image: "/assets/products/meditation-mala.png",
+    image: "/assets/products/meditation-mala.jpg",
     name: "Brown Rudraksha Mala - 108+1 Beads",
     price: 599,
     oldPrice: 999,
@@ -42,7 +42,7 @@ export const latestTrendingProducts: TrendingProduct[] = [
   {
     id: 3,
     slug: "pyrite-money-magnet-bracelet",
-    image: "/assets/products/pyrite-tiger-eye.png",
+    image: "/assets/products/pyrite-tiger-eye.jpg",
     name: "Pyrite Money Magnet Bracelet",
     price: 999,
     oldPrice: 1599,

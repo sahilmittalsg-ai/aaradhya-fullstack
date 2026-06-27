@@ -71,7 +71,7 @@ export function AdminHeroSliderManager() {
       <div className="grid gap-5 md:grid-cols-2">
         {homepage.hero.slides.map((slide, index) => (
           <div key={slide.id} className="admin-card overflow-hidden">
-            <img src={slide.image} alt={slide.heading} className="h-56 w-full bg-[#f6e8ce] object-cover" />
+            <img src={slide.image} alt={slide.heading} loading="lazy" decoding="async" className="h-56 w-full bg-[#f6e8ce] object-cover" />
             <div className="p-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>

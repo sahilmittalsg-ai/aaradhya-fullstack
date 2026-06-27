@@ -29,8 +29,8 @@ const defaultCategoryOptions = [
   { name: "Tiger Eye", image: "/assets/categories/tiger-eye.png" },
   { name: "Rose Quartz", image: "/assets/categories/rose-quartz.png" },
   { name: "Amethyst", image: "/assets/categories/amethyst.png" },
-  { name: "Combos", image: "/assets/products/hero-spiritual-shop.png" },
-  { name: "Gift Hampers", image: "/assets/categories/gift-hampers.png" }
+  { name: "Combos", image: "/assets/products/hero-spiritual-shop.jpg" },
+  { name: "Gift Hampers", image: "/assets/categories/gift-hampers.jpg" }
 ];
 
 const collectionShowcaseOptions = [
@@ -80,13 +80,13 @@ const collectionShowcaseOptions = [
     name: "Combo Deals",
     value: "Combos",
     href: "/collections?collection=Combos",
-    image: "/assets/products/hero-spiritual-shop.png"
+    image: "/assets/products/hero-spiritual-shop.jpg"
   },
   {
     name: "Gift Hampers",
     value: "Gift Hampers",
     href: "/collections?collection=Gift%20Hampers",
-    image: "/assets/categories/gift-hampers.png"
+    image: "/assets/categories/gift-hampers.jpg"
   }
 ];
 
