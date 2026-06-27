@@ -118,8 +118,7 @@ export function ProductDetail() {
   }
 
   function orderNow() {
-    addItem(configuredItem(), quantity, false);
-    navigate("/checkout");
+    if (addItem(configuredItem(), quantity, false)) navigate("/checkout");
   }
 
   async function copyCoupon(code: string) {

@@ -1,4 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCartActions } from "../../context/CartContext";
 import { usePincodeLookup } from "../../hooks/usePincodeLookup";
 import { getMyOrders, getMySupportTickets, getProfile, requestOtp, updateProfile, verifyOtp } from "../../lib/api";
 import type { Address, ClientUser, Order, SupportTicket } from "../../types";
@@ -13,7 +15,14 @@ const emptyAddress: Address = {
 };
 
 export function Account() {
-  const [message, setMessage] = useState("Login with email OTP. In development, OTP is visible on screen.");
+  const [message, setMessage] = useState(() =>
+    sessionStorage.getItem("aaradhya-pending-cart-add")
+      ? "Login first to add your selected product to your personal cart."
+      : "Login with email OTP. In development, OTP is visible on screen."
+  );
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { completePendingAdd, syncCartForCurrentUser, resetCartView } = useCartActions();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingAccount, setLoadingAccount] = useState(false);
@@ -124,12 +133,16 @@ export function Account() {
       });
       localStorage.setItem("token", result.token);
       localStorage.setItem("user", JSON.stringify(result.user));
+      const pendingReturn = completePendingAdd();
+      if (!pendingReturn) syncCartForCurrentUser();
       setUser(result.user);
       setOtpRequested(false);
       setDevOtp("");
       setEmail(result.user.email || normalizedEmail);
       await loadAccountData();
       setMessage(`Logged in with OTP as ${result.user.name} (${result.user.role})`);
+      const requestedReturn = safeClientReturnPath(pendingReturn || searchParams.get("returnTo"));
+      if (requestedReturn) navigate(requestedReturn, { replace: true });
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "OTP verification failed");
     } finally {
@@ -170,6 +183,7 @@ export function Account() {
   }
 
   function logout() {
+    resetCartView();
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
@@ -457,6 +471,11 @@ export function Account() {
       </div>
     </section>
   );
+}
+
+function safeClientReturnPath(value?: string | null) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return undefined;
+  return value;
 }
 
 function StatusBadge({ value }: { value: string }) {

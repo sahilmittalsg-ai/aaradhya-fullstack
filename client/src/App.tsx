@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, type ReactNode, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 
@@ -24,7 +24,7 @@ export default function App() {
           <Route path="/pages/bulk-wholesale" element={<BulkWholesale />} />
           <Route path="/pages/:slug" element={<Page />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout" element={<RequireClientLogin><Checkout /></RequireClientLogin>} />
           <Route path="/account" element={<Account />} />
           <Route path="/support" element={<Support />} />
           <Route path="/track-order" element={<TrackOrder />} />
@@ -33,4 +33,11 @@ export default function App() {
       </Routes>
     </Suspense>
   );
+}
+
+function RequireClientLogin({ children }: { children: ReactNode }) {
+  if (!localStorage.getItem("token")) {
+    return <Navigate to="/account?returnTo=%2Fcheckout" replace />;
+  }
+  return children;
 }
